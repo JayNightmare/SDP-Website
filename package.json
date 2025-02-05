@@ -1,0 +1,23 @@
+{
+  "name": "sdp-website",
+  "version": "0.0.1",
+  "description": "SDP Website about kidneys",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JayNightmare/SDP-Website.git"
+  },
+  "keywords": [
+    "SDP",
+    "University"
+  ],
+  "author": "Jay",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JayNightmare/SDP-Website/issues"
+  },
+  "homepage": "https://github.com/JayNightmare/SDP-Website#readme"
+}
