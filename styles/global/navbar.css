@@ -1,0 +1,28 @@
+header > div {
+    display: grid !important;
+    grid-template-rows: repeat(1, 1fr);
+    padding: 1rem 2rem;
+    background-color: #123524;
+    gap: 20px;
+}
+
+header > div > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header a {
+    color: #fff;
+    text-decoration: none;
+}
+
+header a:hover {
+    color: #f1f1f1;
+}
+
+.nav-logo {
+    height: 32px;
+    width: 64px;
+    background-color: #ddd;
+}
