@@ -1,3 +1,7 @@
+footer {
+    border-top: 1px solid #e5e5e5;
+}
+
 .site-footer {
     background-color: #26272b;
     padding: 45px 0 20px;
@@ -61,9 +65,12 @@
 }
 
 .site-footer .social-icons a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
     width: 40px;
     height: 40px;
-    line-height: 40px;
     margin-left: 6px;
     margin-right: 0;
     border-radius: 100%;
