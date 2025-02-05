@@ -1,3 +1,9 @@
+header {
+    z-index: 1000;
+    font-size: 16px;
+    box-shadow: 0px 4px 22px 0px #00000085;
+}
+
 header > div {
     display: grid !important;
     grid-template-rows: repeat(1, 1fr);
@@ -10,20 +16,44 @@ header > div > div {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: auto 15%;
+    margin: auto 30%;
 }
 
 header a {
-    color: #fff;
-    text-decoration: none;
+    color: #EFE3C2;
+    text-decoration: underline;
 }
 
 header a:hover {
-    color: #f1f1f1;
+    text-decoration: none;
+    color: #EFE3C2;
 }
 
 .nav-logo {
-    height: 32px;
-    width: 64px;
+    height: 40px;
+    width: 113px;
     background-color: #ddd;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-item .profile-picture {
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    background-color: #ddd;
+}
+
+.top-nav {
+    padding-top: 10px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #00000085;
+}
+
+.bottom-nav {
+    padding-bottom: 10px;
 }
