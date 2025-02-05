@@ -3,7 +3,7 @@ name: Build and Deploy Website
 on:
   push:
     branches:
-      - main # Adjust if your default branch is different
+      - main
 
 jobs:
   build:
@@ -23,11 +23,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      # Step 3: Set up Node.js (only if needed)
+      # Step 3: Set up Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16' # Use the version you're working with
+          node-version: '21'
 
       # Step 4: Install dependencies
       - name: Install Dependencies
@@ -45,9 +45,4 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-styles-js-
 
-      # Step 6: Deploy website (if deploying)
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./html
+
