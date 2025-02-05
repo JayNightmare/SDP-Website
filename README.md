@@ -17,6 +17,6 @@ Use the following VSCode Extension for your own convenience:
     - Connect to the MongoDB database 💻
 5. [Code Runner](https://marketplace.visualstudio.com/items?itemName=formulahendry.code-runner)
     - Not really needed but it's nice to have 🤔
-6. [Auto Commit Message](https://marketplace.visualstudio.com/items?itemName=MichaelCurrin.auto-commit-msg)
+6. [Blackbox](https://marketplace.visualstudio.com/items?itemName=Blackboxapp.blackbox)
 
 ![alt text](image.png)
