@@ -92,4 +92,8 @@
         color: #123524;
         width: 80%;
     }
+
+    &:hover {
+        color: #123524 !important;
+    }
 }
