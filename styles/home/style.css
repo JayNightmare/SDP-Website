@@ -126,7 +126,15 @@
 }
 
 /* .card:nth-child(odd) { padding-right: 50px; } */
-.card-image { border: 1px solid #000000; }
+.card-image {
+    border: 1px solid #000000;
+    height: 100%;
+
+    img {
+        width: 122px;
+        height: 248px;
+    }
+}
 
 .card-content {
     width: 100%;
