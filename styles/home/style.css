@@ -8,7 +8,7 @@
     height: 450px;
     background-color: #2E4709;
 
-    background-image: url("../../images/home/banner/banner.jpeg");
+    background-image: url("/images/home/banner/banner.jpeg");
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -116,6 +116,10 @@
     grid-template-columns: repeat(2, 1fr);
     justify-items: stretch;
     gap: 0 142px;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
 }
 
 .card-container {
@@ -126,6 +130,7 @@
 }
 
 /* .card:nth-child(odd) { padding-right: 50px; } */
+
 .card-image {
     border: 1px solid #000000;
 

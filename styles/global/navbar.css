@@ -45,16 +45,18 @@ header a:hover {
     width: 113px;
     
     .header-logo {
-        background-image: url('../../images/home/header/1.png');
-        /* background-image: url('../../images/home/header/2.png'); */
-        /* background-image: url('../../images/home/header/3.png'); */
-        /* background-image: url('../../images/home/header/4.png'); */
+        background-image: url('/images/home/header/1.png');
+        /* background-image: url('/images/home/header/2.png'); */
+        /* background-image: url('/images/home/header/3.png'); */
+        /* background-image: url('/images/home/header/4.png'); */
         background-position: center;
         background-repeat: no-repeat;
         background-size: cover;
         width: 100%;
         height: 100%;
     }
+
+
 }
 
 .nav-item {
@@ -64,10 +66,17 @@ header a:hover {
 }
 
 .nav-item .profile-picture {
-    height: 24px;
-    width: 24px;
+    height: 32px;
+    width: 32px;
     border-radius: 50%;
-    background-color: #ddd;
+    border: 1px solid #EFE3C2;
+    border-spacing: 50px;
+    text-align: center;
+    
+    svg {
+        margin: 2px 0;
+        fill: #EFE3C2;
+    }
 }
 
 .top-nav {
