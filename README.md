@@ -19,4 +19,4 @@ Use the following VSCode Extension for your own convenience:
     - Not really needed but it's nice to have 🤔
 6. [Blackbox](https://marketplace.visualstudio.com/items?itemName=Blackboxapp.blackbox)
 
-![alt text](image.png)
+![alt text](./images/image.png)
