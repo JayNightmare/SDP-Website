@@ -9,7 +9,7 @@
     }
 }
 
-.start-now {
+.button_gl {
     background-color: #3E7B27;
     color: white;
     padding: 20px;
@@ -31,4 +31,15 @@ ul {
     display: flex;
     flex-direction: column;
     gap: 15px;
+}
+
+.getback {
+    text-decoration: underline;
+    color: black;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: none;
+        color: black;
+    }
 }

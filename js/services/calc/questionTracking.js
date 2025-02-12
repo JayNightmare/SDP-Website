@@ -12,15 +12,37 @@ document.addEventListener('DOMContentLoaded', function() {
         if (event.target && event.target.id === 'next') {
             currentQuestion++;
             fetchQuestion(currentQuestion);
+        } else if (event.target && event.target.id === 'prev') {
+            if (currentQuestion > 1) {
+                currentQuestion--;
+                fetchQuestion(currentQuestion);
+            } else {
+                window.location.reload();
+            }
+        } else if (event.target && event.target.id === 'prev-1') {
+            fetchQuestion(currentQuestion);
+        } else if (event.target && event.target.id === 'results') {
+            fetchResults();
+        } else if (event.target && event.target.id === 'under-age') {
+            window.location.href = '/';
         }
     });
 
     function fetchQuestion(questionNumber) {
-        fetch(`./html/question${questionNumber}.html`)
+        fetch(`/js/services/calc/html/question${questionNumber}.html`)
             .then(response => response.text())
             .then(data => {
                 shellElement.innerHTML = data;
             })
             .catch(error => console.error('Error fetching question:', error));
+    }
+
+    function fetchResults() {
+        fetch(`/js/services/calc/html/results.html`)
+            .then(response => response.text())
+            .then(data => {
+                shellElement.innerHTML = data;
+            })
+            .catch(error => console.error('Error fetching results:', error));
     }
 });
