@@ -24,12 +24,12 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (event.target && event.target.id === 'results') {
             fetchResults();
         } else if (event.target && event.target.id === 'under-age') {
-            window.location.href = '/';
+            window.location.href = '../../../html/home/index.html';
         }
     });
 
     function fetchQuestion(questionNumber) {
-        fetch(`/js/services/calc/html/question${questionNumber}.html`)
+        fetch(`../../../js/services/calc/html/question${questionNumber}.html`)
             .then(response => response.text())
             .then(data => {
                 shellElement.innerHTML = data;
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function fetchResults() {
-        fetch(`/js/services/calc/html/results.html`)
+        fetch(`../../../js/services/calc/html/results.html`)
             .then(response => response.text())
             .then(data => {
                 shellElement.innerHTML = data;
