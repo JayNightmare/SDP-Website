@@ -45,10 +45,10 @@ header a:hover {
     width: 113px;
     
     .header-logo {
-        background-image: url('/images/home/header/1.png');
-        /* background-image: url('/images/home/header/2.png'); */
-        /* background-image: url('/images/home/header/3.png'); */
-        /* background-image: url('/images/home/header/4.png'); */
+        background-image: url('../../images/home/header/1.png');
+        /* background-image: url('../../images/home/header/2.png'); */
+        /* background-image: url('../../images/home/header/3.png'); */
+        /* background-image: url('../../images/home/header/4.png'); */
         background-position: center;
         background-repeat: no-repeat;
         background-size: cover;
