@@ -5,21 +5,21 @@
     <a class="getback" id="prev"><strong><</strong> Go Back</a>
     <br>
     <br>
-    <h1><strong>What is your gender?</strong></h1>
+    <h1><strong>What is your serum creatinine level?</strong></h1>
     <br>
-    <p>Gender is important because kidney function equations differ slightly between males and females</p>
+    <p>You can find this information on your most recent blood test results. If unsure, contact your healthcare provider</p>
     <br>
     <br>
     <div>
-        <input class="q_input" type="number" id="answer" name="creatinine" placeholder="Enter Serum Creatinine">
+        <input title="enter Serum Creatinine" class="q_input q_sc1" type="number" id="answer" name="creatinine" placeholder="Enter Serum Creatinine">
         <!-- 2 radion buttons, mg/dL and µmol/L -->
-         <select title="units" class="q_input" id="unit" name="unit">
+        <select title="units" class="q_input" id="unit" name="unit">
             <option value="mg/dL">mg/dL</option>
             <option value="µmol/L">µmol/L</option>
-         </select>
+        </select>
     </div>
-    <input class="q_input" type="number" id="answer" name="cystatin-c" placeholder="Enter Serum Cystatin C">
+    <input title="Enter Serum Creatinine" class="q_input q_scc2" type="number" id="answer" name="cystatin-c" placeholder="Enter Serum Cystatin C">
     <div>
-        <button class="button_gl" id="results" data-target="results">Enter</button>
+        <button class="button_gl" id="next" data-target="end">Enter</button>
     </div>
 </div>

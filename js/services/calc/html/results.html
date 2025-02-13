@@ -5,12 +5,57 @@
     <a class="getback" id="prev-1"><strong><</strong> Go Back</a>
     <br>
     <br>
-    <h1>Results</h1>
-    <div id="results-container">
-        <br>
-        <!-- User's answers will be inserted here -->
+    <!-- ! Enter Content Here ! -->
+    <h1><strong>Results</strong></h1>
+    <br>
+    <p>Your estimated eGFR is <span id="egfr-value">XX</span> mL/min/1.73m²</p>
+
+    <!-- eGFR Bar -->
+    <div id="egfr-bar">
+        <div id="egfr-indicator"></div>
     </div>
+
+    <!-- Legend -->
+    <ul id="egfr-legend">
+        <li><span class="color-box normal"></span> Normal or High Function</li>
+        <li><span class="color-box mild"></span> Mildly Decreased Function</li>
+        <li><span class="color-box moderate"></span> Mild to Moderate Decrease</li>
+        <li><span class="color-box severe"></span> Moderate to Severe Decrease</li>
+        <li><span class="color-box very-severe"></span> Severe Decrease</li>
+        <li><span class="color-box failure"></span> Kidney Failure</li>
+    </ul>
+
     <br>
     <br>
+    
+    <h4><strong>What your result means</strong></h4>
+    <br>
+    <ul id="result-meaning">
+        <li><strong>90+ mL/min/1.73m²</strong> (Normal or High Function)
+            <p>What it means: Your kidneys are functioning normally. No signs of chronic kidney disease (CKD).</p>
+            <p>Next steps: Continue maintaining a healthy lifestyle. Regular check-ups are recommended if you’re at risk of kidney disease.</p>
+        </li>
+        <li><strong>60-89 mL/min/1.73m²</strong> (Mildly Decreased Function)
+            <p>What it means: Mildly reduced kidney function. This could be normal for older adults but may indicate early CKD.</p>
+            <p>Next steps: Speak with your doctor if you have other risk factors for kidney disease (e.g., diabetes, high blood pressure).</p>
+        </li>
+        <li><strong>45-59 mL/min/1.73m²</strong> (Mild to Moderate Decrease)
+            <p>What it means: There is mild to moderate kidney damage. This is classified as stage 3A CKD.</p>
+            <p>Next steps: Consult your healthcare provider for further tests, monitoring, and lifestyle changes to prevent further decline.</p>
+        </li>
+        <li><strong>30-44 mL/min/1.73m²</strong> (Moderate to Severe Decrease)
+            <p>What it means: Moderate to severe reduction in kidney function. This is classified as stage 3B CKD.</p>
+            <p>Next steps: A healthcare professional may recommend additional tests, medications, or specialist care to manage the condition.</p>
+        </li>
+        <li><strong>15-29 mL/min/1.73m²</strong> (Severe Decrease)
+            <p>What it means: Severe loss of kidney function. This is classified as stage 4 CKD, indicating significant kidney damage.</p>
+            <p>Next steps: Close monitoring and preparation for possible dialysis or transplant may be necessary. Contact a nephrologist immediately.</p>
+        </li>
+        <li><strong><15 mL/min/1.73m²</strong> (Kidney Failure)
+            <p>What it means: End-stage kidney disease (ESKD). Your kidneys are no longer able to function properly.</p>
+            <p>Next steps: Immediate medical attention is required. Treatment options may include dialysis or kidney transplantation.</p>
+        </li>
+    </ul>
+    <!-- // -->
     <button class="button_gl" id="start-over" data-target="start-over">Start Again?</button>
 </div>
