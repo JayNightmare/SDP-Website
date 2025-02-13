@@ -9,7 +9,8 @@ export function calculateEGFR(answers) {
         creat = creat / 88.4;
     }
 
-    let egfr = 186 * Math.pow(creat, -1.154) * Math.pow(age, -0.203);
+    // let egfr = 186 * Math.pow(creat, -1.154) * Math.pow(age, -0.203);
+    let egfr = 186 * (creat**-1.154) * (age**-0.203);
 
     if (gender === "female") {
         egfr *= 0.742;

@@ -146,6 +146,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateEGFRMarker(egfrValue) {
         const marker = document.getElementById("egfr-marker"); // * ❌ Marker
+        const textValue = document.getElementById("egfr-value"); // * Show value
+
+        textValue.innerText = egfrValue;
     
         let percentage = 0;
     
