@@ -1,11 +1,10 @@
-import { calculateEGFR } from "../calc/eGFRCalc.js";
+import { fetchPreResults, fetchResults, fetchQuestion } from "./fetchDetails.js";
+import { saveAnswer } from "./saveAnswers.js";
 
-const answers = {};
 let currentQuestion = 1;
 
 document.addEventListener('DOMContentLoaded', function () {
     const startButton = document.getElementById('start-now');
-    const shellElement = document.querySelector('.shell');
 
     startButton.addEventListener('click', function () {
         fetchQuestion(currentQuestion);
@@ -20,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (event.target && event.target.id === 'next') {
             const ageInput = document.querySelector('.q_age');
             const sc1Input = document.querySelector('.q_sc1');
-            const scc2Input = document.querySelector('.q_scc2');
             let allValid = true;
 
             // ! Check if age is entered and valid
@@ -37,12 +35,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert('Please enter Serum Creatinine value.');
                 return allValid = false;
             }
-            if (scc2Input && scc2Input.value.trim() === '') {
-                alert('Please enter Serum Cystatin C value.');
-                return allValid = false;
-            }
 
-            saveAnswer();
+            saveAnswer(currentQuestion);
             currentQuestion++;
             console.log(currentQuestion);
             fetchQuestion(currentQuestion);
@@ -56,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         else if (event.target && event.target.id === 'prev-1') { fetchQuestion(currentQuestion); }
         else if (event.target && event.target.id === 'pre-results') {
-            saveAnswer();
+            saveAnswer(currentQuestion);
             console.log(currentQuestion);
             fetchPreResults();
         }
@@ -64,101 +58,4 @@ document.addEventListener('DOMContentLoaded', function () {
         else if (event.target && event.target.id === 'start-over') { window.location.reload(); }
         else if (event.target && event.target.id === 'under-age') { window.location.href = "../../../html/home/index.html" }
     });
-
-    function fetchQuestion(questionNumber) {
-        fetch(`../../../js/services/calc/html/question${questionNumber}.html`)
-            .then(response => response.text())
-            .then(data => {
-                shellElement.innerHTML = data;
-            })
-            .catch(error => console.error('Error fetching question:', error));
-    }
-
-    function saveAnswer() {
-        const inputElement = document.getElementById('answer');
-        const selectedButton = document.querySelector('.q3_answer.selected');
-        const sc1Input = document.querySelector('.q_sc1');
-        const unitSelect = document.querySelector('#unit');
-        const scc2Input = document.querySelector('.q_scc2');
-    
-        if (selectedButton) {
-            answers[currentQuestion] = selectedButton.getAttribute('data-answer');
-            console.log(`Answer saved for question ${currentQuestion}: ${answers[currentQuestion]}`);
-        } else if (inputElement) {
-            answers[currentQuestion] = inputElement.value;
-            console.log(`Answer saved for question ${currentQuestion}: ${answers[currentQuestion]}`);
-        }
-        if (sc1Input) {
-            console.log(`SC1 value saved: ${sc1Input.value}`);
-            answers[`${currentQuestion}-SerumCreatinine`] = sc1Input.value;
-        }
-        if (unitSelect) {
-            console.log(`Unit saved: ${unitSelect.value}`);
-            answers[`${currentQuestion}-Unit`] = unitSelect.options[unitSelect.selectedIndex].value;
-        }
-        if (scc2Input) {
-            console.log(`SCC2 value saved: ${scc2Input.value}`);
-            answers[`${currentQuestion}-SerumCystatinC`] = scc2Input.value;
-        }
-    }
-
-    function fetchPreResults() {
-        console.log("User Answers:", answers);
-        fetch(`../../../js/services/calc/html/question6.html`)
-            .then(response => response.text())
-            .then(data => {
-                shellElement.innerHTML = data;
-                displayResults();
-            })
-            .catch(error => console.error('Error fetching results:', error));
-    }
-
-    function fetchResults() {
-        console.log("User Answers:", answers);
-        fetch(`../../../js/services/calc/html/results.html`)
-            .then(response => response.text())
-            .then(data => {
-                shellElement.innerHTML = data;
-                let resultsValue = calculateEGFR(answers)
-                updateEGFRMarker(resultsValue);
-            })
-            .catch(error => console.error('Error fetching results:', error));
-    }
-
-    function displayResults() {
-        const resultsContainer = document.getElementById('results-container');
-        if (!resultsContainer) {
-            console.error('Results container not found');
-            return;
-        }
-    
-        const resultList = document.createElement('ul');
-    
-        Object.keys(answers).forEach(questionNumber => {
-            const listItem = document.createElement('li');
-            listItem.classList.add('r_34');
-            listItem.innerHTML = `<strong>Question ${questionNumber}:</strong> ${answers[questionNumber]}`;
-            resultList.appendChild(listItem);
-        });
-    
-        resultsContainer.appendChild(resultList);
-    }
-
-    function updateEGFRMarker(egfrValue) {
-        const marker = document.getElementById("egfr-marker"); // * ❌ Marker
-        const textValue = document.getElementById("egfr-value"); // * Show value
-
-        textValue.innerText = egfrValue;
-    
-        let percentage = 0;
-    
-        if (egfrValue >= 90) percentage = 12.5; // * Middle of 0-25%
-        else if (egfrValue >= 60) percentage = 35; // * Middle of 25-45%
-        else if (egfrValue >= 45) percentage = 52.5; // * Middle of 45-60%
-        else if (egfrValue >= 30) percentage = 67.5; // * Middle of 60-75%
-        else if (egfrValue >= 15) percentage = 82.5; // * Middle of 75-90%
-        else percentage = 95;
-    
-        marker.style.left = `${percentage}%`; // Move ❌ marker
-    }
 });
