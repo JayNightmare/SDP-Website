@@ -12,7 +12,7 @@ export function fetchQuestion(questionNumber) {
         .then(data => {
             shellElement.innerHTML = data;
 
-            setTimeout(() => restoreAnswers(questionNumber, answers), 50);
+            setTimeout(() => restoreAnswers(answers), 50);
         })
         .catch(error => console.error('Error fetching question:', error));
 }
