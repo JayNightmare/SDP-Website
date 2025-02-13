@@ -1,0 +1,94 @@
+.center-container {
+    h1 {
+        font-weight: bold;
+        padding-bottom: 10px;
+    }
+
+    p, li {
+        font-weight: 300;
+    }
+}
+
+.button_gl {
+    background-color: #3E7B27;
+    color: white;
+    padding: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    border-bottom: 3px solid #000;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+}
+
+.extra-to a {
+    text-decoration: underline;
+    cursor: pointer;
+    color: black;
+}
+
+ul {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.getback {
+    text-decoration: underline;
+    color: black;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: none;
+        color: black;
+    }
+}
+
+.ac_input {
+    display: flex;
+    flex-direction: column;
+
+    input {
+        border-radius: 5px;
+        border: 1px solid #000;
+        padding: 10px;
+        font-size: 18px;
+        font-weight: 300;
+        max-width: 460px;
+        height: 40px;
+    }
+}
+
+.ac_buttons {
+    display: flex;
+    gap: 20px;
+
+    @media (max-width: 425px) {
+        flex-direction: column;
+    }
+}
+
+.re_check {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-start;
+
+    label, input {
+        margin: 0 !important;
+    }
+
+    input {
+        border-radius: 5px;
+        border: 1px solid #000;
+        padding: 10px;
+        width: 24px;
+        height: 24px;
+    }
+}
+
+.dim-text {
+    color: #666666;
+    font-size: 8px;
+}

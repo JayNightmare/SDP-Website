@@ -5,7 +5,8 @@
     <link rel="stylesheet" href="../../styles/global/navbar.css">
     <link rel="stylesheet" href="../../styles/global/footer.css">
     <link rel="stylesheet" href="../../styles/global/body.css">
-    <link rel="stylesheet" href="../../styles/home/style.css">
+    <!-- <link rel="stylesheet" href="../../styles/home/style.css"> -->
+    <link rel="stylesheet" href="../../styles/account/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -58,7 +59,36 @@
     <!-- // -->
     <!-- ? Body ? -->
     <main class="shell">
-        
+        <br>
+        <br>
+        <br>
+        <div class="container" id="shell">
+            <a class="getback" id="prev-1"><strong><</strong> Go Back</a>
+            <br>
+            <br>
+            <div>
+                <h1><strong>Access your CKD Account</strong></h1>
+                <br>
+                <br>
+                <h4><strong>Login to:</strong></h4>
+                <br>
+                <ul>
+                    <li>View Personal details such as (saved Age, Gender, Ethnicity, etc.)</li>
+                    <li>History of previous calculations</li>
+                    <li>Graphs showing trends over time</li>
+                    <li>Saved results for batch uploads</li>
+                    <li>Export options for individual or group results</li>
+                    <li>Edit saved details for patients (e.g., Age, Gender, Ethnicity)</li>
+                    <li>Change password or logout</li>
+                </ul>
+                <br>
+                <br>
+                <div class="ac_buttons">
+                    <button title="Practitioner" class="button_gl" id="practitioner">Continue as Practitioner</button>
+                    <button title="Patient" class="button_gl" id="patient">Continue as Patient</button>
+                </div>
+            </div>
+        </div>
     </main>
     <!-- // -->
 
@@ -118,5 +148,10 @@
             </div>
         </div>
     </footer>
+    <!-- // -->
+    
+    <!-- // -->
+    <!-- ? Scripts ? -->
+    <script src="../../js/account/toLoginPage.js"></script>
     <!-- // -->
 </body>
