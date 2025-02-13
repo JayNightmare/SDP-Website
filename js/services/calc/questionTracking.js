@@ -1,3 +1,5 @@
+import { calculateEGFR } from "../calc/eGFRCalc.js";
+
 const answers = {};
 let currentQuestion = 1;
 
@@ -117,7 +119,8 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.text())
             .then(data => {
                 shellElement.innerHTML = data;
-                // displayResults();
+                let resultsValue = calculateEGFR(answers)
+                updateEGFRMarker(resultsValue);
             })
             .catch(error => console.error('Error fetching results:', error));
     }
@@ -139,5 +142,20 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     
         resultsContainer.appendChild(resultList);
+    }
+
+    function updateEGFRMarker(egfrValue) {
+        const marker = document.getElementById("egfr-marker"); // * ❌ Marker
+    
+        let percentage = 0;
+    
+        if (egfrValue >= 90) percentage = 12.5; // * Middle of 0-25%
+        else if (egfrValue >= 60) percentage = 35; // * Middle of 25-45%
+        else if (egfrValue >= 45) percentage = 52.5; // * Middle of 45-60%
+        else if (egfrValue >= 30) percentage = 67.5; // * Middle of 60-75%
+        else if (egfrValue >= 15) percentage = 82.5; // * Middle of 75-90%
+        else percentage = 95;
+    
+        marker.style.left = `${percentage}%`; // Move ❌ marker
     }
 });

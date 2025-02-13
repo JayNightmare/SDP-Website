@@ -14,8 +14,9 @@
     "SDP",
     "University"
   ],
-  "author": "Jay",
+  "author": "Jay & Bartek",
   "license": "MIT",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/JayNightmare/SDP-Website/issues"
   },

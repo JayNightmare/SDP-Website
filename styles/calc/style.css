@@ -54,6 +54,59 @@ ul {
     font-weight: bold;
 }
 
-.egfr-legend {
+#egfr-bar {
+    width: 630px;
+    height: 29px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background: linear-gradient(to right,
+        #5cb85c 0%,    /* Normal (Green) */
+        #5cb85c 25%,   /* Normal (Green) */
+        #b2dba1 25%,   /* Mild (Light Green) */
+        #b2dba1 45%,   /* Mild (Light Green) */
+        #f0ad4e 45%,   /* Moderate (Yellow) */
+        #f0ad4e 60%,   /* Moderate (Yellow) */
+        #f4a742 60%,   /* Moderate-Severe (Orange) */
+        #f4a742 75%,   /* Moderate-Severe (Orange) */
+        #d9534f 75%,   /* Severe (Red) */
+        #d9534f 90%,   /* Severe (Red) */
+        #800000 90%,   /* Kidney Failure (Dark Red) */
+        #800000 100%   /* Kidney Failure (Dark Red) */
+    );
+
+    display: flex;
+    align-items: center;
+}
+
+#egfr-marker {
+    position: relative;
+    font-size: 18px;
+}
+
+#egfr-legend {
     list-style: none;
+    padding: 0;
+
+    li {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        font-weight: 300;
+    }
+}
+
+.color-box {
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    background-color: #000000;
+    border: 1px solid #000;
+
+    &:is(.normal) { background-color: #53FF53; }
+    &:is(.mild) { background-color: #90EE90; }
+    &:is(.moderate) { background-color: #FFF953; }
+    &:is(.severe) { background-color: #FF9B53; }
+    &:is(.very-severe) { background-color: #FF5353; }
+    &:is(.failure) { background-color: #AA0000; }
 }
