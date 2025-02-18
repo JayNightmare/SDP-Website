@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const shellElement = document.getElementById('shell');
     const practitionerCode = document.getElementById('practitioner-code');
-
+    
     document.getElementById('practitioner').addEventListener('click', function() {
         fetch(`../../js/account/html/practitioner.html`)
                 .then(response => response.text())
@@ -31,5 +31,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(data => { shellElement.innerHTML = data; })
                 .catch(error => console.error('Error fetching question:', error));
         }
+        if (event.target && event.target.id === 'practitioner-login') {
+            const practitionerID = document.getElementById('id-practitioner');
+            if (practitionerID && practitionerID.value === "12345") {
+                location.href = "../../../html/dashboard/index.html";
+            } else {
+                alert("Invalid practitioner ID");
+            }
+        }
+
     });
 });
