@@ -17,19 +17,24 @@
     <!-- // -->
     <!-- ? Body ? -->
     <main class="shell">
+        <!-- ! Menu Open ! -->
+        <div class="mo_4">
+            <i class="fa fa-bars" onclick="openNav()"></i>
+        </div>
         <!-- // -->
         <!-- ! Side Bar ! -->
-        <div class="w3-sidebar w3-bar-block" style="width:25%">
-            <button class="w3-button w3-block w3-left-align" onclick="openNav()"></button>
+        <div class="w3-sidebar w3-bar-block sb_012" id="sidebar" style="width:25%">
+            <button class="w3-button w3-block w3-left-align" onclick="closeNav()">Close</button>
             <a href="#" class="w3-bar-item w3-button">Link 1</a>
             <a href="#" class="w3-bar-item w3-button">Link 2</a>
             <a href="#" class="w3-bar-item w3-button">Link 3</a>
         </div>
         <!-- // -->
         <!-- ! Main Content ! -->
-        <div class="dashboard">
+        <div class="dashboard container">
             <div class="top-content">
                 <h1><strong>Dashboard Overview</strong></h1>
+                <br>
                 <h5>Welcome back, <span id="logged-in-numb-nuts">???</span></h5>
             </div>
         </div>
@@ -96,6 +101,6 @@
     <!-- // -->
 
     <!-- TODO: Implement Guard Script to check if user is logged in before displaying the page -->
-    <script src="../../js/dashboard/guardScript.js" type="text/javascript"></script>
+    <!-- <script src="../../js/dashboard/guardScript.js" type="text/javascript"></script> -->
     <script src="../../js/dashboard/navScript.js" type="text/javascript"></script>
 </body>

@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (event.target && event.target.id === 'practitioner-login') {
             const practitionerID = document.getElementById('id-practitioner');
             if (practitionerID && practitionerID.value === "12345") {
-                location.href = "../../../html/dashboard/index.html";
+                location.href = "../../html/dashboard/home-dashboard.html";
             } else {
                 alert("Invalid practitioner ID");
             }

@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/JayNightmare/SDP-Website/issues"
   },
-  "homepage": "https://github.com/JayNightmare/SDP-Website#readme"
+  "homepage": "https://github.com/JayNightmare/SDP-Website#readme",
+  "dependencies": {
+    "sdp-website": "file:"
+  }
 }
