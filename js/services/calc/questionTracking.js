@@ -17,12 +17,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (event.target && event.target.id === 'next') {
+            // If user clicked next button but data answer is No, bring user to question2-5
+            if (currentQuestion === 1) {
+                if (document.querySelector('.q3_answer.selected').id === 'no') {
+                    currentQuestion = 7;
+                    fetchQuestion(currentQuestion);
+                    return;
+                }
+            }
+
             const ageInput = document.querySelector('.q_age');
             const sc1Input = document.querySelector('.q_sc1');
             let allValid = true;
 
             // ! Check if age is entered and valid
-            if (ageInput) {
+            if (ageInput && document.querySelector('.q3_answer.selected').id === 'yes') {
                 if (ageInput.value.trim() === '') {
                     return alert('Please fill in the required field before proceeding.');
                 } else if (ageInput.value < 18) {
@@ -56,6 +65,5 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         else if (event.target && event.target.id === 'results') { fetchResults(); }
         else if (event.target && event.target.id === 'start-over') { window.location.reload(); }
-        else if (event.target && event.target.id === 'under-age') { window.location.href = "../../../html/home/index.html" }
     });
 });
