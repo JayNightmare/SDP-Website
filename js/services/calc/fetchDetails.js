@@ -1,13 +1,15 @@
 import { updateEGFRMarker } from "./marker.js";
 import { restoreAnswers } from "./restoreAnswers.js";
 import { exportAnswer } from "./saveAnswers.js";
-import { calculateEGFR } from "./eGFRCalc.js";
+import { calculateEGFR, calculatePredEGFR } from "./eGFRCalc.js";
 
 const shellElement = document.querySelector('.shell');
 let answers = exportAnswer();
 
-export function fetchQuestion(questionNumber) {
-    fetch(`../../../js/services/calc/html/question${questionNumber}.html`)
+export function fetchQuestion(target) {
+    // If target is a number, convert it to question format
+    const questionFile = typeof target === 'number' ? `question${target}` : target;
+    fetch(`../../../js/services/calc/html/${questionFile}.html`)
         .then(response => response.text())
         .then(data => {
             shellElement.innerHTML = data;
@@ -34,7 +36,12 @@ export function fetchResults() {
         .then(response => response.text())
         .then(data => {
             shellElement.innerHTML = data;
-            let resultsValue = calculateEGFR(answers)
+            let resultsValue;
+            if (answers["1"] === "no") {
+                resultsValue = calculatePredEGFR(answers);
+            } else {
+                resultsValue = calculateEGFR(answers);
+            }
             updateEGFRMarker(resultsValue);
         })
         .catch(error => console.error('Error fetching results:', error));

@@ -1,22 +1,30 @@
 export function restoreAnswers(answers) {
+    // Restore input field answers
     const ageInputField = document.querySelector('.q_age');
     if (ageInputField) {
         ageInputField.value = answers['2'] ? answers['2'] : '';
     }
 
-    const genderButton = document.querySelector('.q3_answer');
-    const maleGenderButton = document.querySelector('.male');
-    const femaleGenderButton = document.querySelector('.female');
-    if (genderButton) {
-        if (answers['3'] == 'Male') {
-            femaleGenderButton.classList.remove('selected');
-            maleGenderButton.classList.add('selected');
-        } else if (answers['3'] == 'Female') {
-            maleGenderButton.classList.remove('selected');
-            femaleGenderButton.classList.add('selected');
+    // Restore button selections
+    for (let key in answers) {
+        // Check if this is a button selection state
+        if (key.endsWith('-selected')) {
+            const questionNumber = key.split('-')[0];
+            const className = answers[key];
+            // Find all buttons for this question
+            const buttons = document.querySelectorAll('.button_gl');
+            buttons.forEach(button => {
+                // Remove selected class from all buttons
+                button.classList.remove('selected');
+                // If this button matches the saved state, select it
+                if (button.className === className) {
+                    button.classList.add('selected');
+                }
+            });
         }
     }
 
+    // Restore special input fields
     const scInputField = document.querySelector('.q_sc1');
     const scUnitField = document.querySelector('.sc_unit');
     if (scInputField) {

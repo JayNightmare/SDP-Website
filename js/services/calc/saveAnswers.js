@@ -2,14 +2,24 @@ const answers = {};
 
 export function saveAnswer(currentQuestion) {
     const inputElement = document.getElementById('answer');
-    const selectedButton = document.querySelector('.q3_answer.selected');
+    const selectedButton = document.querySelector('.button_gl.selected');
     const sc1Input = document.querySelector('.q_sc1');
     const unitSelect = document.querySelector('#unit');
 
+    // remove 'question' from the currentquestion string and turn it into a int
+    currentQuestion = parseInt(currentQuestion.replace('question', ''));
+    console.log(`Current question: ${currentQuestion}`);
+
+    // Save button answer if present
     if (selectedButton) {
         answers[currentQuestion] = selectedButton.getAttribute('data-answer');
+        // Save button selection state
+        answers[`${currentQuestion}-selected`] = selectedButton.className;
         console.log(`Answer saved for question ${currentQuestion}: ${answers[currentQuestion]}`);
-    } else if (inputElement) {
+        console.log(`Button state saved for question ${currentQuestion}: ${answers[`${currentQuestion}-selected`]}`);
+    }
+    // Save input answer if present
+    else if (inputElement) {
         answers[currentQuestion] = inputElement.value;
         console.log(`Answer saved for question ${currentQuestion}: ${answers[currentQuestion]}`);
     }

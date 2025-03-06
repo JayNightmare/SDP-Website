@@ -2,19 +2,30 @@
 <br>
 <br>
 <div class="container">
-    <a class="getback" id="prev"><strong><</strong> Go Back</a>
+    <a class="getback" id="prev" data-target="question8"><strong><</strong> Go Back</a>
     <br>
     <br>
     <h1><strong>How tall are you?</strong></h1>
     <br>
-    <p></p>
+    <p>Give your height in either cm or feet and inches. For example, 5'8" or 172cm.</p>
     <br>
     <br>
-    <!-- Dropdown and input fields for height -->
-     <div class="dropdown">
-        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            Height
-            <span class="caret"></span>
-        </button>
-     </div>
+    <div>
+        <div class="height_input" id="cm">
+            <input class="q_input" type="number" id="height-cm" placeholder="Enter your height in cm">
+        </div>
+        <div class="height_input" id="feet" style="display: none;">
+            <input class="q_input" type="number" id="height-feet" placeholder="Feet">
+            <input class="q_input" type="number" id="height-inches" placeholder="Inches">
+        </div>
+        <div class="height_unit">
+            <input type="radio" id="cm-radio" name="unit" value="cm" checked>
+            <label for="cm-radio">cm</label>
+            <input type="radio" id="feet-radio" name="unit" value="feet">
+            <label for="feet-radio">feet & inches</label>
+        </div>
+    </div>
+    <div>
+        <button class="button_gl pre-results" id="pre-results" data-target="question3">Enter</button>
+    </div>
 </div>
