@@ -1,6 +1,6 @@
 import { updateEGFRMarker } from "./marker.js";
 import { restoreAnswers } from "./restoreAnswers.js";
-import { exportAnswer } from "./saveAnswers.js";
+import { exportAnswer } from "./";
 import { calculateEGFR, calculatePredEGFR } from "./eGFRCalc.js";
 
 const shellElement = document.querySelector('.shell');
