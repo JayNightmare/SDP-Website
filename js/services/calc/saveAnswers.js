@@ -1,14 +1,10 @@
 const answers = {};
 
-export function saveAnswer(currentQuestion) {
+export function saveAnswer(currentQuestion, checkVal) {
     const inputElement = document.getElementById('answer');
     const selectedButton = document.querySelector('.button_gl.selected');
     const sc1Input = document.querySelector('.q_sc1');
     const unitSelect = document.querySelector('#unit');
-
-    // remove 'question' from the currentquestion string and turn it into a int
-    currentQuestion = parseInt(currentQuestion.replace('question', ''));
-    console.log(`Current question: ${currentQuestion}`);
 
     // Save button answer if present
     if (selectedButton) {
@@ -28,8 +24,32 @@ export function saveAnswer(currentQuestion) {
         console.log(`SC1 value saved: ${sc1Input.value}`);
     }
     if (unitSelect) {
-        answers[`${currentQuestion}-Unit`] = unitSelect.options[unitSelect.selectedIndex].value;
+        answers[`${currentQuestion}-SC-Unit`] = unitSelect.options[unitSelect.selectedIndex].value;
         console.log(`Unit saved: ${unitSelect.value}`);
+    }
+
+    // * If checkVal is true, save child answer
+    if (checkVal) {
+        const standardHeight = document.querySelector('.q_height_s');
+        const feetHeight = document.querySelector('.q_height_f');
+        const inchesHeight = document.querySelector('.q_height_i');
+        const heightUnit = document.querySelector('.height_unit');
+
+        if (standardHeight) {
+            answers[`${currentQuestion}-Height-Standard`] = standardHeight.value;
+            console.log(`Standard Height saved: ${standardHeight.value}`);
+        }
+        if (feetHeight && inchesHeight) {
+            answers[`${currentQuestion}-Height-Feet`] = feetHeight.value;
+            console.log(`Feet Height saved: ${feetHeight.value}`);
+
+            answers[`${currentQuestion}-Height-Inches`] = inchesHeight.value;
+            console.log(`Inches Height saved: ${inchesHeight.value}`);
+        }
+        if (heightUnit) {
+            answers[`${currentQuestion}-H-Unit`] = heightUnit.options[heightUnit.selectedIndex].value;
+            console.log(`Height Unit saved: ${heightUnit.value}`);
+        }
     }
 }
 

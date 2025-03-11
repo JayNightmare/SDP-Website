@@ -38,4 +38,21 @@ export function restoreAnswers(answers) {
     if (raceUnitField) {
         raceUnitField.value = answers['5-Unit'] ? answers['5-Unit'] : 'White';
     }
+
+    const standardHeightField = document.querySelector('.q_height_s');
+    const feetHeightField = document.querySelector('.q_height_f');
+    const inchesHeightField = document.querySelector('.q_height_i');
+
+    const heightUnitField = document.querySelector('.height_unit');
+
+    if (standardHeightField) {
+        standardHeightField.value = answers['6-Height-Standard'] ? answers['6-Height-Standard'] : '';
+    }
+    if (feetHeightField && inchesHeightField) {
+        feetHeightField.value = answers['6-Height-Feet'] ? answers['6-Height-Feet'] : '';
+        inchesHeightField.value = answers['6-Height-Inches'] ? answers['6-Height-Inches'] : '';
+    }
+    if (heightUnitField) {
+        heightUnitField.value = answers['6-Unit'] ? answers['6-Unit'] : 'cm';
+    }
 }

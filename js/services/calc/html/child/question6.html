@@ -12,18 +12,16 @@
     <br>
     <div>
         <div class="height_input" id="cm">
-            <input class="q_input" type="number" id="height-cm" placeholder="Enter your height in cm">
+            <input class="q_input q_height_s" type="number" id="height-cm" placeholder="Enter your height in cm">
         </div>
         <div class="height_input" id="feet" style="display: none;">
-            <input class="q_input" type="number" id="height-feet" placeholder="Feet">
-            <input class="q_input" type="number" id="height-inches" placeholder="Inches">
+            <input class="q_input q_height_f" type="number" id="height-feet" placeholder="Feet">
+            <input class="q_input q_height_i" type="number" id="height-inches" placeholder="Inches">
         </div>
-        <div class="height_unit">
-            <input type="radio" id="cm-radio" name="unit" value="cm" checked>
-            <label for="cm-radio">cm</label>
-            <input type="radio" id="feet-radio" name="unit" value="feet">
-            <label for="feet-radio">feet & inches</label>
-        </div>
+        <select class="height_unit q_input r_5">
+            <option type="radio" id="cm-radio" name="unit" value="cm" for="cm-radio" checked>cm</option>
+            <option type="radio" id="feet-radio" name="unit" value="feet" for="feet-radio">feet & inches</option>
+        </select>
     </div>
     <div>
         <button class="button_gl pre-results" id="pre-results" data-target="question3">Enter</button>
