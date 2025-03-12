@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.addEventListener('click', function (event) {
-        let valid = true;
         const age = document.querySelector('.q_age');
+        const sc1Input = document.querySelector('.q_sc1');
 
         if (event.target.id === 'next') {
             // //
@@ -40,6 +40,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else if (age.value < 18) {
                     return alert('You must be at least 18 years old to participate');
                 }
+            }
+            // //
+
+            // //
+            // ! Check if Serum Creatinine is entered and valid
+            if (sc1Input && sc1Input.value.trim() === '') {
+                return alert('Please enter Serum Creatinine value.');
             }
             // //
 

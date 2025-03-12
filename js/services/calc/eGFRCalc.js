@@ -27,26 +27,20 @@ export function calculateEGFR(answers) {
 }
 
 export function calculatePredEGFR(answers) {
-    let creat = parseFloat(answers["4-SerumCreatinine"]);
-    let unit = answers["4-Unit"];
     let age = parseInt(answers["2"]);
     let gender = answers["3"].toLowerCase();
-    let height = parseFloat(answers["6-Height"]); // Assume you add height to the form
-    let heightUnit = answers["6-Unit"].toLowerCase(); // cm or inches
+    let creat = parseFloat(answers["4-SerumCreatinine"]);
+    let unit = answers["4-Unit"];
+    let height = parseFloat(answers["6-Height"]); // * Assume you add height to the form
 
-    // Convert creatinine to mg/dL if needed
+    // * Convert creatinine to mg/dL if needed
     if (unit === "µmol/L") {
         creat = creat / 88.4;
     }
 
-    // Convert height to cm if needed
-    if (heightUnit === "inches") {
-        height *= 2.54;
-    }
-
-    let k = 0.55; // default for children 2-18 years
-    if (age < 1) {
-        k = answers["7-Premature"] === "yes" ? 0.33 : 0.45;
+    let k = 0.55; // * default for children 2-18 years
+    if (age < 13) {
+        k = 0.45;
     } else if (age >= 13 && gender === "male") {
         k = 0.7;
     }

@@ -29,26 +29,13 @@ export function saveAnswer(currentQuestion, checkVal) {
     }
 
     // * If checkVal is true, save child answer
+    console.log("Save Answer check val: ", checkVal);
     if (checkVal) {
         const standardHeight = document.querySelector('.q_height_s');
-        const feetHeight = document.querySelector('.q_height_f');
-        const inchesHeight = document.querySelector('.q_height_i');
-        const heightUnit = document.querySelector('.height_unit');
 
         if (standardHeight) {
             answers[`${currentQuestion}-Height-Standard`] = standardHeight.value;
             console.log(`Standard Height saved: ${standardHeight.value}`);
-        }
-        if (feetHeight && inchesHeight) {
-            answers[`${currentQuestion}-Height-Feet`] = feetHeight.value;
-            console.log(`Feet Height saved: ${feetHeight.value}`);
-
-            answers[`${currentQuestion}-Height-Inches`] = inchesHeight.value;
-            console.log(`Inches Height saved: ${inchesHeight.value}`);
-        }
-        if (heightUnit) {
-            answers[`${currentQuestion}-H-Unit`] = heightUnit.options[heightUnit.selectedIndex].value;
-            console.log(`Height Unit saved: ${heightUnit.value}`);
         }
     }
 }
