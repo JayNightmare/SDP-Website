@@ -13,14 +13,25 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('click', function (event) {
         const age = document.querySelector('.q_age');
         const sc1Input = document.querySelector('.q_sc1');
+        const height = document.querySelector('.q_height_s');
 
         if (event.target.id === 'next') {
             // //
             // ! If data-target is equal to child, set checkVal to true
             if (event.target.getAttribute('data-target') === 'child') {
                 checkVal = true;
+                currentQuestion = 2;
             } else if (event.target.getAttribute('data-target') === 'adult') {
                 checkVal = false;
+                currentQuestion = 2;
+            }
+            // //
+
+            // //
+            // ! If gender is selected, add selected class to the button
+            if (event.target.matches('.gender')) {
+                document.querySelectorAll('.gender').forEach(btn => btn.classList.remove('selected'));
+                event.target.classList.add('selected');
             }
             // //
 
@@ -51,10 +62,12 @@ document.addEventListener('DOMContentLoaded', function () {
             // //
 
             // //
-            currentQuestion++;
-            console.log(currentQuestion);
+            console.log("Current Question: ", currentQuestion);
             saveAnswer(currentQuestion, checkVal);
-            fetchQuestion(currentQuestion, checkVal);
+            fetchQuestion(currentQuestion++, checkVal);
+            // currentQuestion++;
+            console.log("Next Question: ", currentQuestion);
+            // //
         }
 
         if (event.target.id === 'prev') {
@@ -75,6 +88,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (event.target && event.target.id === 'pre-results') {
+            // //
+            // ! Check if height is entered and valid
+            if (height && height.value.trim() === '') {
+                return alert('Please enter height value.');
+            }
+            // //
             saveAnswer(currentQuestion);
             console.log(currentQuestion);
             fetchPreResults(currentQuestion, checkVal);
