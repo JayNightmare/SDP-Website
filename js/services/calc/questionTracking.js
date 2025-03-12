@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentQuestion = 1;
     
     startButton.addEventListener('click', function () {
+        currentQuestion++;
         fetchStartQuestion();
     });
 
@@ -20,10 +21,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // ! If data-target is equal to child, set checkVal to true
             if (event.target.getAttribute('data-target') === 'child') {
                 checkVal = true;
-                currentQuestion = 2;
+                // currentQuestion = 2;
             } else if (event.target.getAttribute('data-target') === 'adult') {
                 checkVal = false;
-                currentQuestion = 2;
+                // currentQuestion = 2;
             }
             // //
 
@@ -72,28 +73,49 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (event.target.id === 'prev') {
             if (currentQuestion === 2) {
-                currentQuestion--;
-                console.log(currentQuestion);
-                return fetchStartQuestion();
+            currentQuestion--;
+            console.log(currentQuestion);
+            return fetchStartQuestion();
             } else {
-                currentQuestion--;
-                console.log(currentQuestion);
-                fetchQuestion(currentQuestion, checkVal);
+            currentQuestion--;
+            console.log(currentQuestion);
+            fetchQuestion(currentQuestion, checkVal);
             }
-
         }
 
         if (event.target.id === 'prev-1') {
             window.location.reload();
         }
 
+        if (event.target.id === 'prev-2') {
+            if (checkVal && currentQuestion === 7) {
+            currentQuestion = 6;
+            } else if (!checkVal && currentQuestion === 6) {
+            currentQuestion = 5;
+            } else {
+            currentQuestion--;
+            }
+            console.log("Prev-2", currentQuestion);
+            fetchQuestion(currentQuestion, checkVal);
+        }
+
+        if (event.target.id === 'prev-3') {
+            console.log("Prev-3", currentQuestion);
+            fetchPreResults(checkVal);
+        }
+
         if (event.target && event.target.id === 'pre-results') {
             // //
             // ! Check if height is entered and valid
             if (height && height.value.trim() === '') {
-                return alert('Please enter height value.');
+            return alert('Please enter height value.');
             }
             // //
+            if (currentQuestion === 6 && checkVal) {
+                currentQuestion++;
+            } else if (currentQuestion === 5 && !checkVal) {
+                currentQuestion++;
+            }
             saveAnswer(currentQuestion);
             console.log(currentQuestion);
             fetchPreResults(currentQuestion, checkVal);

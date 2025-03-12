@@ -40,10 +40,10 @@ export function fetchQuestion(target, checkVal) {
     }
 }
 
-export function fetchPreResults(target, checkVal) {
+export function fetchPreResults(checkVal) {
     if (checkVal) {
         console.log("User Pediatric Answers:", answers);
-        fetch(`../../../js/services/calc/html/child/question${target}.html`)
+        fetch(`../../../js/services/calc/html/child/question7.html`)
             .then(response => response.text())
             .then(data => {
                 shellElement.innerHTML = data;
@@ -52,7 +52,7 @@ export function fetchPreResults(target, checkVal) {
             .catch(error => console.error('Error fetching results:', error));
     } else {
         console.log("User Adult Answers:", answers);
-        fetch(`../../../js/services/calc/html/adult/question${target}.html`)
+        fetch(`../../../js/services/calc/html/adult/question6.html`)
             .then(response => response.text())
             .then(data => {
                 shellElement.innerHTML = data;
@@ -69,10 +69,14 @@ export function fetchResults(checkVal) {
         .then(data => {
             shellElement.innerHTML = data;
             let resultsValue;
-            if (checkVal) {
-                resultsValue = calculatePredEGFR(answers);
-            } else {
-                resultsValue = calculateEGFR(answers);
+            try {
+                if (checkVal) {
+                    resultsValue = calculatePredEGFR(answers);
+                } else {
+                    resultsValue = calculateEGFR(answers);
+                }
+            } catch (error) {
+                console.error('Error calculating eGFR:', error);
             }
             updateEGFRMarker(resultsValue);
         })
@@ -90,8 +94,19 @@ function displayResults() {
 
     Object.keys(answers).forEach(questionNumber => {
         const listItem = document.createElement('li');
+        const questionOrder = parseInt(questionNumber);
         listItem.classList.add('r_34');
-        listItem.innerHTML = `<strong>Question ${questionNumber}:</strong> ${answers[questionNumber]}`;
+        let answerText = answers[questionNumber];
+        if (questionNumber === '5-SerumCreatinine') {
+            answerText = `${answers['5-SerumCreatinine']} ${answers['5-SC-Unit']}`;
+        } else if (questionNumber === '5-SC-Unit') {
+            return;
+        } else if (questionNumber === '3-Age') {
+            answerText = `${answers['3-Age']} years old`;
+        } else if (questionNumber === '7-Height') {
+            answerText = `${answers['7-Height']} cm`;
+        }
+        listItem.innerHTML = `<strong>Question ${questionOrder - 2}:</strong> ${answerText}`;
         resultList.appendChild(listItem);
     });
 
