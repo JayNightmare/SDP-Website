@@ -8,13 +8,13 @@ export function saveAnswer(currentQuestion, checkVal) {
     const raceSelect = document.querySelector('.race');
     const standardHeight = document.querySelector('.q_height_s');
 
-    // Save button answer if present
+    // * Save button answer if present
     if (selectedButton) {
         answers[`${currentQuestion}-Gender`] = selectedButton.getAttribute('data-answer');
         // Save button selection state
         console.log(`Answer saved for question ${currentQuestion}: ${selectedButton.getAttribute('data-answer')}`);
     }
-    // Save input answer if present
+    // * Save input answer if present
     else if (ageInput) {
         answers[`${currentQuestion}-Age`] = ageInput.value;
         console.log(`SC1 value saved: ${ageInput.value}`);
@@ -36,6 +36,16 @@ export function saveAnswer(currentQuestion, checkVal) {
         answers[`${currentQuestion}-Height`] = standardHeight.value;
         console.log(`Standard Height saved: ${standardHeight.value}`);
     }
+}
+
+// * Reset Answers
+export function resetAnswers() {
+    for (let key in answers) {
+        if (answers.hasOwnProperty(key)) {
+            delete answers[key];
+        }
+    }
+    console.log('Answers Reset');
 }
 
 export function exportAnswer() {

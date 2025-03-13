@@ -1,5 +1,5 @@
 import { fetchPreResults, fetchResults, fetchQuestion, fetchStartQuestion } from "./fetchDetails.js";
-import { saveAnswer } from "./saveAnswers.js";
+import { saveAnswer, resetAnswers } from "./saveAnswers.js";
 
 document.addEventListener('DOMContentLoaded', function () {
     const startButton = document.getElementById('start-now');
@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentQuestion = 1;
     
     startButton.addEventListener('click', function () {
-        currentQuestion++;
+        currentQuestion = 2;
         fetchStartQuestion();
     });
 
@@ -21,10 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // ! If data-target is equal to child, set checkVal to true
             if (event.target.getAttribute('data-target') === 'child') {
                 checkVal = true;
-                // currentQuestion = 2;
             } else if (event.target.getAttribute('data-target') === 'adult') {
                 checkVal = false;
-                // currentQuestion = 2;
             }
             // //
 
@@ -63,24 +61,28 @@ document.addEventListener('DOMContentLoaded', function () {
             // //
 
             // //
+            console.log("Previous Question: ", currentQuestion);
+            saveAnswer(currentQuestion);
             console.log("Current Question: ", currentQuestion);
-            saveAnswer(currentQuestion, checkVal);
-            fetchQuestion(currentQuestion++, checkVal);
-            // currentQuestion++;
-            console.log("Next Question: ", currentQuestion);
+            return fetchQuestion(currentQuestion++, checkVal);
             // //
         }
 
         if (event.target.id === 'prev') {
-            if (currentQuestion === 2) {
             currentQuestion--;
-            console.log(currentQuestion);
-            return fetchStartQuestion();
-            } else {
-            currentQuestion--;
-            console.log(currentQuestion);
-            fetchQuestion(currentQuestion, checkVal);
+            console.log("Back To Question: ", currentQuestion);
+            if (currentQuestion === 1) {
+                return fetchStartQuestion();
             }
+            if (currentQuestion === 2) {
+                resetAnswers();
+                return fetchStartQuestion();
+            }
+            if (currentQuestion === 3) return fetchQuestion(2, checkVal);
+            if (currentQuestion === 4) return fetchQuestion(3, checkVal);
+            if (currentQuestion === 5 && checkVal) return fetchQuestion(4, checkVal);
+            if (currentQuestion === 6) return fetchQuestion(5, checkVal);
+            fetchQuestion(currentQuestion, checkVal);
         }
 
         if (event.target.id === 'prev-1') {
@@ -88,13 +90,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (event.target.id === 'prev-2') {
-            if (checkVal && currentQuestion === 7) {
-            currentQuestion = 6;
-            } else if (!checkVal && currentQuestion === 6) {
-            currentQuestion = 5;
-            } else {
-            currentQuestion--;
-            }
+            if (checkVal && currentQuestion === 7) currentQuestion = 6;
+            else if (!checkVal && currentQuestion === 6) currentQuestion = 5;
+            else currentQuestion--;
+
             console.log("Prev-2", currentQuestion);
             fetchQuestion(currentQuestion, checkVal);
         }
@@ -122,5 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (event.target && event.target.id === 'results') { fetchResults(checkVal); }
+
+        if (event.target && event.target.id === 'start-over') { window.location.reload(); }
     })
 });
