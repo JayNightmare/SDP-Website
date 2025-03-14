@@ -3,7 +3,7 @@
 function isLoggedIn() {
     // Check for a specific token or session variable
     // This is just an example, replace with your actual authentication logic
-    return localStorage.getItem('authToken') !== null;
+    return localStorage.getItem('userToken') !== null;
 }
 
 // Guard script to prevent access if not logged in
