@@ -63,6 +63,8 @@ export function fetchPreResults(checkVal) {
     }
 }
 
+// //
+/* ! Go Local Incase API is down
 // export function fetchResults(checkVal) {
 //     console.log("User Answers:", answers);
 //     fetch(`../../../js/services/calc/html/results.html`)
@@ -85,8 +87,10 @@ export function fetchPreResults(checkVal) {
 //         })
 //         .catch(error => console.error('Error fetching results:', error));
 // }
+*/
+// //
 
-export function fetchResults(checkVal) {
+export function fetchResults() {
     console.log("User Answers:", answers);
 
     fetch(`../../../js/services/calc/html/results.html`)
@@ -102,7 +106,8 @@ export function fetchResults(checkVal) {
             let convertedCreat = creat;
             if (answers["5-SC-Unit"] === "mg/dL") convertedCreat = creat * 88.4;
 
-            // ! Send data to API
+            // //
+            // ! Send Answers to Calc API
             fetch("https://sdp-api-n04w.onrender.com/calculate", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -120,8 +125,43 @@ export function fetchResults(checkVal) {
                     updateEGFRMarker(resultsValue);
                 })
                 .catch(error => console.error("Error fetching eGFR from API:", error));
+            // //
+
+            // //
+            // ! Send Answers to API to send the Database if Token is Valid
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.error("No auth token found in local storage");
+                console.log("No user data to send");
+                return;
+            }
+
+            // TODO: Replace with actual API endpoint
+            fetch("https://sdp-api-n04w.onrender.com/checkUser", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(answers),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        console.error("Invalid token or user data");
+                        console.log("No user data to send");
+                        return;
+                    }
+                    return response.json();
+                })
+                .then(userCheckResult => {
+                    if (userCheckResult) {
+                        console.log("User Check Result:", userCheckResult);
+                    }
+                })
+                .catch(error => console.error("Error checking user data:", error));
         })
         .catch(error => console.error("Error fetching results:", error));
+        // //
 }
 
 function displayResults() {

@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
             fetchPreResults(currentQuestion, checkVal);
         }
 
-        if (event.target && event.target.id === 'results') { fetchResults(checkVal); }
+        if (event.target && event.target.id === 'results') { fetchResults(); }
 
         if (event.target && event.target.id === 'start-over') { window.location.reload(); }
     })
