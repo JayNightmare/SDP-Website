@@ -71,8 +71,10 @@ export function fetchResults(checkVal) {
             let resultsValue;
             try {
                 if (checkVal) {
+                    console.log("Calculating Pediatric eGFR");
                     resultsValue = calculatePredEGFR(answers);
                 } else {
+                    console.log("Calculating Adult eGFR");
                     resultsValue = calculateEGFR(answers);
                 }
             } catch (error) {

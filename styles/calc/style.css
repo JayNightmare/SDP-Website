@@ -62,15 +62,25 @@ ul {
     border-radius: 5px;
     background: linear-gradient(to right,
         #5cb85c 0%,    /* Normal (Green) */
-        #5cb85c 25%,   /* Normal (Green) */
+        #5cb85c 24.5%,   /* Normal (Green) */
+        #000 24.5%,      /* ! Low (Black) ! */
+        #000 25%,      /* ! Low (Black) ! */
         #b2dba1 25%,   /* Mild (Light Green) */
-        #b2dba1 45%,   /* Mild (Light Green) */
-        #f0ad4e 45%,   /* Moderate (Yellow) */
-        #f0ad4e 60%,   /* Moderate (Yellow) */
+        #b2dba1 44.5%,   /* Mild (Light Green) */
+        #000 44.5%,      /* ! Moderate (Black) ! */
+        #000 45%,      /* ! Moderate (Black) ! */
+        #FFF953 45%,   /* Moderate (Yellow) */
+        #FFF953 59.5%,   /* Moderate (Yellow) */
+        #000 59.5%,      /* ! Severe (Black) ! */
+        #000 60%,      /* ! Severe (Black) ! */
         #f4a742 60%,   /* Moderate-Severe (Orange) */
-        #f4a742 75%,   /* Moderate-Severe (Orange) */
+        #f4a742 74.5%,   /* Moderate-Severe (Orange) */
+        #000 74.5%,      /* ! Severe (Black) ! */
+        #000 75%,      /* ! Severe (Black) ! */
         #d9534f 75%,   /* Severe (Red) */
-        #d9534f 90%,   /* Severe (Red) */
+        #d9534f 89.5%,   /* Severe (Red) */
+        #000 89.5%,      /* ! Severe (Black) ! */
+        #000 90%,      /* ! Severe (Black) ! */
         #800000 90%,   /* Kidney Failure (Dark Red) */
         #800000 100%   /* Kidney Failure (Dark Red) */
     );
@@ -104,12 +114,12 @@ ul {
     background-color: #000000;
     border: 1px solid #000;
 
-    &:is(.normal) { background-color: #53FF53; }
-    &:is(.mild) { background-color: #90EE90; }
+    &:is(.normal) { background-color: #5cb85c; }
+    &:is(.mild) { background-color: #b2dba1; }
     &:is(.moderate) { background-color: #FFF953; }
     &:is(.severe) { background-color: #FF9B53; }
-    &:is(.very-severe) { background-color: #FF5353; }
-    &:is(.failure) { background-color: #AA0000; }
+    &:is(.very-severe) { background-color: #d9534f; }
+    &:is(.failure) { background-color: #800000; }
 }
 
 .selected {
