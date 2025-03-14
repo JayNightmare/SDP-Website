@@ -1,0 +1,221 @@
+<head>
+    <title id="title">Calculator</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link data-vue-tag="ssr" rel="icon" type="image/png" sizes="96x96" href="../../../images/favicon/favicon.ico">
+    <link rel="stylesheet" href="../../../styles/global/navbar.css">
+    <link rel="stylesheet" href="../../../styles/global/footer.css">
+    <link rel="stylesheet" href="../../../styles/global/body.css">
+    <link rel="stylesheet" href="../../../styles/calc/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <script type="module" src="../../../js/services/calc/questionTracking.js" type="application/javascript"></script>
+</head>
+<body style="background-color: #EFE3C2;">
+    <!-- // -->
+    <!-- ? Navbar ? -->
+    <header>
+        <div>
+            <div class="top-nav">
+                <!-- ! Logo ! -->
+                <a class="nav-logo" href="../../home/index.html" title="Home">
+                    <div class="header-logo"></div>
+                </a>
+                <!-- ! My Account ! -->
+                <div class="nav-item">
+                    <a href="../../account/index.html">My Account</a>
+                    <div class="profile-picture">
+                        <svg class="profile-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24px" height="24px">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- ? Bottom Nav ?  -->
+            <div class="bottom-nav">
+                <!-- ! Home ! -->
+                <div class="nav-item" id="home">
+                    <a href="../../home/index.html">Home</a>
+                </div>
+                <!-- ! About ! -->
+                <div class="nav-item" id="about">
+                    <a href="https://www.nhs.uk/conditions/kidney-disease/" target="_blank" rel="noopener noreferrer">About</a>
+                </div>
+                <!-- ! Services ! -->
+                <div class="nav-item" id="calculator">
+                    <a href="../../services/calc/index.html">Calculator</a>
+                </div>
+                <!-- ! Contact ! -->
+                <div class="nav-item" id="contact">
+                    <a href="https://www.nhs.uk/conditions/social-care-and-support-guide/" target="_blank" rel="noopener noreferrer">Contact</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- // -->
+
+    <!-- // -->
+    <!-- ? Body ? -->
+    <main class="shell">
+        <br>
+        <br>
+        <br>
+        <div class="container">
+            <div class="center-container">
+                <div class="top-info">
+                    <div class="starter">
+                        <h1>Calculate Your eGFR</h1>
+                        <p>Use this service to:</p>
+                        <ul>
+                            <li>Check the eGFR of an adult aged 18 and over</li>
+                            <li>Get information about what to do next</li>
+                        </ul>
+                    </div>
+                    <br>
+                    <div class="extra-to">
+                        <p>Glomerular filtration rate (GFR) is the best overall index of kidney function. Normal GFR varies according to age, sex, and body size, and declines with age.</p>
+                        <a data-target="start-now" id="scroll"><strong>Scroll to Calculator</strong></a>
+                    </div>
+                </div>
+                <br>
+                <br>
+                <div class="how-to-use">
+                    <h1>How to use this tool:</h1>
+                    <p>This tool is to be used to help calculate your eGFR. You should not use this tool if you, or the person you're using it for:</p>
+                    <ul>
+                        <li>Are under 18 years old</li>
+                        <li>Are pregnant</li>
+                        <li>Are undergoing dialysis</li>
+                        <li>Have an amputation or significant limb loss</li>
+                        <li>Have rapidly changing kidney function (e.g., acute kidney injury)</li>
+                        <li>Are taking medications that significantly affect muscle mass or creatinine levels</li>
+                        <li>Have unusual muscle mass (e.g., bodybuilders, those with muscle-wasting diseases)</li>
+                        <li>Are malnourished or have significant fluid retention (e.g., edema or ascites)</li>
+                        <li>Have had a recent kidney transplant</li>
+                    </ul>
+                </div>
+                <br>
+                <br>
+                <div class="what-you-will-need">
+                    <h1>What you will need:</h1>
+                    <p>To use this calculator, you will need to know:</p>
+                    <ul>
+                        <li>Creatinine Level:
+                            <ul>
+                                <li>A recent serum creatinine result from a blood test (measured in mg/dL or µmol/L)</li>
+                            </ul>
+                        </li>
+                        <li>Age:
+                            <ul>
+                                <li>The person's age (in years)</li>
+                            </ul>
+                        </li>
+                        <li>Gender:
+                            <ul>
+                                <li>The person's biological sex (male or female)</li>
+                            </ul>
+                        </li>
+                        <li>Race/Ethnicity (if applicable):
+                            <ul>
+                                <li>Some equations (e.g., MDRD or CKD-EPI) require this information</li>
+                            </ul>
+                        </li>
+                        <li>Height and Weight (optional):
+                            <ul>
+                                <li>Needed if the calculation requires body surface area (BSA) adjustments</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <br>
+                <br>
+                <div class="extra-info">
+                    <h1>Extra Information</h1>
+                    <ul>
+                        <li>If values for cystatin C and/or BUN are not entered, the calculator will generate GFR estimates using the creatinine-based “Bedside Schwartz” equation only (currently considered the best method for estimating GFR in children)</li>
+                        <li>The cystatin C values are not corrected for IFCC calibration. IFCC calibrated values should be divided by 1.17 before entered as input. (Schwartz et al. Pediatr Nephrol 35:279-285, 2020)</li>
+                        <li>These equations are only valid with standardized serum creatinine methods traceable to IDMS.</li>
+                    </ul>
+                </div>
+                <br>
+                <br>
+                <button class="start-now button_gl scroll-clicker" title="start calculation" id="start-now" data-target="bottom-nav">Start Now</button></main>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+    </main>
+    <!-- // -->
+
+    <!-- // -->
+    <!-- ? Footer ? -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <h6>About</h6>
+                    <p class="text-justify">
+                        Your Mother? Gay 🫵😂
+                        Your Dad? Gay 👁👄👁
+                        Your Brother? Gay 🤣
+                        Your Sister? Gay 💀🔫
+                        Your Dog? Gay 🐕
+                        Your Cat? Gay 🐈
+                    </p>
+                </div>
+    
+                <div class="col-xs-6 col-md-3">
+                    <h6>Categories</h6>
+                    <ul class="footer-links">
+                        <li><a href="#">eGFR Calculator</a></li>
+                        <li><a href="#">Much MORE!</a></li>
+                    </ul>
+                </div>
+    
+                <div class="col-xs-6 col-md-3">
+                    <h6>Quick Links</h6>
+                    <ul class="footer-links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Contribute?</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Sitemap</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                    <p class="copyright-text">Copyright &copy; 2025 All Rights Reserved by
+                        <a href="#">Your Mother</a>.
+                    </p>
+                </div>
+    
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <ul class="social-icons">
+                        <!-- Brings to guthub repo -->
+                        <li><a title="github" class="github" href="#"><i class="fa fa-github"></i></a></li>
+                        <!-- Brings to a list of our linkedin profiles -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- // -->
+    
+    <!-- // -->
+    <!-- ? Scripts ? -->
+    <script type="module" src="../../../js/services/calc/eGFRCalc.js"></script>
+    <script type="module" src="../../../js/services/calc/restoreAnswers.js"></script>
+    <script type="module" src="../../../js/services/calc/fetchDetails.js"></script>
+    <script type="module" src="../../../js/services/calc/marker.js"></script>
+    <script type="module" src="../../../js/services/calc/saveAnswers.js"></script>
+    <script src="../../../js/services/calc/scrollTo.js" type="text/javascript"></script>
+    <!-- // -->
+</body>
