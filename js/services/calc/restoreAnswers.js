@@ -1,11 +1,11 @@
 export function restoreAnswers(answers) {
-    // Restore input field answers
+    // * Restore Age input field
     const ageInputField = document.querySelector('.q_age');
     if (ageInputField) {
         ageInputField.value = answers['3-Age'] ? answers['3-Age'] : '';
     }
 
-    // Restore gender button selection
+    // * Restore Gender button selection
     const genderAnswer = answers['4-Gender'];
     const buttons = document.querySelectorAll('.gender');
     buttons.forEach(button => {
@@ -15,7 +15,7 @@ export function restoreAnswers(answers) {
         }
     });
 
-    // Restore special input fields
+    // * Restore Serum Creatinine fields
     const scInputField = document.querySelector('.q_sc1');
     const scUnitField = document.querySelector('.sc_unit');
     if (scInputField) {
@@ -25,13 +25,13 @@ export function restoreAnswers(answers) {
         scUnitField.value = answers['5-SC-Unit'] ? answers['5-SC-Unit'] : 'mg/dL';
     }
 
-    // Restore race field
+    // * Restore Race field
     const raceUnitField = document.querySelector('.r_5');
     if (raceUnitField) {
         raceUnitField.value = answers['6-Race'] ? answers['6-Race'] : 'White';
     }
 
-    // Restore height values
+    // * Restore Height values
     const standardHeightField = document.querySelector('.q_height_s');
 
     if (standardHeightField) {

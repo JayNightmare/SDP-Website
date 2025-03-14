@@ -17,6 +17,7 @@ export function fetchStartQuestion() {
 }
 
 export function fetchQuestion(target, checkVal) {
+    console.log("Current Question:", target);
     if (!checkVal) {
         console.log("Adult Route, ", checkVal);
         fetch(`../../../js/services/calc/html/adult/question${target}.html`)
@@ -62,27 +63,65 @@ export function fetchPreResults(checkVal) {
     }
 }
 
+// export function fetchResults(checkVal) {
+//     console.log("User Answers:", answers);
+//     fetch(`../../../js/services/calc/html/results.html`)
+//         .then(response => response.text())
+//         .then(data => {
+//             shellElement.innerHTML = data;
+//             let resultsValue;
+//             try {
+//                 if (checkVal) {
+//                     console.log("Calculating Pediatric eGFR");
+//                     resultsValue = calculatePredEGFR(answers);
+//                 } else {
+//                     console.log("Calculating Adult eGFR");
+//                     resultsValue = calculateEGFR(answers);
+//                 }
+//             } catch (error) {
+//                 console.error('Error calculating eGFR:', error);
+//             }
+//             updateEGFRMarker(resultsValue);
+//         })
+//         .catch(error => console.error('Error fetching results:', error));
+// }
+
 export function fetchResults(checkVal) {
     console.log("User Answers:", answers);
+
     fetch(`../../../js/services/calc/html/results.html`)
         .then(response => response.text())
         .then(data => {
             shellElement.innerHTML = data;
-            let resultsValue;
-            try {
-                if (checkVal) {
-                    console.log("Calculating Pediatric eGFR");
-                    resultsValue = calculatePredEGFR(answers);
-                } else {
-                    console.log("Calculating Adult eGFR");
-                    resultsValue = calculateEGFR(answers);
-                }
-            } catch (error) {
-                console.error('Error calculating eGFR:', error);
-            }
-            updateEGFRMarker(resultsValue);
+
+            const age = parseInt(answers["3-Age"]);
+            const sex = answers["4-Gender"].toLowerCase();
+            const creat = parseFloat(answers["5-SerumCreatinine"]);
+            const race = answers["6-Race"].toLowerCase();
+
+            let convertedCreat = creat;
+            if (answers["5-SC-Unit"] === "mg/dL") convertedCreat = creat * 88.4;
+
+            // ! Send data to API
+            fetch("https://sdp-api-n04w.onrender.com/calculate", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify([{
+                    creat: convertedCreat,
+                    age: age,
+                    sex: sex,
+                    race: race
+                }]),
+            })
+                .then(response => response.json())
+                .then(apiResult => {
+                    const resultsValue = parseFloat(apiResult[0]?.eGFR).toFixed(2);
+                    console.log("API Result:", resultsValue);
+                    updateEGFRMarker(resultsValue);
+                })
+                .catch(error => console.error("Error fetching eGFR from API:", error));
         })
-        .catch(error => console.error('Error fetching results:', error));
+        .catch(error => console.error("Error fetching results:", error));
 }
 
 function displayResults() {

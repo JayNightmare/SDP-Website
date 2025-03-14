@@ -63,7 +63,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // //
             console.log("Previous Question: ", currentQuestion);
             saveAnswer(currentQuestion);
-            console.log("Current Question: ", currentQuestion);
             return fetchQuestion(currentQuestion++, checkVal);
             // //
         }
@@ -79,10 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return fetchStartQuestion();
             }
             if (currentQuestion === 3) return fetchQuestion(2, checkVal);
-            if (currentQuestion === 4) return fetchQuestion(3, checkVal);
-            if (currentQuestion === 5 && checkVal) return fetchQuestion(4, checkVal);
-            if (currentQuestion === 6) return fetchQuestion(5, checkVal);
-            fetchQuestion(currentQuestion, checkVal);
+            else return fetchQuestion(currentQuestion, checkVal);
         }
 
         if (event.target.id === 'prev-1') {
@@ -90,12 +86,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (event.target.id === 'prev-2') {
-            if (checkVal && currentQuestion === 7) currentQuestion = 6;
-            else if (!checkVal && currentQuestion === 6) currentQuestion = 5;
-            else currentQuestion--;
-
-            console.log("Prev-2", currentQuestion);
-            fetchQuestion(currentQuestion, checkVal);
+            if (checkVal && currentQuestion === 7) {
+                console.log("Prev-2 Check True: ", currentQuestion);
+                currentQuestion = 6;
+                return fetchQuestion(currentQuestion, checkVal);
+            }
+            else if (!checkVal && currentQuestion === 6) {
+                console.log("Prev-2 Check False: ", currentQuestion);
+                currentQuestion = 5;
+                return fetchQuestion(currentQuestion, checkVal);
+            }
+            else if (currentQuestion === 6) {
+                console.log("Prev-2 Else: ", currentQuestion);
+                currentQuestion--;
+                return fetchQuestion(currentQuestion, checkVal);
+            }
         }
 
         if (event.target.id === 'prev-3') {
