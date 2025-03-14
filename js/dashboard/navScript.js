@@ -3,5 +3,5 @@ function openNav() {
 }
 
 function closeNav() {
-document.getElementById("sidebar").style.display = "none";
+    document.getElementById("sidebar").style.display = "none";
 }
