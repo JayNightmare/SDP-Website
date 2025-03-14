@@ -9,7 +9,13 @@
     <h1><strong>Results</strong></h1>
     <br>
     <p>Your estimated eGFR is </p>
-    <h2><strong><span id="egfr-value">Your Mother</span> mL/min/1.73m²</strong></h2>
+    <h2 id="is-loading">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Calculating...</p>
+        </div>
+        <strong id="egfr-section" style="display: none;"><span id="egfr-value">Your Mother</span> mL/min/1.73m²</strong>
+    </h2>
     <br>
     <!-- eGFR Bar -->
     <div id="egfr-bar">

@@ -93,21 +93,30 @@ export function fetchPreResults(checkVal) {
 export function fetchResults() {
     console.log("User Answers:", answers);
 
+    const age = parseInt(answers["3-Age"]);
+    const sex = answers["4-Gender"].toLowerCase();
+    const creat = parseFloat(answers["5-SerumCreatinine"]);
+    const race = answers["6-Race"].toLowerCase();
+
+    let convertedCreat = creat;
+    if (answers["5-SC-Unit"] === "mg/dL") convertedCreat = creat * 88.4;
+
     fetch(`../../../js/services/calc/html/results.html`)
         .then(response => response.text())
         .then(data => {
             shellElement.innerHTML = data;
 
-            const age = parseInt(answers["3-Age"]);
-            const sex = answers["4-Gender"].toLowerCase();
-            const creat = parseFloat(answers["5-SerumCreatinine"]);
-            const race = answers["6-Race"].toLowerCase();
-
-            let convertedCreat = creat;
-            if (answers["5-SC-Unit"] === "mg/dL") convertedCreat = creat * 88.4;
-
-            // //
-            // ! Send Answers to Calc API
+            console.log('Loading >> eGFR Calculator');
+            const loadingSpinner = document.querySelector('.loading-spinner');
+            const egfrValue = document.getElementById('egfr-section');
+            const egfrValueText = document.getElementById('egfr-value');
+            
+            // Show loading spinner
+            console.log('Calculating...');
+            if (loadingSpinner) loadingSpinner.style.display = 'block';
+            if (egfrValue) egfrValue.style.display = 'none';
+            
+            // Fetch results from API
             fetch("https://sdp-api-n04w.onrender.com/calculate", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -120,12 +129,18 @@ export function fetchResults() {
             })
                 .then(response => response.json())
                 .then(apiResult => {
+                    // Hide spinner and show result
+                    if (loadingSpinner) loadingSpinner.style.display = 'none';
+                    if (egfrValue) egfrValue.style.display = 'inline';
                     const resultsValue = parseFloat(apiResult[0]?.eGFR).toFixed(2);
+                    egfrValueText.textContent = resultsValue; // Display actual API result
                     console.log("API Result:", resultsValue);
                     updateEGFRMarker(resultsValue);
                 })
-                .catch(error => console.error("Error fetching eGFR from API:", error));
-            // //
+                .catch(error => {
+                    console.error("Error fetching eGFR from API:", error);
+                    if (loadingSpinner) loadingSpinner.style.display = 'none'; // Hide spinner on error
+                });
 
             // //
             // ! Send Answers to API to send the Database if Token is Valid
@@ -161,7 +176,7 @@ export function fetchResults() {
                 .catch(error => console.error("Error checking user data:", error));
             // //
         })
-        .catch(error => console.error("Error fetching results:", error));
+        .catch(error => console.error('Error fetching results:', error));
 }
 
 function displayResults() {
