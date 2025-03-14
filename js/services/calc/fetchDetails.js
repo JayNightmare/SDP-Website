@@ -159,9 +159,9 @@ export function fetchResults() {
                     }
                 })
                 .catch(error => console.error("Error checking user data:", error));
+            // //
         })
         .catch(error => console.error("Error fetching results:", error));
-        // //
 }
 
 function displayResults() {
