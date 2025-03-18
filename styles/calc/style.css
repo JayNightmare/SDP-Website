@@ -9,6 +9,15 @@
     }
 }
 
+.ac_buttons {
+    display: flex;
+    gap: 20px;
+
+    @media (max-width: 425px) {
+        flex-direction: column;
+    }
+}
+
 .button_gl {
     background-color: #3E7B27;
     color: white;
@@ -172,11 +181,11 @@ ul {
     border-radius: 50%;
     width: 40px;
     height: 40px;
-    animation: spin 1s linear infinite;
+    animation: spinner 1s linear infinite;
     margin: 0 auto 10px;
 }
 
-@keyframes spin {
+@keyframes spinner {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }

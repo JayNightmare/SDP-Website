@@ -42,6 +42,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     return alert('Please fill in the required field before proceeding');
                 } else if (age.value >= 18) {
                     return alert('You must be at younger than 18 years old to participate');
+                } else if (age.value <= 0) {
+                    return alert('You must be at at least than 1 years old to participate');
                 }
             } else if (age && checkVal == false) {
                 console.log('Age:', age.value);
@@ -49,6 +51,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     return alert('Please fill in the required field before proceeding');
                 } else if (age.value < 18) {
                     return alert('You must be at least 18 years old to participate');
+                } else if (age.value > 120) {
+                    return alert('You must be at most 120 years old to participate');
                 }
             }
             // //
@@ -57,6 +61,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // ! Check if Serum Creatinine is entered and valid
             if (sc1Input && sc1Input.value.trim() === '') {
                 return alert('Please enter Serum Creatinine value.');
+            } else if (sc1Input && sc1Input.value < 0) {
+                return alert('Serum Creatinine value cannot be less than 0.');
             }
             // //
 
@@ -77,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 resetAnswers();
                 return fetchStartQuestion();
             }
-            if (currentQuestion === 3) return fetchQuestion(2, checkVal);
+            // if (currentQuestion === 3) return fetchQuestion(2, checkVal);
             else return fetchQuestion(currentQuestion, checkVal);
         }
 
