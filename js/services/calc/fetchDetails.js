@@ -136,7 +136,7 @@ export function fetchResults() {
                     const resultsValue = parseFloat(apiResult[0]?.eGFR).toFixed(2);
                     egfrValueText.textContent = resultsValue; // Display actual API result
                     console.log("API Result:", resultsValue);
-                    updateEGFRMarker(resultsValue);
+                    updateEGFRMarker(resultsValue, age); // Pass age for pediatric/adult determination
                 })
                 .catch(error => {
                     console.error("Error fetching eGFR from API:", error);

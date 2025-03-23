@@ -1,5 +1,22 @@
-// * Calculate eGFR based on the CKiD formula
+// * Helper function to determine if patient is pediatric
+function isPediatric(age) {
+    return age < 18;
+}
+
+// * Calculate eGFR based on age-appropriate formula
 export function calculateEGFR(answers) {
+    let age = parseInt(answers["3-Age"]);
+    
+    // Use pediatric formula for patients under 18
+    if (isPediatric(age)) {
+        return calculatePedEGFR(answers);
+    } else {
+        return calculateAdultEGFR(answers);
+    }
+}
+
+// * Calculate Adult eGFR
+function calculateAdultEGFR(answers) {
     let age = parseInt(answers["3-Age"]);
     let gender = answers["4-Gender"].toLowerCase();
     let creat = parseFloat(answers["5-SerumCreatinine"]);
@@ -10,25 +27,21 @@ export function calculateEGFR(answers) {
         creat = creat / 88.4;
     }
 
-    // let egfr = 186 * Math.pow(creat, -1.154) * Math.pow(age, -0.203);
     let egfr = 186 * creat ** -1.154 * age ** -0.203;
 
-    // //
     if (gender === "female") {
         egfr *= 0.742;
     }
-    // //
     if (race === "black") {
         egfr *= 1.21;
     }
-    // //
 
-    console.log("Calculated eGFR:", egfr);
-    return egfr.toFixed(2);
+    console.log("Calculated Adult eGFR:", egfr);
+    return [egfr.toFixed(2), age]; // Return both eGFR and age
 }
 
 // * Calculate Pediatric eGFR
-export function calculatePredEGFR(answers) {
+function calculatePedEGFR(answers) {
     let age = parseFloat(answers["3-Age"]);
     let gender = answers["4-Gender"].toLowerCase();
     let creat = parseFloat(answers["5-SerumCreatinine"]);
@@ -63,5 +76,5 @@ export function calculatePredEGFR(answers) {
     if (race === "black") egfr *= 1.16;
 
     console.log("Calculated Pediatric eGFR:", egfr);
-    return egfr.toFixed(2);
+    return [egfr.toFixed(2), age]; // Return both eGFR and age
 }
