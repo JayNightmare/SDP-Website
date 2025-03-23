@@ -2,16 +2,16 @@ export function restoreAnswers(answers) {
     // * Restore Age input field
     const ageInputField = document.querySelector('.q_age');
     if (ageInputField) {
-        ageInputField.value = answers['3-Age'] ? answers['3-Age'] : '';
+        ageInputField.value = answers['2-Age'] ? answers['2-Age'] : '';
     }
 
     // * Restore Gender button selection
-    const genderAnswer = answers['4-Gender'];
+    const genderAnswer = answers['3-Gender'];
     const buttons = document.querySelectorAll('.gender');
     buttons.forEach(button => {
-        button.classList.remove('selected'); // Remove selection from all buttons
+        button.classList.remove('selected');
         if (button.textContent.trim().toLowerCase() === genderAnswer.toLowerCase()) {
-            button.classList.add('selected'); // Select the correct one
+            button.classList.add('selected');
         }
     });
 
@@ -19,10 +19,10 @@ export function restoreAnswers(answers) {
     const scInputField = document.querySelector('.q_sc1');
     const scUnitField = document.querySelector('.sc_unit');
     if (scInputField) {
-        scInputField.value = answers['5-SerumCreatinine'] ? answers['5-SerumCreatinine'] : '';
+        scInputField.value = answers['4-SerumCreatinine'] ? answers['4-SerumCreatinine'] : '';
     }
     if (scUnitField) {
-        scUnitField.value = answers['5-SC-Unit'] ? answers['5-SC-Unit'] : 'mg/dL';
+        scUnitField.value = answers['4-SC-Unit'] ? answers['4-SC-Unit'] : 'mg/dL';
     }
 
     // * Restore Race field

@@ -1,7 +1,7 @@
 import { updateEGFRMarker } from "./marker.js";
 import { restoreAnswers } from "./restoreAnswers.js";
 import { exportAnswer } from "./saveAnswers.js";
-import { calculateEGFR, calculatePredEGFR } from "./eGFRCalc.js";
+// import { calculateEGFR, calculatePredEGFR } from "./eGFRCalc.js";
 
 const shellElement = document.querySelector('.shell');
 let answers = exportAnswer();
@@ -93,13 +93,14 @@ export function fetchPreResults(checkVal) {
 export function fetchResults() {
     console.log("User Answers:", answers);
 
-    const age = parseInt(answers["3-Age"]);
-    const sex = answers["4-Gender"].toLowerCase();
-    const creat = parseFloat(answers["5-SerumCreatinine"]);
-    const race = answers["6-Race"].toLowerCase();
+    const age = parseInt(answers["2-Age"]);
+    const sex = answers["3-Gender"].toLowerCase();
+    const creat = parseFloat(answers["4-SerumCreatinine"]);
+    let race;
+    race = race ? answers["6-Race"] : answers["5-Race"];
 
     let convertedCreat = creat;
-    if (answers["5-SC-Unit"] === "mg/dL") convertedCreat = creat * 88.4;
+    if (answers["4-SC-Unit"] === "mg/dL") convertedCreat = creat * 88.4;
 
     fetch(`../../../js/services/calc/html/results.html`)
         .then(response => response.text())
@@ -193,16 +194,19 @@ function displayResults() {
         const questionOrder = parseInt(questionNumber);
         listItem.classList.add('r_34');
         let answerText = answers[questionNumber];
-        if (questionNumber === '5-SerumCreatinine') {
-            answerText = `${answers['5-SerumCreatinine']} ${answers['5-SC-Unit']}`;
-        } else if (questionNumber === '5-SC-Unit') {
+        if (questionNumber === '4-SerumCreatinine') {
+            answerText = `${answers['4-SerumCreatinine']} ${answers['4-SC-Unit']}`;
+        } else if (questionNumber === '4-SC-Unit') {
             return;
-        } else if (questionNumber === '3-Age') {
-            answerText = `${answers['3-Age']} years old`;
+        } else if (questionNumber === '2-Age') {
+            answerText = `${answers['2-Age']} years old`;
         } else if (questionNumber === '7-Height') {
             answerText = `${answers['7-Height']} cm`;
         }
-        listItem.innerHTML = `<strong>Question ${questionOrder - 2}:</strong> ${answerText}`;
+
+        if (questionNumber === '6-Race') listItem.innerHTML = `<strong>Question ${4}:</strong> ${answerText}`;
+        else if (questionNumber === '7-Height') listItem.innerHTML = `<strong>Question ${5}:</strong> ${answerText}`;
+        else listItem.innerHTML = `<strong>Question ${questionOrder-1}:</strong> ${answerText}`;
         resultList.appendChild(listItem);
     });
 

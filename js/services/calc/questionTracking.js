@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentQuestion = 1;
     
     startButton.addEventListener('click', function () {
-        currentQuestion = 2;
+        // currentQuestion = 2;
         fetchStartQuestion();
     });
 
@@ -60,31 +60,73 @@ document.addEventListener('DOMContentLoaded', function () {
             // //
             // ! Check if Serum Creatinine is entered and valid
             if (sc1Input && sc1Input.value.trim() === '') {
-                return alert('Please enter Serum Creatinine value.');
+                return alert('Please enter Serum Creatinine value');
             } else if (sc1Input && sc1Input.value < 0) {
-                return alert('Serum Creatinine value cannot be less than 0.');
+                return alert('Serum Creatinine value cannot be less than 0');
             }
             // //
 
             // //
             console.log("Previous Question: ", currentQuestion);
             saveAnswer(currentQuestion);
-            return fetchQuestion(currentQuestion++, checkVal);
+            currentQuestion++;
+            return fetchQuestion(currentQuestion, checkVal);
             // //
         }
 
         if (event.target.id === 'prev') {
-            currentQuestion--;
-            console.log("Back To Question: ", currentQuestion);
-            if (currentQuestion === 1) {
-                return fetchStartQuestion();
-            }
-            if (currentQuestion === 2) {
+            if (event.target.getAttribute('data-target') === 'question1') {
+                console.log("Back To Question: ", currentQuestion);
                 resetAnswers();
+                currentQuestion = 1;
                 return fetchStartQuestion();
             }
-            // if (currentQuestion === 3) return fetchQuestion(2, checkVal);
-            else return fetchQuestion(currentQuestion, checkVal);
+
+            if (event.target.getAttribute('data-target') === 'question2') {
+                console.log("Back To Question: ", currentQuestion);
+                currentQuestion = 2;
+                return fetchQuestion(currentQuestion, checkVal);
+            }
+
+            if (event.target.getAttribute('data-target') === 'question3') {
+                console.log("Back To Question: ", currentQuestion);
+                currentQuestion = 3;
+                return fetchQuestion(currentQuestion, checkVal);
+            }
+
+            if (event.target.getAttribute('data-target') === 'question4') {
+                console.log("Back To Question: ", currentQuestion);
+                currentQuestion = 4;
+                return fetchQuestion(currentQuestion, checkVal);
+            }
+
+            if (event.target.getAttribute('data-target') === 'question5') {
+                console.log("Back To Question: ", currentQuestion);
+                currentQuestion = 5;
+                return fetchQuestion(currentQuestion, checkVal);
+            }
+
+            if (event.target.getAttribute('data-target') === 'question6') {
+                console.log("Back To Question: ", currentQuestion);
+                currentQuestion = 6;
+                return fetchQuestion(currentQuestion, checkVal);
+            }
+
+            if (event.target.getAttribute('data-target') === 'question7') {
+                console.log("Back To Question: ", currentQuestion);
+                currentQuestion = 7;
+                return fetchQuestion(currentQuestion, checkVal);
+            }
+
+            // currentQuestion--;
+            // console.log("Back To Question: ", currentQuestion);
+            // if (currentQuestion === 1) { return fetchStartQuestion(); }
+            // else if (currentQuestion === 2) {
+            //     resetAnswers();
+            //     return fetchStartQuestion();
+            // }
+            // // if (currentQuestion === 3) return fetchQuestion(2, checkVal);
+            // else return fetchQuestion(currentQuestion, checkVal);
         }
 
         if (event.target.id === 'prev-1') {
