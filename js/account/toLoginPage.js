@@ -18,6 +18,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Global click event handler
     document.addEventListener('click', function (event) {
+        // Show/Hide password handler
+        if (event.target.classList.contains('show-password-btn')) {
+            const targetId = event.target.getAttribute('data-target');
+            const passwordInput = document.getElementById(targetId);
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                event.target.textContent = 'Hide';
+            } else {
+                passwordInput.type = 'password';
+                event.target.textContent = 'Show';
+            }
+        }
+
         // Navigation handlers
         if (event.target.id === 'prev') location.reload();
         if (event.target.id === 'prev-1') location.href = "/";
@@ -60,8 +73,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 .catch(error => console.error('Error fetching page:', error));
         }
 
-        // Handle registration form submission
         if (event.target.id === 'patient-register-submit') {
+            const registerButton = event.target;
+            const loadingContainer = document.querySelector('.loading-container');
             const fullname = document.getElementById('fullname').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -69,7 +83,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const dob = document.getElementById('dob').value;
             const phone = document.getElementById('phone').value;
 
-            // Basic validation
             if (!fullname || !email || !password || !confirmPassword || !dob || !phone) {
                 alert('Please fill in all fields');
                 return;
@@ -87,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Prepare user data for API
+            // * Prepare user data for API
             const userData = {
                 fullname,
                 email,
@@ -97,8 +110,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 type: 'patient'
             };
 
-            // Send registration data to API
-            fetch('https://sdp-api-n04w.onrender.com/register', {
+            loadingContainer.style.display = 'block';
+            registerButton.disabled = true;
+            registerButton.style.opacity = '0.7';
+
+            fetch('https://sdp-api-n04w.onrender.com/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -106,19 +122,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify(userData)
             })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Registration failed');
-                }
+                if (!response.ok) throw new Error('Registration failed');
                 return response.json();
             })
             .then(data => {
-                // Store token if provided by API
-                if (data.token) {
-                    localStorage.setItem('token', data.token);
-                }
+                // ! Stores the token in local storage
+                if (data.token) localStorage.setItem('token', data.token); 
                 
                 alert('Registration successful! Please log in.');
-                // Return to login page
                 fetch(`../../js/account/html/patient.html`)
                     .then(response => response.text())
                     .then(data => { shellElement.innerHTML = data; })
@@ -127,6 +138,11 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Registration error:', error);
                 alert('Registration failed. Please try again.');
+            })
+            .finally(() => {
+                loadingContainer.style.display = 'none';
+                registerButton.disabled = false;
+                registerButton.style.opacity = '1';
             });
         }
 
