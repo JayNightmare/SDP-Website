@@ -78,6 +78,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Passwords do not match');
                 return;
             }
+            if (password.length < 8) {
+                alert('Password must be at least 8 characters long');
+                return;
+            }
             if (!email.includes('@')) {
                 alert('Please enter a valid email address');
                 return;
