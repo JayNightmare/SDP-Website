@@ -49,12 +49,40 @@ document.addEventListener('DOMContentLoaded', function() {
                 .catch(error => console.error('Error fetching page:', error));
         }
         if (event.target.id === 'practitioner-login') {
-            const practitionerID = document.getElementById('id-practitioner');
-            if (practitionerID && practitionerID.value === "12345") {
-                location.href = "../../html/dashboard/home-dashboard.html";
-            } else {
-                alert("Invalid practitioner ID");
+            const id = document.getElementById('id-practitioner').value;
+            const password = document.getElementById('password').value;
+
+            if (!id || !password) {
+                alert('Please enter both ID and password');
+                return;
             }
+
+            // Send login request to API with type parameter
+            fetch('https://sdp-api-n04w.onrender.com/login/clinician', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id, password })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Login failed');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success' && data.userToken) {
+                    localStorage.setItem('token', data.userToken);
+                    location.href = "../../html/dashboard/home-dashboard.html";
+                } else {
+                    throw new Error(data.message || 'Login failed');
+                }
+            })
+            .catch(error => {
+                console.error('Login error:', error);
+                alert(error.message || 'Invalid credentials');
+            });
         }
 
         // Patient registration handlers
@@ -126,8 +154,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 return response.json();
             })
             .then(data => {
-                // ! Stores the token in local storage
-                if (data.token) localStorage.setItem('token', data.token); 
+                // Store token if provided by API
+                if (data.userToken) {
+                    localStorage.setItem('token', data.userToken);
+                }
                 
                 alert('Registration successful! Please log in.');
                 fetch(`../../js/account/html/patient.html`)
@@ -158,8 +188,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Send login request to API
-            fetch('https://sdp-api-n04w.onrender.com/login', {
+            // Send login request to API with type parameter
+            fetch('https://sdp-api-n04w.onrender.com/auth/login/patient', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -174,8 +204,8 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(data => {
                 // Store token from API
-                if (data.token) {
-                    localStorage.setItem('token', data.token);
+                if (data.status === 'success' && data.userToken) {
+                    localStorage.setItem('token', data.userToken);
                     // Store login state if remember me is checked
                     if (rememberMe) {
                         localStorage.setItem('isLoggedIn', 'true');
@@ -183,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Redirect to dashboard
                     location.href = "../../html/dashboard/home-dashboard.html";
                 } else {
-                    throw new Error('No token received');
+                    throw new Error(data.message || 'Login failed');
                 }
             })
             .catch(error => {
