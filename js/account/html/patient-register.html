@@ -35,6 +35,28 @@
             <label for="phone">Phone Number</label>
             <input type="tel" class="form-control" id="phone" placeholder="Enter phone number">
         </div>
+        <div class="form-group">
+            <label for="race">Race</label>
+            <select class="form-control" id="race">
+                <option value="">Select your race</option>
+                <option value="white">White</option>
+                <option value="black">Black</option>
+                <option value="asian">Asian</option>
+                <option value="other">Other</option>
+                <option value="prefer_not_to_say">Prefer not to say</option>
+            </select>
+            <div id="other-race-container" style="display: none; margin-top: 10px;">
+                <input type="text" class="form-control" id="other-race" placeholder="Please specify your race">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="sex">Sex</label>
+            <select class="form-control" id="sex">
+                <option value="">Select your sex</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+        </div>
         <br>
         <div class="loading-container" style="display: none;">
             <div class="loading-bar">

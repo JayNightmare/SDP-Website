@@ -31,6 +31,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
+        // Handle race selection change
+        if (event.target.id === 'race') {
+            const otherRaceContainer = document.getElementById('other-race-container');
+            if (event.target.value === 'other') {
+                otherRaceContainer.style.display = 'block';
+            } else {
+                otherRaceContainer.style.display = 'none';
+            }
+        }
+
         // Navigation handlers
         if (event.target.id === 'prev') location.reload();
         if (event.target.id === 'prev-1') location.href = "/";
@@ -58,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Send login request to API with type parameter
-            fetch('https://sdp-api-n04w.onrender.com/login/clinician', {
+            fetch('https://sdp-api-n04w.onrender.com/auth/login/clinician', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -110,8 +120,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const confirmPassword = document.getElementById('confirm-password').value;
             const dob = document.getElementById('dob').value;
             const phone = document.getElementById('phone').value;
+            const race = document.getElementById('race').value;
+            const otherRace = document.getElementById('other-race').value;
+            const sex = document.getElementById('sex').value;
 
-            if (!fullname || !email || !password || !confirmPassword || !dob || !phone) {
+            if (!fullname || !email || !password || !confirmPassword || !dob || !phone || !race || !sex) {
+                console.log(
+                    fullname, email, password, confirmPassword, dob, phone, race, sex
+                )
                 alert('Please fill in all fields');
                 return;
             }
@@ -128,13 +144,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // * Prepare user data for API
+            if (race === 'other' && !otherRace) {
+                alert('Please specify your race');
+                return;
+            }
+
             const userData = {
                 fullname,
                 email,
                 password,
                 dob,
                 phone,
+                race: race === 'other' ? otherRace : race,
+                sex,
                 type: 'patient'
             };
 
@@ -188,6 +210,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
+            // Show loading state
+            const loginButton = event.target;
+            const originalText = loginButton.textContent;
+            loginButton.textContent = 'Logging in...';
+            loginButton.disabled = true;
+
             // Send login request to API with type parameter
             fetch('https://sdp-api-n04w.onrender.com/auth/login/patient', {
                 method: 'POST',
@@ -203,14 +231,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 return response.json();
             })
             .then(data => {
-                // Store token from API
-                if (data.status === 'success' && data.userToken) {
-                    localStorage.setItem('token', data.userToken);
+                if (data.status === 'success') {
+                    localStorage.setItem('userType', 'patient');
+                    localStorage.setItem('userToken', data.userToken);
+                    localStorage.setItem('userId', data.userId);
+                    
+                    // Set token expiry
+                    const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 hours
+                    localStorage.setItem('tokenExpiry', expiryTime);
+                    
                     // Store login state if remember me is checked
                     if (rememberMe) {
                         localStorage.setItem('isLoggedIn', 'true');
                     }
-                    // Redirect to dashboard
+                    
                     location.href = "../../html/dashboard/home-dashboard.html";
                 } else {
                     throw new Error(data.message || 'Login failed');
@@ -218,7 +252,59 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('Login error:', error);
-                alert('Invalid email or password');
+                alert('Login failed. Please try again later.');
+            })
+            .finally(() => {
+                // Restore button state
+                loginButton.textContent = originalText;
+                loginButton.disabled = false;
+            });
+        } else if (event.target && (event.target.id === 'clinician-login')) {
+            const id = document.getElementById("id").value;
+            const password = document.getElementById("password").value;
+
+            // Show loading state
+            const loginButton = event.target;
+            const originalText = loginButton.textContent;
+            loginButton.textContent = 'Logging in...';
+            loginButton.disabled = true;
+
+            fetch('https://sdp-api-n04w.onrender.com/auth/login/clinician', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id, password })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Login failed');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    localStorage.setItem('userType', 'clinician');
+                    localStorage.setItem('userToken', data.userToken);
+                    localStorage.setItem('userId', data.userId);
+                    
+                    // Set token expiry
+                    const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 hours
+                    localStorage.setItem('tokenExpiry', expiryTime);
+                    
+                    location.href = '../../html/dashboard/home-dashboard.html';
+                } else {
+                    throw new Error(data.message || 'Login failed');
+                }
+            })
+            .catch(error => {
+                console.error('Login error:', error);
+                alert('Login failed. Please try again later.');
+            })
+            .finally(() => {
+                // Restore button state
+                loginButton.textContent = originalText;
+                loginButton.disabled = false;
             });
         }
     });
