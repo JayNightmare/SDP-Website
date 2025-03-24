@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>eGFR Calculator Options</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link data-vue-tag="ssr" rel="icon" type="image/png" sizes="96x96" href="../../images/favicon/favicon.ico">
+    <link rel="stylesheet" href="../../styles/global/navbar.css">
+    <link rel="stylesheet" href="../../styles/global/footer.css">
+    <link rel="stylesheet" href="../../styles/global/body.css">
+    <link rel="stylesheet" href="../../styles/dashboard/style.css">
+    <link rel="stylesheet" href="../../styles/dashboard/patient-dashboard.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+</head>
+<body>
+    <aside>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="space-out">
+                    <div class="flexNav">
+                        <a class="nav-logo" href="../dashboard/home-dashboard.html" title="Home">
+                            <div class="header-logo"></div>
+                        </a>
+                        <ul class="nav navbar-nav">
+                            <li><a href="../dashboard/home-dashboard.html"><i class="fa fa-home"></i> Home</a></li>
+                            <li class="active"><a href="egfr-options.html"><i class="fa fa-calculator"></i> eGFR Calculator</a></li>
+                            <li><a href="about.html"><i class="fa fa-info-circle"></i> About</a></li>
+                            <li><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <a class="logout" href="logout.html"><i class="fa fa-sign-out"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="dashboard-main">
+        <div class="dashboard-header">
+            <h1>eGFR Calculator Options</h1>
+            <p>Choose how you would like to calculate eGFR</p>
+        </div>
+
+        <div class="options-container">
+            <div class="option-card">
+                <div class="card-header">
+                    <i class="fa fa-file-excel-o"></i>
+                    <h2>Upload CSV</h2>
+                </div>
+                <div class="card-content">
+                    <p>Upload a CSV file containing patient data for bulk eGFR calculations.</p>
+                    <div class="upload-section">
+                        <input type="file" id="csv-upload" accept=".csv" class="file-input" />
+                        <label for="csv-upload" class="file-label">
+                            <i class="fa fa-upload"></i>
+                            Choose CSV File
+                        </label>
+                        <div id="file-name" class="file-name"></div>
+                    </div>
+                    <div id="missing-fields" class="missing-fields" style="display: none;">
+                        <h3>Missing Required Fields</h3>
+                        <form id="missing-fields-form">
+                            <!-- Will be populated dynamically -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="option-card">
+                <div class="card-header">
+                    <i class="fa fa-pencil"></i>
+                    <h2>Manual Input</h2>
+                </div>
+                <div class="card-content">
+                    <p>Enter patient data manually through our step-by-step calculator.</p>
+                    <a href="../services/calc/index.html" class="action-button">
+                        <i class="fa fa-calculator"></i>
+                        Start Calculator
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/dashboard/guardScript.js"></script>
+    <script src="../../js/dashboard/navScript.js"></script>
+    <script src="../../js/services/user/userInfo.js"></script>
+    <script src="../../js/account/logout.js"></script>
+    <script src="../../js/dashboard/egfrOptions.js"></script>
+</body>
+</html>

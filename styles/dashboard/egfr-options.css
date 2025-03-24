@@ -1,0 +1,134 @@
+.options-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin: 30px 0;
+}
+
+.option-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
+    height: 100%;
+}
+
+.option-card .card-header {
+    background-color: #123524;
+    color: white;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.option-card .card-header i {
+    font-size: 24px;
+}
+
+.option-card .card-header h2 {
+    margin: 0;
+    font-size: 1.4em;
+}
+
+.option-card .card-content {
+    padding: 25px;
+}
+
+.option-card p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* File Upload Styles */
+.upload-section {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-label {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #3e7c2e;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.file-label:hover {
+    background-color: #2d5c1e;
+}
+
+.file-label i {
+    margin-right: 8px;
+}
+
+.file-name {
+    margin-top: 10px;
+    color: #666;
+    font-size: 0.9em;
+}
+
+/* Missing Fields Form */
+.missing-fields {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.missing-fields h3 {
+    color: #123524;
+    font-size: 1.2em;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #666;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Action Button (reusing from dashboard) */
+.action-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    background-color: #3e7c2e;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: 0.3s;
+    justify-content: center;
+    font-size: 1.1em;
+}
+
+.action-button:hover {
+    background-color: #2d5c1e;
+    color: white;
+    text-decoration: none;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .options-container {
+        grid-template-columns: 1fr;
+    }
+}
