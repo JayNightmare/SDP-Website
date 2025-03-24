@@ -113,6 +113,15 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         }).then(data => {
             results.forEach(result => {
+                // Extract creatinine value and unit
+                let creatinineValue = result.creatinine;
+                let creatinineUnit = 'mg/dL'; // Default unit
+                const match = creatinineValue.match(/^([\d.]+)\s*(µmol\/l|umol\/l|mg\/dl)?$/i);
+                if (match) {
+                    creatinineValue = match[1];
+                    creatinineUnit = match[2] || 'mg/dL';
+                }
+
                 fetch(`https://sdp-api-n04w.onrender.com/patient/${data.id}/results`, {
                     method: 'POST',
                     headers: {
@@ -120,8 +129,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        creat: result.creatinine,
-                        calcType: 'CSV Upload (MDRD)',
+                        creat: creatinineValue,
+                        calcType: `CSV Upload (${creatinineUnit})`,
                         result: calculateEGFR(result)
                     })
                 })

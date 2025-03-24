@@ -104,6 +104,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
+            if (nhsId.length !== 10) {
+                alert('NHS ID must be 10 characters long');
+                return;
+            }
+
             if (race === 'other' && !otherRace) {
                 alert('Please specify your race');
                 return;
@@ -120,6 +125,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 type: 'patient'
             };
 
+            console.log(userData);
+
             loadingContainer.style.display = 'block';
             registerButton.disabled = true;
             registerButton.style.opacity = '0.7';
@@ -133,6 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => {
                 if (!response.ok) throw new Error('Registration failed');
+                console.error('Registration response:', response);
                 return response.json();
             })
             .then(data => {

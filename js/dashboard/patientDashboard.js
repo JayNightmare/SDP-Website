@@ -35,19 +35,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Update latest result
             const latest = sortedResults[0];
+            console.log(latest);
+            console.log(sortedResults)
             document.getElementById('latest-egfr').textContent = `${latest.eGFR} mL/min/1.73m²`;
             document.getElementById('latest-egfr-date').textContent = new Date().toLocaleDateString(); // Using current date as results don't include date
 
+
             // Update history
             const historyContainer = document.getElementById('egfr-history');
-            sortedResults.slice(1, 4).forEach(result => {
+            sortedResults.slice(1, 3).forEach(result => {
+                const calculationTypeMatch = result.calculationType.match(/\[(.*?)\]/) || result.calculationType.match(/\((.*?)\)/);
+                const unit = calculationTypeMatch ? calculationTypeMatch[1] : 'mg/dL';
                 const resultElement = document.createElement('div');
                 resultElement.className = 'result-row';
                 resultElement.innerHTML = `
                     <div class="result-header">${result.calculationType}</div>
                     <div class="result-value">${result.eGFR} mL/min/1.73m²</div>
                     <div class="result-details">
-                        Creatinine: ${result.creatine} mg/dL
+                        Creatinine: ${result.creatine} ${unit}
+
                     </div>
                 `;
                 historyContainer.appendChild(resultElement);
