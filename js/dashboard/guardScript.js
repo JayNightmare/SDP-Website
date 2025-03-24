@@ -1,9 +1,14 @@
 // TODO: Implement guard script to prevent users who are not logged in to access the page
 // Function to check if the user is logged in
 function isLoggedIn() {
-    // Check for a specific token or session variable
-    // This is just an example, replace with your actual authentication logic
-    return localStorage.getItem('userToken') !== null;
+    const userToken = localStorage.getItem('userToken');
+    const tokenExpiry = localStorage.getItem('tokenExpiry');
+
+    if (userToken && tokenExpiry) {
+        const expiryTimestamp = parseInt(tokenExpiry, 10);
+        return expiryTimestamp > Date.now();
+    }
+    return false;
 }
 
 // Guard script to prevent access if not logged in
