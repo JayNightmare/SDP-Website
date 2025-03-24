@@ -162,7 +162,7 @@ export function fetchResults() {
                 if (!response.ok) throw new Error('Failed to fetch patient data');
                 return response.json();
             }).then(data => {
-                fetch(`https://sdp-api-n04w.onrender.com/patient/${data.id}/results`, {
+                fetch(`https://sdp-api-n04w.onrender.com/patient/${data.id}/answers`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
