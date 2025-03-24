@@ -1,6 +1,6 @@
 {
   "name": "sdp-website",
-  "version": "0.0.1",
+  "version": "0.5.2",
   "description": "SDP Website about kidneys",
   "main": "index.html",
   "scripts": {

@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const registerButton = event.target;
             const loadingContainer = document.querySelector('.loading-container');
             const fullname = document.getElementById('fullname').value;
-            const email = document.getElementById('email').value;
+            const nhsId = document.getElementById('NHS-ID').value;
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
             const dob = document.getElementById('dob').value;
@@ -124,9 +124,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const otherRace = document.getElementById('other-race').value;
             const sex = document.getElementById('sex').value;
 
-            if (!fullname || !email || !password || !confirmPassword || !dob || !phone || !race || !sex) {
+            if (!fullname || !nhsId || !password || !confirmPassword || !dob || !phone || !race || !sex) {
                 console.log(
-                    fullname, email, password, confirmPassword, dob, phone, race, sex
+                    fullname, nhsId, password, confirmPassword, dob, phone, race, sex
                 )
                 alert('Please fill in all fields');
                 return;
@@ -139,10 +139,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Password must be at least 8 characters long');
                 return;
             }
-            if (!email.includes('@')) {
-                alert('Please enter a valid email address');
-                return;
-            }
 
             if (race === 'other' && !otherRace) {
                 alert('Please specify your race');
@@ -151,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const userData = {
                 fullname,
-                email,
+                id: nhsId,
                 password,
                 dob,
                 phone,
@@ -199,60 +195,55 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Handle patient login
-        if (event.target.id === 'patient-login') {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const rememberMe = document.getElementById('remember-me').checked;
-
-            // Basic validation
-            if (!email || !password) {
-                alert('Please enter both email and password');
+        if (event.target && (event.target.id === 'patient-login')) {
+            event.preventDefault(); // Prevent form submission if within a form
+            
+            const nhsID = document.getElementById("NHS-ID").value;
+            const password = document.getElementById("password").value;
+            
+            // Add basic validation
+            if (!nhsID || !password) {
+                showErrorMessage("Please enter both email and password");
                 return;
             }
-
+            
             // Show loading state
-            const loginButton = event.target;
+            const loginButton = document.getElementById("patient-login");
             const originalText = loginButton.textContent;
-            loginButton.textContent = 'Logging in...';
+            loginButton.textContent = "Logging in...";
             loginButton.disabled = true;
 
-            // Send login request to API with type parameter
-            fetch('https://sdp-api-n04w.onrender.com/auth/login/patient', {
-                method: 'POST',
+            fetch("https://sdp-api-n04w.onrender.com/auth/login/patient", {
+                method: "POST",
+                body: JSON.stringify({ id: nhsID, password: password }),
                 headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password })
+                    'Content-Type': 'application/json'
+                }
             })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Login failed');
+                    throw new Error(`Server responded with status: ${response.status}`);
                 }
                 return response.json();
             })
             .then(data => {
-                if (data.status === 'success') {
-                    localStorage.setItem('userType', 'patient');
-                    localStorage.setItem('userToken', data.userToken);
-                    localStorage.setItem('userId', data.userId);
+                if (data.status === "success") {
+                    localStorage.setItem("userType", "patient");
+                    localStorage.setItem("userToken", data.userToken);
+                    localStorage.setItem("userId", data.userId); // Store user ID if provided
                     
-                    // Set token expiry
+                    // Optional: Set token expiry
                     const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 hours
-                    localStorage.setItem('tokenExpiry', expiryTime);
-                    
-                    // Store login state if remember me is checked
-                    if (rememberMe) {
-                        localStorage.setItem('isLoggedIn', 'true');
-                    }
+                    localStorage.setItem("tokenExpiry", expiryTime);
                     
                     location.href = "../../html/dashboard/home-dashboard.html";
                 } else {
-                    throw new Error(data.message || 'Login failed');
+                    showErrorMessage(data.message || "Invalid credentials");
                 }
             })
             .catch(error => {
-                console.error('Login error:', error);
-                alert('Login failed. Please try again later.');
+                console.error('Error:', error);
+                showErrorMessage("Login failed. Please try again later.");
             })
             .finally(() => {
                 // Restore button state
@@ -306,6 +297,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 loginButton.textContent = originalText;
                 loginButton.disabled = false;
             });
+        }
+
+        function showErrorMessage(message) {
+            const errorElement = document.getElementById("login-error") || createErrorElement();
+            errorElement.textContent = message;
+            errorElement.style.display = "block";
+        }
+        
+        function createErrorElement() {
+            const errorDiv = document.createElement("div");
+            errorDiv.id = "login-error";
+            errorDiv.classList.add("error-message");
+            errorDiv.style.color = "red";
+            errorDiv.style.marginTop = "10px";
+            
+            // Insert after login button or another appropriate location
+            const loginButton = document.getElementById("patient-login");
+            loginButton.parentNode.insertBefore(errorDiv, loginButton.nextSibling);
+            
+            return errorDiv;
         }
     });
 });
