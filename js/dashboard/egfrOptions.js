@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('CSV file appears to be empty');
             return;
         }
+        console.log('CSV Lines:', lines);
 
         // Get headers and convert to lowercase for comparison
         const headers = lines[0].split(',').map(header => header.trim().toLowerCase());
@@ -143,15 +144,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function calculateEGFR(data) {
         const age = parseInt(data.age);
-        const scr = parseFloat(data.creatinine);
+        let scrRaw = data.creatinine.trim().toLowerCase(); // e.g., "88.4 µmol/l" or "1.2 mg/dl"
         const isFemale = data.sex.toLowerCase() === 'female';
         const isBlack = data.race.toLowerCase() === 'black';
-
+    
+        let scr = null;
+        let unit = null;
+    
+        // Extract value and unit using regex
+        const match = scrRaw.match(/^([\d.]+)\s*(µmol\/l|umol\/l|mg\/dl)?$/i);
+    
+        if (match) {
+            scr = parseFloat(match[1]);
+            unit = match[2]?.toLowerCase() || 'mg/dl'; // default to mg/dL if not present
+        } else {
+            console.warn('Invalid creatinine value format:', scrRaw);
+            return null; // or handle error
+        }
+    
+        // Convert µmol/L to mg/dL if needed
+        if (unit === 'µmol/l' || unit === 'umol/l') {
+            scr = scr * 0.011312;
+        }
+    
         let egfr = 186 * Math.pow(scr, -1.154) * Math.pow(age, -0.203);
         
-        if (isFemale) { egfr *= 0.742; }
-        if (isBlack) { egfr *= 1.212; }
-
-        return Math.round(egfr * 10) / 10; // Round to 1 decimal place
+        if (isFemale) egfr *= 0.742;
+        if (isBlack) egfr *= 1.212;
+    
+        return Math.round(egfr * 10) / 10;
     }
+    
 });
