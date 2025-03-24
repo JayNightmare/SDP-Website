@@ -33,15 +33,28 @@ document.addEventListener('DOMContentLoaded', function() {
         // Get headers and convert to lowercase for comparison
         const headers = lines[0].split(',').map(header => header.trim().toLowerCase());
         
-        // Check for missing required fields
+        // Check for missing required fields in headers
         const missingRequiredFields = requiredFields.filter(field => 
             !headers.includes(field)
         );
 
-        if (missingRequiredFields.length > 0) {
+        // Check for missing values in the first data row
+        const firstDataRow = lines[1].split(',').map(val => val.trim());
+        const missingValues = [];
+        
+        requiredFields.forEach(field => {
+            const fieldIndex = headers.indexOf(field);
+            if (fieldIndex !== -1 && (!firstDataRow[fieldIndex] || firstDataRow[fieldIndex] === '')) {
+                missingValues.push(field);
+            }
+        });
+
+        const allMissingFields = [...new Set([...missingRequiredFields, ...missingValues])];
+
+        if (allMissingFields.length > 0) {
             // Show missing fields form
             missingFields.style.display = 'block';
-            missingFieldsForm.innerHTML = missingRequiredFields.map(field => `
+            missingFieldsForm.innerHTML = allMissingFields.map(field => `
                 <div class="form-group">
                     <label for="${field}">${field.charAt(0).toUpperCase() + field.slice(1)}:</label>
                     <input type="text" id="${field}" name="${field}" required>
@@ -57,26 +70,29 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
 
             // Handle form submission
-            missingFieldsForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Get values from form
-                const formData = new FormData(missingFieldsForm);
-                const missingValues = {};
-                for (let [key, value] of formData.entries()) {
-                    missingValues[key] = value;
-                }
+            if (!missingFieldsForm.dataset.listenerAdded) {
+                missingFieldsForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Get values from form
+                    const formData = new FormData(missingFieldsForm);
+                    const missingFieldValues = {};
+                    for (let [key, value] of formData.entries()) {
+                        missingFieldValues[key] = value;
+                    }
 
-                // Process CSV with missing values
-                processCSVWithMissingValues(lines, headers, missingValues);
-            });
+                    // Process CSV with missing values
+                    processCSVWithMissingValues(lines, headers, missingFieldValues);
+                });
+                missingFieldsForm.dataset.listenerAdded = true;
+            }
         } else {
             // All required fields present, process directly
             processCSVWithMissingValues(lines, headers, {});
         }
     }
 
-    function processCSVWithMissingValues(lines, headers, missingValues) {
+    function processCSVWithMissingValues(lines, headers, missingFieldValues) {
         const results = [];
 
         // Process each line (skipping header)
@@ -88,13 +104,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Map CSV values
             headers.forEach((header, index) => {
-                row[header] = values[index];
+                row[header] = values[index] || '';
             });
 
-            // Add missing values
-            Object.assign(row, missingValues);
+            // Add missing values from form
+            Object.keys(missingFieldValues).forEach(field => {
+                // If field is missing in headers or value is empty, use the provided value
+                if (!headers.includes(field) || !row[field]) {
+                    row[field] = missingFieldValues[field];
+                }
+            });
 
-            // Validate required fields
+            // Validate all required fields have values
             if (requiredFields.every(field => row[field])) {
                 results.push(row);
             }
@@ -183,5 +204,4 @@ document.addEventListener('DOMContentLoaded', function() {
     
         return Math.round(egfr * 10) / 10;
     }
-    
 });
