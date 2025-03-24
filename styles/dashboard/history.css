@@ -1,0 +1,146 @@
+.history-main {
+    margin-left: 250px;
+    padding: 30px;
+    /* background-color: #f5f5f5; */
+    min-height: 100vh;
+}
+
+.history-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.history-header h1 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.history-header p {
+    color: #666;
+    font-size: 1.1em;
+}
+
+.history-container {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.history-item {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.history-item:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.history-item .date {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.history-item .result {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #28a745;
+}
+
+/* Modal Styles */
+.modal-content {
+    border-radius: 8px;
+}
+
+.modal-header {
+    background: #f8f9fa;
+    border-radius: 8px 8px 0 0;
+    padding: 15px 20px;
+}
+
+.modal-title {
+    color: #333;
+    font-weight: bold;
+}
+
+.result-section {
+    text-align: center;
+    padding: 20px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.result-section h2 {
+    color: #666;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.result-value {
+    font-size: 3em;
+    font-weight: bold;
+    color: #28a745;
+}
+
+.answers-section {
+    padding: 0 20px;
+}
+
+.answers-section h3 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.answer-item {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.answer-item .question {
+    font-weight: bold;
+    color: #495057;
+    margin-bottom: 5px;
+}
+
+.answer-item .answer {
+    color: #666;
+}
+
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 15px 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .history-main {
+        padding: 10px;
+    }
+
+    .history-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .result-value {
+        font-size: 2.5em;
+    }
+}
