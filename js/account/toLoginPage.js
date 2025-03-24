@@ -58,42 +58,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(data => { shellElement.innerHTML = data; })
                 .catch(error => console.error('Error fetching page:', error));
         }
-        if (event.target.id === 'practitioner-login') {
-            const id = document.getElementById('id-practitioner').value;
-            const password = document.getElementById('password').value;
-
-            if (!id || !password) {
-                alert('Please enter both ID and password');
-                return;
-            }
-
-            // Send login request to API with type parameter
-            fetch('https://sdp-api-n04w.onrender.com/auth/login/clinician', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id, password })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Login failed');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.status === 'success' && data.userToken) {
-                    localStorage.setItem('token', data.userToken);
-                    location.href = "../../html/dashboard/home-dashboard.html";
-                } else {
-                    throw new Error(data.message || 'Login failed');
-                }
-            })
-            .catch(error => {
-                console.error('Login error:', error);
-                alert(error.message || 'Invalid credentials');
-            });
-        }
 
         // Patient registration handlers
         if (event.target.id === 'patient-register') {
@@ -230,13 +194,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.status === "success") {
                     localStorage.setItem("userType", "patient");
                     localStorage.setItem("userToken", data.userToken);
-                    localStorage.setItem("userId", data.userId); // Store user ID if provided
                     
                     // Optional: Set token expiry
                     const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 hours
                     localStorage.setItem("tokenExpiry", expiryTime);
                     
-                    location.href = "../../html/dashboard/home-dashboard.html";
+                    location.href = "../../html/dashboard/patient-dashboard.html";
                 } else {
                     showErrorMessage(data.message || "Invalid credentials");
                 }
@@ -250,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 loginButton.textContent = originalText;
                 loginButton.disabled = false;
             });
-        } else if (event.target && (event.target.id === 'clinician-login')) {
+        } else if (event.target && (event.target.id === 'practitioner-login')) {
             const id = document.getElementById("id").value;
             const password = document.getElementById("password").value;
 
@@ -277,13 +240,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.status === 'success') {
                     localStorage.setItem('userType', 'clinician');
                     localStorage.setItem('userToken', data.userToken);
-                    localStorage.setItem('userId', data.userId);
                     
                     // Set token expiry
                     const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 hours
                     localStorage.setItem('tokenExpiry', expiryTime);
                     
-                    location.href = '../../html/dashboard/home-dashboard.html';
+                    location.href = '../../html/dashboard/clinician-dashboard.html';
                 } else {
                     throw new Error(data.message || 'Login failed');
                 }

@@ -1,17 +1,3 @@
-(async function() {
-    let userToken = localStorage.getItem("userToken");
-    let userType = localStorage.getItem("userType")
-
-    let userName = document.getElementById("userName");
-    try {
-        let user = await getUserData(userType, userToken);
-        console.log(user);
-        userName.innerText = user.email;
-    } catch (error) {
-        console.error("Error fetching user data:", error);
-    }
-})();
-
 async function getUserData(type, userToken) {
     // Validate inputs before making request
     if (!type || !userToken) {
