@@ -145,7 +145,7 @@ export function fetchResults() {
 
             // //
             // ! Send Answers to API to send the Database if Token is Valid
-            const token = localStorage.getItem("token");
+            const token = localStorage.getItem("userToken");
             if (!token) {
                 console.error("No auth token found in local storage");
                 console.log("No user data to send");
@@ -153,28 +153,35 @@ export function fetchResults() {
             }
 
             // TODO: Replace with actual API endpoint
-            fetch("https://sdp-api-n04w.onrender.com/checkUser", {
-                method: "PUT",
+            fetch(`https://sdp-api-n04w.onrender.com/patient`, {
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify(answers),
-            })
-                .then(response => {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (!response.ok) throw new Error('Failed to fetch patient data');
+                return response.json();
+            }).then(data => {
+                fetch(`https://sdp-api-n04w.onrender.com/patient/${data.id}/results`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify(answers),
+                }).then(response => {
                     if (!response.ok) {
                         console.error("Invalid token or user data");
                         console.log("No user data to send");
                         return;
                     }
                     return response.json();
-                })
-                .then(userCheckResult => {
+                }).then(userCheckResult => {
                     if (userCheckResult) {
                         console.log("User Check Result:", userCheckResult);
                     }
-                })
-                .catch(error => console.error("Error checking user data:", error));
+                }).catch(error => console.error("Error checking user data:", error));
+            }).catch(error => console.error("Error fetching user data:", error));
             // //
         })
         .catch(error => console.error('Error fetching results:', error));
