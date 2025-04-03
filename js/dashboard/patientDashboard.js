@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update patient information card
         document.getElementById('full-name').textContent = data.fullname;
         document.getElementById('dob').textContent = new Date(data.dob).toLocaleDateString();
-        document.getElementById('email').textContent = data.email;
         document.getElementById('phone').textContent = data.phone;
         document.getElementById('id').textContent = data.id;
 

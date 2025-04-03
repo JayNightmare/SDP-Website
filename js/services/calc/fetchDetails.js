@@ -93,6 +93,14 @@ export function fetchPreResults(checkVal) {
 export function fetchResults() {
     console.log("User Answers:", answers);
 
+    // ! Send Answers to API to send the Database if Token is Valid
+    const token = localStorage.getItem("userToken");
+    if (!token) {
+        console.error("No auth token found in local storage");
+        console.log("No user data to send");
+        return;
+    }
+
     const age = parseInt(answers["2-Age"]);
     const sex = answers["3-Gender"].toLowerCase();
     const creat = parseFloat(answers["4-SerumCreatinine"]);
@@ -137,6 +145,54 @@ export function fetchResults() {
                     egfrValueText.textContent = resultsValue; // Display actual API result
                     console.log("API Result:", resultsValue);
                     updateEGFRMarker(resultsValue, age); // Pass age for pediatric/adult determination
+
+                    // Send the final result to the /results API
+                    fetch(`https://sdp-api-n04w.onrender.com/patient/${data.id}/results`, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            resultId: data.results.resultId,
+                            creat: creat,
+                            calcType: answers["4-SC-Unit"],
+                            result: resultsValue,
+                        }),
+                    }).then(response => {
+                        if (!response.ok) {
+                            console.error("Failed to send final result");
+                            return;
+                        }
+                        return response.json();
+                    }).then(resultResponse => {
+                        if (resultResponse) {
+                            console.log("Final result sent successfully:", resultResponse);
+                        }
+
+                        // Send answers with the same resultId
+                        fetch(`https://sdp-api-n04w.onrender.com/patient/${data.id}/answers`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                resultId: resultResponse.resultId,
+                                answers: answers
+                            }),
+                        }).then(response => {
+                            if (!response.ok) {
+                                console.error("Failed to send answers");
+                                return;
+                            }
+                            return response.json();
+                        }).then(answerResponse => {
+                            if (answerResponse) {
+                                console.log("Answers sent successfully:", answerResponse);
+                            }
+                        }).catch(error => console.error("Error sending answers:", error));
+                    }).catch(error => console.error("Error sending final result:", error));
                 })
                 .catch(error => {
                     console.error("Error fetching eGFR from API:", error);
@@ -144,44 +200,40 @@ export function fetchResults() {
                 });
 
             // //
-            // ! Send Answers to API to send the Database if Token is Valid
-            const token = localStorage.getItem("userToken");
-            if (!token) {
-                console.error("No auth token found in local storage");
-                console.log("No user data to send");
-                return;
-            }
 
             // TODO: Replace with actual API endpoint
-            fetch(`https://sdp-api-n04w.onrender.com/patient`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => {
-                if (!response.ok) throw new Error('Failed to fetch patient data');
-                return response.json();
-            }).then(data => {
-                fetch(`https://sdp-api-n04w.onrender.com/patient/${data.id}/answers`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`
-                    },
-                    body: JSON.stringify(answers),
-                }).then(response => {
-                    if (!response.ok) {
-                        console.error("Invalid token or user data");
-                        console.log("No user data to send");
-                        return;
-                    }
-                    return response.json();
-                }).then(userCheckResult => {
-                    if (userCheckResult) {
-                        console.log("User Check Result:", userCheckResult);
-                    }
-                }).catch(error => console.error("Error checking user data:", error));
-            }).catch(error => console.error("Error fetching user data:", error));
+            // fetch(`https://sdp-api-n04w.onrender.com/patient`, {
+            //     headers: {
+            //         'Authorization': `Bearer ${token}`,
+            //         'Content-Type': 'application/json'
+            //     }
+            // }).then(response => {
+            //     if (!response.ok) throw new Error('Failed to fetch patient data');
+            //     return response.json();
+            // }).then(data => {
+            //     fetch(`https://sdp-api-n04w.onrender.com/patient/${data.id}/answers`, {
+            //         method: "POST",
+            //         headers: {
+            //             "Content-Type": "application/json",
+            //             "Authorization": `Bearer ${token}`
+            //         },
+            //         body: JSON.stringify({
+            //             resultId: resultResponse.resultsId,
+            //             answers: answers
+            //         }),
+            //     }).then(response => {
+            //         if (!response.ok) {
+            //             console.error("Invalid token or user data");
+            //             console.log("No user data to send");
+            //             return;
+            //         }
+            //         return response.json();
+            //     }).then(userCheckResult => {
+            //         if (userCheckResult) {
+            //             console.log("User Check Result:", userCheckResult);
+            //         }
+            //     }).catch(error => console.error("Error checking user data:", error));
+            // }).catch(error => console.error("Error fetching user data:", error));
             // //
         })
         .catch(error => console.error('Error fetching results:', error));

@@ -1,10 +1,18 @@
+// Function to format a date into a readable format
+function formatDate(timestamp) {
+    const date = new Date(timestamp);
+    // const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return date/* .toLocaleDateString(undefined, options); */
+}
+
 // Function to create a history item element
 function createHistoryItem(resultData, answersData) {
     const item = document.createElement('div');
+    console.log('Creating history item:', resultData, answersData);
     item.className = 'history-item';
     item.innerHTML = `
         <div class="date">${formatDate(resultData.timestamp)}</div>
-        <div class="result">eGFR: ${resultData.result}</div>
+        <div class="result">eGFR: ${resultData.eGFR} mL/min/1.73m²</div>
     `;
     
     // Add click handler to show modal
@@ -15,24 +23,36 @@ function createHistoryItem(resultData, answersData) {
 
 // Function to show history detail in modal
 function showHistoryDetail(resultData, answersData) {
-    // Set the result
-    document.getElementById('modal-result').textContent = `eGFR: ${resultData.result}`;
-    
-    // Clear previous answers
+    // Reset modal content
+    document.getElementById('modal-result').textContent = '';
     const answersContainer = document.getElementById('modal-answers');
     answersContainer.innerHTML = '';
-    
-    // Add each answer
-    Object.entries(answersData).forEach(([question, answer]) => {
-        const answerItem = document.createElement('div');
-        answerItem.className = 'answer-item';
-        answerItem.innerHTML = `
-            <div class="question">${question}</div>
-            <div class="answer">${answer}</div>
-        `;
-        answersContainer.appendChild(answerItem);
-    });
-    
+
+    // Validate resultData
+    if (!resultData || typeof resultData.result === 'undefined') {
+        console.error('Invalid resultData:', resultData);
+        document.getElementById('modal-result').textContent = 'Invalid result data';
+        return;
+    }
+
+    // Set the result
+    document.getElementById('modal-result').textContent = `eGFR: ${resultData.result}`;
+
+    // Validate and add answers
+    if (answersData && typeof answersData === 'object') {
+        Object.entries(answersData).forEach(([question, answer]) => {
+            const answerItem = document.createElement('div');
+            answerItem.className = 'answer-item';
+            answerItem.innerHTML = `
+                <div class="question">${question}</div>
+                <div class="answer">${answer}</div>
+            `;
+            answersContainer.appendChild(answerItem);
+        });
+    } else {
+        answersContainer.innerHTML = '<div class="no-answers">No answers available</div>';
+    }
+
     // Show the modal
     $('#historyModal').modal('show');
 }
@@ -41,6 +61,9 @@ function showHistoryDetail(resultData, answersData) {
 async function loadHistory() {
     try {
         const userToken = localStorage.getItem("userToken");
+        if (!userToken) {
+            throw new Error('User token not found. Please log in again.');
+        }
 
         // Fetch patient data from API
         const response = await fetch("https://sdp-api-n04w.onrender.com/patient", {
@@ -50,18 +73,23 @@ async function loadHistory() {
                 'Authorization': `Bearer ${userToken}`
             }
         });
+        console.log('Response:', response);
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const patientData = await response.json();
-        const historyResultsData = patientData.results || [];
-        const historyAnswersData = patientData.answers || [];
-        console.log(historyResultsData);
-        console.log(historyAnswersData);
+        if (!patientData || !Array.isArray(patientData.results) || !Array.isArray(patientData.answers)) {
+            throw new Error('Invalid patient data format');
+        }
+
+        const historyResultsData = patientData.results;
+        const historyAnswersData = patientData.answers;
+        console.log('History Results Data:', historyResultsData);
+        console.log('History Answers Data:', historyAnswersData);
         const historyList = document.getElementById('history-list');
-        
+
         if (historyResultsData.length === 0) {
             historyList.innerHTML = '<div class="no-history">No calculation history available</div>';
             return;
@@ -82,6 +110,11 @@ async function loadHistory() {
     } catch (error) {
         console.error('Error loading history:', error);
         document.getElementById('history-list').innerHTML = 
-            '<div class="error">Error loading history. Please try again later.</div>';
+            `<div class="error">Error loading history: ${error.message}. Please try again later.</div>`;
     }
 }
+
+// Ensure loadHistory is called when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    loadHistory();
+});
