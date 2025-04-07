@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // MFA status
         document.getElementById('mfa').innerHTML = data.mfa?.verified ?
         `2FA enabled` :
-        `<button onClick="onMfaSetup()">Setup MFA</button>`;
+        `<button onClick="onMfaSetup(${data.id})">Setup MFA</button>`;
 
         // Handle eGFR results
         if (data.results && data.results.length > 0) {
@@ -77,7 +77,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-function onMfaSetup() {
+function onMfaSetup(user) {
+    createQR(user);
+
     // Create the modal container
     const modal = document.createElement('div');
     modal.classList.add("mfa-modal");
@@ -86,7 +88,9 @@ function onMfaSetup() {
     modal.innerHTML = `
         <h2>Setup Multi-Factor Authentication</h2>
         <p>Scan the QR code below using your authenticator app:</p>
-        <img src="https://placehold.co/150" alt="QR Code" style="margin: 20px 0;">
+        <div id="qrcode">
+            <img src="https://placehold.co/150" alt="QR Code">
+        </div>
         <p>Enter the 6-digit code from your authenticator app:</p>
         <div class="mfa-input-container">
             <input type="text" maxlength="1" class="mfa-input" />
@@ -135,4 +139,35 @@ function onMfaSetup() {
             }
         });
     });
+}
+
+function createQR(user) {
+    let userToken = localStorage.getItem('userToken');
+
+    // async fetch to get the QR code
+    fetch('https://sdp-api-n04w.onrender.com/auth/mfa', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${userToken}`,
+            'Content-Type': 'application/json'
+        },
+    })
+        .then(response => {
+            return response.json()
+        })
+        .then(data => {
+            let payload = `otpauth://totp/${user}?secret=${data.secret}&issuer=SDP%20CKD`
+            console.log(`MFA data: ${data.secret}`);
+            console.log(`Payload: ${payload}`)
+            // console.log(data)
+            let qrdiv = document.getElementById("qrcode");
+            qrdiv.innerHTML = ""; // Clear previous QR code if any
+
+            var qrCode = new QRCode(qrdiv, {
+                text: payload,
+                width: 150,
+                height: 150,
+            });
+        })
+        .catch(error => console.error('Could not create a MFA key:', error));
 }

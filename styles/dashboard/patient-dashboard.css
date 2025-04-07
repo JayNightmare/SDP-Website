@@ -72,6 +72,11 @@
     font-weight: 600;
 }
 
+#qrcode {
+    display: flex;
+    justify-content: center;
+}
+
 /* eGFR Results Card */
 .result-row {
     text-align: center;
