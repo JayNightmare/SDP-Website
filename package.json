@@ -22,7 +22,6 @@
   },
   "homepage": "https://github.com/JayNightmare/SDP-Website#readme",
   "dependencies": {
-    "qrcode": "^1.5.4",
     "sdp-website": "file:"
   }
 }
