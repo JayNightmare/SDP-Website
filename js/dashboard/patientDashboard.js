@@ -27,6 +27,11 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('phone').textContent = data.phone;
         document.getElementById('id').textContent = data.id;
 
+        // MFA status
+        document.getElementById('mfa').innerHTML = data.mfa?.verified ?
+        `2FA enabled` :
+        `<button onClick="onMfaSetup()">Setup MFA</button>`;
+
         // Handle eGFR results
         if (data.results && data.results.length > 0) {
             // Sort by date descending (assuming most recent results are at the end of array)
@@ -71,3 +76,63 @@ document.addEventListener('DOMContentLoaded', function() {
         alert('Failed to load patient data. Please refresh the page.');
     });
 });
+
+function onMfaSetup() {
+    // Create the modal container
+    const modal = document.createElement('div');
+    modal.classList.add("mfa-modal");
+
+    // Add content to the modal
+    modal.innerHTML = `
+        <h2>Setup Multi-Factor Authentication</h2>
+        <p>Scan the QR code below using your authenticator app:</p>
+        <img src="https://placehold.co/150" alt="QR Code" style="margin: 20px 0;">
+        <p>Enter the 6-digit code from your authenticator app:</p>
+        <div class="mfa-input-container">
+            <input type="text" maxlength="1" class="mfa-input" />
+            <input type="text" maxlength="1" class="mfa-input" />
+            <input type="text" maxlength="1" class="mfa-input" />
+            <input type="text" maxlength="1" class="mfa-input" />
+            <input type="text" maxlength="1" class="mfa-input" />
+            <input type="text" maxlength="1" class="mfa-input" />
+        </div>
+        <button id="close-mfa-modal" style="padding: 10px 20px; background-color: #3e7c2e; color: #fff; border: none; border-radius: 4px; cursor: pointer;">Close</button>
+    `;
+
+    // Append the modal to the body
+    document.body.appendChild(modal);
+
+    // Add a semi-transparent background overlay
+    const overlay = document.createElement('div');
+    overlay.classList.add("mfa-overlay")
+
+    document.body.appendChild(overlay);
+
+    // Add event listener to close the modal
+    document.getElementById('close-mfa-modal').addEventListener('click', () => {
+        document.body.removeChild(overlay);
+        document.body.removeChild(modal);
+    });
+
+    // Add event listeners to input fields for auto-jumping
+    const inputs = modal.querySelectorAll('.mfa-input');
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            // Allow only digits (0-9)
+            if (!/^\d$/.test(e.target.value)) {
+                e.target.value = ''; // Clear invalid input
+                return;
+            }
+
+            if (e.target.value.length === 1 && index < inputs.length - 1) {
+                inputs[index + 1].focus(); // Move to the next input
+            }
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && index > 0 && !e.target.value) {
+                inputs[index - 1].focus(); // Move to the previous input on Backspace
+            }
+        });
+    });
+}
