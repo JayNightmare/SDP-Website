@@ -128,8 +128,15 @@ function onMfaSetup(user) {
                 return;
             }
 
+            // Move to the next input if valid
             if (e.target.value.length === 1 && index < inputs.length - 1) {
                 inputs[index + 1].focus(); // Move to the next input
+            }
+
+            // Check if all fields are filled
+            if (Array.from(inputs).every(input => input.value.length === 1)) {
+                const code = Array.from(inputs).map(input => input.value).join('');
+                verifyMfaCode(code); // Call the API with the entered code
             }
         });
 
@@ -146,7 +153,7 @@ function createQR(user) {
 
     // async fetch to get the QR code
     fetch('https://sdp-api-n04w.onrender.com/auth/mfa', {
-        method: 'POST',
+        method: 'GET',
         headers: {
             'Authorization': `Bearer ${userToken}`,
             'Content-Type': 'application/json'
@@ -170,4 +177,40 @@ function createQR(user) {
             });
         })
         .catch(error => console.error('Could not create a MFA key:', error));
+}
+
+function verifyMfaCode(code) {
+    const userToken = localStorage.getItem('userToken');
+
+    fetch('https://sdp-api-n04w.onrender.com/auth/mfa', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${userToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            code: code
+        })
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to verify MFA code');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('MFA verification successful:', data);
+            
+            // Notify the user
+            alert('MFA setup complete! For security reasons, you will now be logged out.');
+
+            // Log out the user
+            localStorage.removeItem('userToken'); // Clear the user token
+            localStorage.removeItem('userType');  // Clear any other user-related data
+            window.location.href = '../../html/account/index.html'; // Redirect to the login page
+        })
+        .catch(error => {
+            console.error('MFA verification failed:', error);
+            alert('Invalid MFA code. Please try again.');
+        });
 }
