@@ -193,6 +193,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .then(response => {
+                if (response.status === 303) {
+                    // Show 2FA modal
+                    show2FAModal({nhsID, password});
+                    return Promise.reject("2FA required");
+                }
                 if (!response.ok) {
                     throw new Error(`Server responded with status: ${response.status}`);
                 }
@@ -213,8 +218,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                showErrorMessage("Login failed. Please try again later.");
+                if (error !== "2FA required") {
+                    console.error('Error:', error);
+                    showErrorMessage("Login failed. Please try again later.");
+                }
             })
             .finally(() => {
                 // Restore button state
@@ -290,3 +297,103 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+function show2FAModal(userData) {
+    // Create the modal container
+    const modal = document.createElement('div');
+    modal.classList.add("mfa-modal");
+
+    // Add content to the modal
+    modal.innerHTML = `
+        <h2>Two-Factor Authentication</h2>
+        <p>Please enter the 6-digit code sent to your authenticator app:</p>
+        <div class="mfa-input-container">
+            <input type="text" maxlength="1" class="mfa-input" />
+            <input type="text" maxlength="1" class="mfa-input" />
+            <input type="text" maxlength="1" class="mfa-input" />
+            <input type="text" maxlength="1" class="mfa-input" />
+            <input type="text" maxlength="1" class="mfa-input" />
+            <input type="text" maxlength="1" class="mfa-input" />
+        </div>
+        <button id="close-mfa-modal" style="padding: 10px 20px; background-color: #3e7c2e; color: #fff; border: none; border-radius: 4px; cursor: pointer;">Close</button>
+    `;
+
+    // Append the modal to the body
+    document.body.appendChild(modal);
+
+    // Add a semi-transparent background overlay
+    const overlay = document.createElement('div');
+    overlay.classList.add("mfa-overlay");
+    document.body.appendChild(overlay);
+
+    // Add event listener to close the modal
+    document.getElementById('close-mfa-modal').addEventListener('click', () => {
+        document.body.removeChild(overlay);
+        document.body.removeChild(modal);
+    });
+
+    // Add event listeners to input fields for auto-jumping
+    const inputs = modal.querySelectorAll('.mfa-input');
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            // Allow only digits (0-9)
+            if (!/^\d$/.test(e.target.value)) {
+                e.target.value = ''; // Clear invalid input
+                return;
+            }
+
+            // Move to the next input if valid
+            if (e.target.value.length === 1 && index < inputs.length - 1) {
+                inputs[index + 1].focus(); // Move to the next input
+            }
+
+            // Check if all fields are filled
+            if (Array.from(inputs).every(input => input.value.length === 1)) {
+                const code = Array.from(inputs).map(input => input.value).join('');
+                verify2FACode(userData, code); // Call the API with the entered code
+            }
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && index > 0 && !e.target.value) {
+                inputs[index - 1].focus(); // Move to the previous input on Backspace
+            }
+        });
+    });
+}
+
+function verify2FACode(userData, code) {
+
+    fetch("https://sdp-api-n04w.onrender.com/auth/mfa", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+            id: userData.nhsID,
+            password: userData.password,
+            code: code
+         })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Invalid 2FA code");
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert("2FA verification successful! Redirecting to dashboard...");
+        localStorage.setItem("userType", "patient");
+        localStorage.setItem("userToken", data.userToken);
+        
+        // Optional: Set token expiry
+        const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 hours
+        localStorage.setItem("tokenExpiry", expiryTime);
+        
+        location.href = "../../html/dashboard/patient-dashboard.html";
+    })
+    .catch(error => {
+        console.error("2FA verification failed:", error);
+        alert("Invalid 2FA code. Please try again.");
+    });
+}
