@@ -2,7 +2,7 @@
 
 # You're Mother
 
-Server Repo: https://github.com/JayNightmare/SDP-server/tree/main
+Server Repo: https://github.com/JayNightmare/SDP-server
 
 </div>
 
