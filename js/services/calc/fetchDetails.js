@@ -146,6 +146,8 @@ export function fetchResults() {
                     console.log("API Result:", resultsValue);
                     updateEGFRMarker(resultsValue, age); // Pass age for pediatric/adult determination
 
+                    const resultId = data.results?.resultId || 1; // Default to 1 if resultId is undefined
+
                     // Send the final result to the /results API
                     fetch(`https://sdp-api-n04w.onrender.com/patient/${data.id}/results`, {
                         method: "POST",
@@ -154,7 +156,7 @@ export function fetchResults() {
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            resultId: data.results.resultId,
+                            resultId: resultId,
                             creat: creat,
                             calcType: answers["4-SC-Unit"],
                             result: resultsValue,
@@ -171,7 +173,7 @@ export function fetchResults() {
                         }
 
                         // Send answers with the same resultId
-                        fetch(`https://sdp-api-n04w.onrender.com/patient/${data.id}/answers`, {
+                        fetch(`https://sdp-api-n04w.onrender.com/patient/${resultResponse.id}/answers`, {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json",
@@ -198,43 +200,6 @@ export function fetchResults() {
                     console.error("Error fetching eGFR from API:", error);
                     if (loadingSpinner) loadingSpinner.style.display = 'none'; // Hide spinner on error
                 });
-
-            // //
-
-            // TODO: Replace with actual API endpoint
-            // fetch(`https://sdp-api-n04w.onrender.com/patient`, {
-            //     headers: {
-            //         'Authorization': `Bearer ${token}`,
-            //         'Content-Type': 'application/json'
-            //     }
-            // }).then(response => {
-            //     if (!response.ok) throw new Error('Failed to fetch patient data');
-            //     return response.json();
-            // }).then(data => {
-            //     fetch(`https://sdp-api-n04w.onrender.com/patient/${data.id}/answers`, {
-            //         method: "POST",
-            //         headers: {
-            //             "Content-Type": "application/json",
-            //             "Authorization": `Bearer ${token}`
-            //         },
-            //         body: JSON.stringify({
-            //             resultId: resultResponse.resultsId,
-            //             answers: answers
-            //         }),
-            //     }).then(response => {
-            //         if (!response.ok) {
-            //             console.error("Invalid token or user data");
-            //             console.log("No user data to send");
-            //             return;
-            //         }
-            //         return response.json();
-            //     }).then(userCheckResult => {
-            //         if (userCheckResult) {
-            //             console.log("User Check Result:", userCheckResult);
-            //         }
-            //     }).catch(error => console.error("Error checking user data:", error));
-            // }).catch(error => console.error("Error fetching user data:", error));
-            // //
         })
         .catch(error => console.error('Error fetching results:', error));
 }
