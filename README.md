@@ -2,6 +2,8 @@
 
 # You're Mother
 
+Server Repo: https://github.com/JayNightmare/SDP-server/tree/main
+
 </div>
 
 ### How to start:
