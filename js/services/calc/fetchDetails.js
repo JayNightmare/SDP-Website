@@ -98,7 +98,6 @@ export function fetchResults() {
     if (!token) {
         console.error("No auth token found in local storage");
         console.log("No user data to send");
-        return;
     }
 
     const age = parseInt(answers["2-Age"]);
