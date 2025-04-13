@@ -303,6 +303,12 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
+.card-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
 
 option:disabled {
     color: white !important;

@@ -75,9 +75,12 @@ function displayPatients(patients) {
 
         // Get the eGFR from the result with the highest resultId in the results array
         let egfr = null;
-        if (patient.results && Array.isArray(patient.results)) {
+        if (patient.results && Array.isArray(patient.results) && patient.results.length > 0) {
             const highestResult = patient.results.reduce((max, result) => result.resultId > max.resultId ? result : max, patient.results[0]);
             egfr = highestResult.eGFR;
+        } else {
+            console.warn('No results found for patient:', patient.id);
+            egfr = "No Results";
         }
         console.log('eGFR:', egfr);
 
@@ -99,9 +102,12 @@ function displayPatients(patients) {
         } else if (egfr >= 15) {
             status = 'Severe Decrease';
             statusClass = 'red';
-        } else {
+        } else if (egfr < 15) {
             status = 'Kidney Failure';
             statusClass = 'dark-red';
+        } else if (egfr === "No Results") {
+            status = 'No Results Available';
+            statusClass = 'grey';
         }
 
         const tr = document.createElement('tr');
@@ -161,17 +167,19 @@ async function filterPatients(searchTerm) {
 // View patient details
 async function viewPatient(patientId) {
     try {
-        const response = await fetch(`https://sdp-api-n04w.onrender.com/patient/${patientId}`, {
+        const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients/details`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+            'Authorization': `Bearer ${localStorage.getItem('userToken')}`
             }
         });
         
+        const data = await response.json();
+        const patient = data.patients.find(p => p.id === patientId);
+        if (!patient) throw new Error('Patient not found');
+        
         if (!response.ok) throw new Error('Failed to fetch patient details');
         
-        const patient = await response.json();
         showPatientModal(patient);
-        
     } catch (error) {
         console.error('Error viewing patient:', error);
     }
@@ -259,40 +267,47 @@ function contactPatient(patientId) {
 // Show patient modal with details
 function showPatientModal(patient) {
     const modal = document.createElement('div');
-    modal.classList.add('patient-modal');
+    modal.classList.add('add-modal');
     
     modal.innerHTML = `
         <div class="modal-content">
             <h2>Patient Details</h2>
+            <br>
             <div class="patient-info">
-                <p><strong>Name:</strong> ${patient.name}</p>
+                <p><strong>Name:</strong> ${patient.fullname}</p>
                 <p><strong>ID:</strong> ${patient.id}</p>
                 <p><strong>Date of Birth:</strong> ${new Date(patient.dob).toLocaleDateString()}</p>
                 <p><strong>Phone:</strong> ${patient.phone}</p>
-                <p><strong>Email:</strong> ${patient.email}</p>
             </div>
+            <br>
             <div class="test-results">
-                <h3>Test Results</h3>
+                <h3>Kidney Results</h3>
+                <br>
+                ${!patient.results || patient.results.length === 0 ? '<p>No test results available.</p>' : `
                 <table>
                     <thead>
                         <tr>
                             <th>Date</th>
-                            <th>Test Type</th>
+                            <th>Creatine</th>
                             <th>Result</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${patient.testResults?.map(test => `
+                        ${patient.results.map(test => `
                             <tr>
-                                <td>${new Date(test.date).toLocaleDateString()}</td>
-                                <td>${test.type}</td>
-                                <td>${test.result}</td>
+                                <td>${new Date(test.date || patient.answers?.timestamp).toLocaleDateString()}</td>
+                                <td>${test.creatine}</td>
+                                <td>${test.eGFR}</td>
                             </tr>
-                        `).join('') || '<tr><td colspan="3">No test results available</td></tr>'}
+                        `).join('')}
                     </tbody>
                 </table>
+                `}
             </div>
-            <button onclick="this.parentElement.remove()" class="close-btn">Close</button>
+            <br>
+            <div class="form-buttons">
+                <button onclick="this.parentElement.parentElement.parentElement.remove()" class="cancel-btn">Close</button>
+            </div>
         </div>
     `;
     
@@ -307,7 +322,7 @@ document.querySelector('.new-patient-btn').addEventListener('click', () => {
     modal.innerHTML = `
         <div class="modal-content">
             <h2>Add New Patient</h2>
-            <form id="add-patient-form add-form">
+            <div id="add-patient-form" class="add-form">
                 <br>
                 <div class="form-group">
                     <label for="patient-id">Patient ID:</label>
@@ -316,18 +331,16 @@ document.querySelector('.new-patient-btn').addEventListener('click', () => {
                 <p id="error-message-container" class="error-message" style="color: red; display: none;">Invalid Patient ID. Please try again.</p>
                 <br>
                 <div class="form-buttons">
-                    <button type="submit" class="submit-btn">Add Patient</button>
+                    <button id="submit-patient-btn" class="submit-btn">Add Patient</button>
                     <button type="button" onclick="this.parentElement.parentElement.parentElement.parentElement.remove()" class="cancel-btn">Cancel</button>
                 </div>
-            </form>
+            </div>
         </div>
     `;
     
     document.body.appendChild(modal);
     
-    document.getElementById('add-patient-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
+    document.getElementById('submit-patient-btn').addEventListener('click', async () => {
         const patientId = document.getElementById('patient-id').value;
         console.log('Adding patient with ID:', patientId);
         const errorMessage = document.getElementById('error-message-container');
@@ -344,6 +357,11 @@ document.querySelector('.new-patient-btn').addEventListener('click', () => {
             
             if (!response.ok) {
                 if (response.status === 422) {
+                    errorMessage.style.display = 'block';
+                    errorMessage.style.paddingTop = '10px';
+                } else if (response.status === 401) {
+                    const errorData = await response.json();
+                    errorMessage.innerHTML = errorData.message || response.statusText;
                     errorMessage.style.display = 'block';
                     errorMessage.style.paddingTop = '10px';
                 } else {
@@ -402,21 +420,22 @@ document.querySelector('.new-appointment-btn').addEventListener('click', () => {
     // Populate the dropdown with patients
     (async () => {
         try {
-            const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients`, {
+            const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients/details`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`
                 }
             });
 
-            if (!response.ok) throw new Error('Failed to fetch patients');
+            if (!response.ok) throw new Error('Failed to fetch patient details');
 
-            const patients = await response.json();
+            const data = await response.json();
+            const patients = data.patients;
             const patientSelect = document.getElementById('appointment-patient-id');
 
             patients.forEach(patient => {
                 const option = document.createElement('option');
                 option.value = patient.id;
-                option.textContent = `${patient.fullname} (${patient.nhsid})`;
+                option.textContent = `${patient.fullname} (${patient.id})`;
                 patientSelect.appendChild(option);
             });
         } catch (error) {
@@ -480,7 +499,7 @@ async function loadDashboardStats() {
         document.getElementById('today-patients').textContent = stats.patients?.length || 0;
         document.getElementById('pending-reports').textContent = stats.results?.length || 0;
         document.getElementById('appointments').textContent = stats.appointments?.length || 0;
-        document.getElementById('total-messages').textContent = stats.messages?.length || 0;
+        document.getElementById('messages').textContent = stats.messages?.length || 0;
     } catch (error) {
         console.error('Error loading dashboard stats:', error);
     }
