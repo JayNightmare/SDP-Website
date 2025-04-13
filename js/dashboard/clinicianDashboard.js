@@ -472,6 +472,7 @@ document.querySelector('.new-appointment-btn').addEventListener('click', () => {
             modal.remove();
             // Optionally, reload appointments or update the UI
             
+            
         } catch (error) {
             console.error('Error scheduling appointment:', error);
         }
