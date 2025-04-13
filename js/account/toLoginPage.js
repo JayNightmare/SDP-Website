@@ -298,7 +298,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.status === "success") {
                     localStorage.setItem("userType", "patient");
                     localStorage.setItem("userToken", data.userToken);
-                    localStorage.setItem("userId", nhsID);
                     
                     // Optional: Set token expiry
                     const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 hours
@@ -324,6 +323,7 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
             
             const id = document.getElementById("id").value;
+            console.log(id);
             const password = document.getElementById("password").value;
 
             // Add basic validation
@@ -346,43 +346,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify({ id, password })
             })
             .then(response => {
-                if (response.status === 302) {
-                    // MFA not set up yet
-                    showMFASetupModal({id, password});
-                    return Promise.reject("MFA setup required");
-                }
                 if (response.status === 303) {
                     // Show 2FA modal
-                    show2FAModal({id, password});
+                    show2FAModal({ id, password });
                     return Promise.reject("2FA required");
                 }
                 if (!response.ok) {
+                    console.error('Login failed:', response);
                     throw new Error('Login failed');
                 }
                 return response.json();
             })
             .then(data => {
-                if (data.status === 'success') {
-                    localStorage.setItem('userType', 'clinician');
-                    localStorage.setItem('userToken', data.userToken);
-                    
-                    // Set token expiry
-                    const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 hours
-                    localStorage.setItem('tokenExpiry', expiryTime);
-                    
-                    location.href = '../../html/dashboard/clinician-dashboard.html';
-                } else {
-                    throw new Error(data.message || 'Login failed');
+                localStorage.setItem('userToken', data.userToken);
+                
+                if (!data.mfa) {
+                    // MFA not set up yet
+                    onMfaSetup(id);
+                    return Promise.reject("MFA setup required");
                 }
+                
+                return Promise.reject("2FA required");
             })
             .catch(error => {
-                if (error !== "2FA required") {
+                if (error !== "2FA required" && error !== "MFA setup required") {
                     console.error('Login error:', error);
-                    showErrorMessage("Invalid credentials. Please check your HPC ID and password.");
+                    showErrorMessage("Invalid credentials. Please try again");
                 }
             })
             .finally(() => {
-                // Restore button state
                 loginButton.textContent = originalText;
                 loginButton.disabled = false;
             });
@@ -415,125 +407,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-
-function showMFASetupModal(userData) {
-    // Create the modal container
-    const modal = document.createElement('div');
-    modal.classList.add("mfa-modal");
-
-    // Add content to the modal
-    modal.innerHTML = `
-        <h2>Set Up Two-Factor Authentication</h2>
-        <p>Please scan this QR code with your authenticator app:</p>
-        <div id="qr-code" style="text-align: center; margin: 20px 0;">
-            Loading QR code...
-        </div>
-        <p>Enter the 6-digit code from your authenticator app to verify:</p>
-        <div class="mfa-input-container">
-            <input type="text" maxlength="1" class="mfa-input" />
-            <input type="text" maxlength="1" class="mfa-input" />
-            <input type="text" maxlength="1" class="mfa-input" />
-            <input type="text" maxlength="1" class="mfa-input" />
-            <input type="text" maxlength="1" class="mfa-input" />
-            <input type="text" maxlength="1" class="mfa-input" />
-        </div>
-        <button id="close-mfa-modal" style="padding: 10px 20px; background-color: #3e7c2e; color: #fff; border: none; border-radius: 4px; cursor: pointer;">Close</button>
-    `;
-
-    // Append the modal to the body
-    document.body.appendChild(modal);
-
-    // Add a semi-transparent background overlay
-    const overlay = document.createElement('div');
-    overlay.classList.add("mfa-overlay");
-    document.body.appendChild(overlay);
-
-    // Get QR code for MFA setup
-    fetch(`https://sdp-api-n04w.onrender.com/auth/mfa/setup`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            id: userData.nhsID || userData.id,
-            type: userData.nhsID ? 'patient' : 'clinician'
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('qr-code').innerHTML = `
-            <img src="${data.qrCode}" alt="QR Code" style="max-width: 200px;" />
-            <p style="margin-top: 10px;">Or enter this code manually: <strong>${data.secret}</strong></p>
-        `;
-    })
-    .catch(error => {
-        console.error('Error fetching QR code:', error);
-        document.getElementById('qr-code').innerHTML = 'Error loading QR code. Please try again.';
-    });
-
-    // Add event listener to close the modal
-    document.getElementById('close-mfa-modal').addEventListener('click', () => {
-        document.body.removeChild(overlay);
-        document.body.removeChild(modal);
-    });
-
-    // Add event listeners to input fields for auto-jumping
-    const inputs = modal.querySelectorAll('.mfa-input');
-    inputs.forEach((input, index) => {
-        input.addEventListener('input', (e) => {
-            // Allow only digits (0-9)
-            if (!/^\d$/.test(e.target.value)) {
-                e.target.value = ''; // Clear invalid input
-                return;
-            }
-
-            // Move to the next input if valid
-            if (e.target.value.length === 1 && index < inputs.length - 1) {
-                inputs[index + 1].focus(); // Move to the next input
-            }
-
-            // Check if all fields are filled
-            if (Array.from(inputs).every(input => input.value.length === 1)) {
-                const code = Array.from(inputs).map(input => input.value).join('');
-                setupMFAVerification(userData, code); // Verify the setup
-            }
-        });
-
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' && index > 0 && !e.target.value) {
-                inputs[index - 1].focus(); // Move to the previous input on Backspace
-            }
-        });
-    });
-}
-
-function setupMFAVerification(userData, code) {
-    fetch(`https://sdp-api-n04w.onrender.com/auth/mfa/verify-setup`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            id: userData.nhsID || userData.id,
-            type: userData.nhsID ? 'patient' : 'clinician',
-            code: code
-        })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Invalid verification code');
-        }
-        return response.json();
-    })
-    .then(data => {
-        alert('MFA setup successful! Please log in again.');
-        location.reload();
-    })
-    .catch(error => {
-        console.error('MFA setup verification failed:', error);
-        alert('Invalid verification code. Please try again.');
-    });
-}
 
 function show2FAModal(userData) {
     // Create the modal container
@@ -600,11 +473,7 @@ function show2FAModal(userData) {
 }
 
 function verify2FACode(userData, code) {
-    const endpoint = userData.nhsID ? 
-        "https://sdp-api-n04w.onrender.com/auth/mfa/patient" :
-        "https://sdp-api-n04w.onrender.com/auth/mfa/clinician";
-
-    fetch(endpoint, {
+    fetch("https://sdp-api-n04w.onrender.com/auth/mfa", {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -613,7 +482,7 @@ function verify2FACode(userData, code) {
             id: userData.nhsID || userData.id,
             password: userData.password,
             code: code
-         })
+        })
     })
     .then(response => {
         if (!response.ok) {

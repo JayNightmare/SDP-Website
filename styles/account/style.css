@@ -60,6 +60,12 @@ ul {
     }
 }
 
+#qrcode {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
 .ac_buttons {
     display: flex;
     gap: 20px;
