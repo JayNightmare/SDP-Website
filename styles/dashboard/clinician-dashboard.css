@@ -1,4 +1,21 @@
+h1, h2, h3, h4, h5, h6 {
+    color: #fff !important;
+}
+
+.last-login {
+    color: #fff;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
 /* Clinician Dashboard Specific Styles */
+.dashboard-main {
+    margin-left: 250px;
+    padding: 30px;
+    background-color: #121212;
+    min-height: 100vh;
+    color: #fff;
+}
 
 /* Stats Overview */
 .stats-grid {
@@ -9,15 +26,16 @@
 }
 
 .stat-item {
-    background: #fff;
+    background: #1e1e1e;
     padding: 20px;
     border-radius: 8px;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border: 1px solid #2a2a2a;
 }
 
 .stat-label {
-    color: #666;
+    color: #fff;
     font-size: 14px;
     margin-bottom: 8px;
 }
@@ -25,7 +43,7 @@
 .stat-value {
     font-size: 24px;
     font-weight: bold;
-    color: #333;
+    color: #fff;
 }
 
 /* Patients Board */
@@ -43,9 +61,15 @@
 
 #patient-search {
     padding: 8px 12px;
-    border: 1px solid #ddd;
+    border: 1px solid #2a2a2a;
     border-radius: 4px;
     width: 250px;
+    background: #1e1e1e;
+    color: #fff;
+}
+
+#patient-search::placeholder {
+    color: #888;
 }
 
 .filter-btn {
@@ -55,22 +79,41 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.filter-btn:hover {
+    background: #4a9237;
 }
 
 .patients-table {
     width: 100%;
     border-collapse: collapse;
+    
+}
+
+.patients-table thead {
+    background: #1e1e1e !important;
+}
+
+.patients-table tbody tr {
+    background: #121212;
+}
+
+.patients-table tbody tr:hover {
+    background: #1a1a1a;
 }
 
 .patients-table th,
 .patients-table td {
     padding: 12px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #2a2a2a;
 }
 
 .patients-table th {
-    background: #f5f5f5;
+    background: #1e1e1e;
+    color: #fff;
     font-weight: 600;
 }
 
@@ -80,6 +123,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 20px;
+    margin-top: 50px;
 }
 
 .new-appointment-btn {
@@ -89,6 +133,11 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.new-appointment-btn:hover {
+    background: #4a9237;
 }
 
 .appointment-list {
@@ -102,13 +151,14 @@
     display: flex;
     gap: 15px;
     padding: 15px;
-    background: #f9f9f9;
+    background: #1e1e1e;
     border-radius: 8px;
+    border: 1px solid #2a2a2a;
 }
 
 .appointment-time {
     font-size: 14px;
-    color: #666;
+    color: #fff;
 }
 
 .appointment-details {
@@ -122,7 +172,7 @@
 
 .appointment-type {
     font-size: 14px;
-    color: #666;
+    color: #fff;
 }
 
 .view-all-btn {
@@ -131,9 +181,16 @@
     margin: 20px auto 0;
     padding: 8px 16px;
     background: none;
-    border: none;
+    border: 1px solid #3e7c2e;
     color: #3e7c2e;
     cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.view-all-btn:hover {
+    background: #3e7c2e;
+    color: #fff;
 }
 
 /* Messages */
@@ -146,8 +203,9 @@
 
 .message-item {
     padding: 15px;
-    background: #f9f9f9;
+    background: #121212;
     border-radius: 8px;
+    border: 1px solid #2a2a2a;
 }
 
 .message-sender {
@@ -157,7 +215,7 @@
 
 .message-preview {
     font-size: 14px;
-    color: #666;
+    color: #fff;
 }
 
 /* Responsive Design */
