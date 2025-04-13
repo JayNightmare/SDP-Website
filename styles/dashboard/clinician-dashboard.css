@@ -17,6 +17,12 @@ h1, h2, h3, h4, h5, h6 {
     color: #fff;
 }
 
+.dashboard-grid {
+    display: grid;
+    /* grid-template-columns: repeat(3, 1fr); */
+    /* gap: 20px; */
+}
+
 /* Stats Overview */
 .stats-grid {
     display: grid;
@@ -52,6 +58,8 @@ h1, h2, h3, h4, h5, h6 {
     justify-content: space-between;
     align-items: center;
     padding: 20px;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
 .search-bar {
@@ -117,6 +125,24 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
 }
 
+.actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    padding: 8px 16px;
+    background: #3e7c2e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    max-width: 44px;
+    display: flex;
+    justify-content: center;
+}
+
 /* Appointments */
 .appointments .card-header {
     display: flex;
@@ -124,6 +150,7 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     padding: 20px;
     margin-top: 50px;
+    gap: 20px;
 }
 
 .new-btn-add {
@@ -290,20 +317,65 @@ option:disabled {
 }
 
 @media (max-width: 768px) {
+    .dashboard-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
     .stats-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .patients-board .card-header {
         flex-direction: column;
         gap: 15px;
     }
-    
+
     .search-bar {
         width: 100%;
     }
-    
+
     #patient-search {
         width: 100%;
+    }
+
+    .appointments .card-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .appointment-list {
+        gap: 10px;
+    }
+
+    .messages .card-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .message-list {
+        gap: 10px;
+    }
+}
+
+.hide-content {
+    display: none;
+}
+
+@media (max-width: 424px) {
+    .hide-content {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+
+        p {
+            margin: 0;
+            font-size: 14px;
+        }
+    }
+
+    .patients-table {
+        display: none;
     }
 }

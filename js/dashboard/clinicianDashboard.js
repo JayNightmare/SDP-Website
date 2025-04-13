@@ -36,34 +36,23 @@ async function loadClinicianInfo() {
 // Load patients list
 async function loadPatients() {
     try {
-        // Fetch the list of patient IDs from the clinician endpoint
-        const clinicianResponse = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients`, {
+        // Fetch detailed patient data for all patients assigned to the clinician
+        const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients/details`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`
             }
         });
 
-        if (!clinicianResponse.ok) throw new Error('Failed to fetch patient IDs');
+        if (!response.ok) throw new Error('Failed to fetch patient details');
 
-        const patientIds = await clinicianResponse.json();
+        const data = await response.json();
 
-        // Fetch detailed patient data for each patient ID
-        const patientPromises = patientIds.map(async (patientId) => {
-            const patientResponse = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients/details`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-                }
-            });
+        if (data.status !== 'success') {
+            throw new Error('Unexpected response format');
+        }
 
-            if (!patientResponse.ok) throw new Error(`Failed to fetch patient details for ID: ${patientId}`);
-
-            console.log(patientResponse);
-            return patientResponse.json();
-        });
-
-        const patients = await Promise.all(patientPromises);
+        const patients = data.patients;
 
         // Display the patients in the table
         displayPatients(patients);
@@ -77,9 +66,20 @@ async function loadPatients() {
 function displayPatients(patients) {
     const tbody = document.getElementById('patients-list');
     tbody.innerHTML = '';
+
+    console.log('Patients:', patients);
     
     patients.forEach(patient => {
-        let egfr = patient.egfr;
+        console.log('Patient:', patient);
+
+        // Get the eGFR from the result with the highest resultId in the results array
+        let egfr = null;
+        if (patient.results && Array.isArray(patient.results)) {
+            const highestResult = patient.results.reduce((max, result) => result.resultId > max.resultId ? result : max, patient.results[0]);
+            egfr = highestResult.eGFR;
+        }
+        console.log('eGFR:', egfr);
+
         let status = '';
         let statusClass = '';
 
@@ -106,9 +106,9 @@ function displayPatients(patients) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${patient.fullname}</td>
-            <td>${patient.nhsid}</td>
+            <td>${patient.id}</td>
             <td><span class="status-badge ${statusClass}">${status}</span></td>
-            <td>
+            <td class="actions">
                 <button onclick="viewPatient('${patient.id}')" class="action-btn view">
                     <i class="fa fa-eye"></i>
                 </button>
