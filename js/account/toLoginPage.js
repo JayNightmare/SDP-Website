@@ -365,7 +365,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.status === 'success') {
                     localStorage.setItem('userType', 'clinician');
                     localStorage.setItem('userToken', data.userToken);
-                    localStorage.setItem('userId', id);
                     
                     // Set token expiry
                     const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 hours
