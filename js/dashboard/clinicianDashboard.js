@@ -58,6 +58,9 @@ async function loadPatients() {
         // Display the patients in the table
         displayPatients(patients);
 
+        // Display appointments in the table
+        displayAppointments();
+
     } catch (error) {
         console.error('Error loading patients:', error);
     }
@@ -129,6 +132,44 @@ function displayPatients(patients) {
         `;
         tbody.appendChild(tr);
     });
+}
+
+// Display appointments in the table
+async function displayAppointments() {
+    try {
+        const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+            }
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch appointments');
+
+        const clinicianData = await response.json();
+        const appointments = clinicianData.appointments || [];
+        const patients = clinicianData.patients || [];
+        console.log('Appointments:', appointments);
+
+        const tbody = document.getElementById('appointment-list');
+        tbody.innerHTML = '';
+
+        appointments.forEach(appointment => {
+            const patient = patients.find(p => p.id === appointment.patientID);
+            const patientName = patient ? patient.fullname : 'Unknown Patient';
+            console.log('Patient Name:', patientName);
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${new Date(appointment.date).toLocaleDateString()} at ${appointment.time}</td>
+                <td>${patientName}</td>
+                <td>${appointment.notes || 'No notes'}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (error) {
+        console.error('Error displaying appointments:', error);
+    }
 }
 
 // Setup search and filter functionality
@@ -461,18 +502,24 @@ document.querySelector('.new-appointment-btn').addEventListener('click', () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('userToken')}`
                 },
-                body: JSON.stringify({ patientId, date, time, notes })
+                body: JSON.stringify({ patientID: patientId, appointmentDetails: {date, time, notes} })
             });
             
-            if (!response.ok) {
+            if (response.status === 404) {
                 errorMessage.style.display = 'block';
+                const errorData = await response.json();
+                errorMessage.innerHTML = errorData.message || response.statusText;
+                return;
+            } else if (!response.ok) {
+                errorMessage.style.display = 'block';
+                errorMessage.innerHTML = 'Failed to schedule appointment. Please try again.';
                 return;
             }
-            
+
             modal.remove();
-            // Optionally, reload appointments or update the UI
-            
-            
+            // Refresh the appointments list or dashboard
+            loadDashboardStats();
+            loadPatients();
         } catch (error) {
             console.error('Error scheduling appointment:', error);
         }

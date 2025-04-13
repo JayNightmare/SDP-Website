@@ -94,32 +94,32 @@ h1, h2, h3, h4, h5, h6 {
     background: #4a9237;
 }
 
-.patients-table {
+.table-content {
     width: 100%;
     border-collapse: collapse;
     
 }
 
-.patients-table thead {
+.table-content thead {
     background: #1e1e1e !important;
 }
 
-.patients-table tbody tr {
+.table-content tbody tr {
     background: #121212;
 }
 
-.patients-table tbody tr:hover {
+.table-content tbody tr:hover {
     background: #1a1a1a;
 }
 
-.patients-table th,
-.patients-table td {
+.table-content th,
+.table-content td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #2a2a2a;
 }
 
-.patients-table th {
+.table-content th {
     background: #1e1e1e;
     color: #fff;
     font-weight: 600;
@@ -381,7 +381,7 @@ option:disabled {
         }
     }
 
-    .patients-table {
+    .table-content {
         display: none;
     }
 }

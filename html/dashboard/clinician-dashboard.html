@@ -92,7 +92,7 @@
                     <div class="hide-content">
                         <p>Unable to display patients. Please view on a larger screen.</p>
                     </div>
-                    <table class="patients-table">
+                    <table class="patients-table table-content">
                         <thead>
                             <tr>
                                 <th>Patient Name</th>
@@ -118,9 +118,19 @@
                     <button class="new-appointment-btn new-btn-add">+ New Appointment</button>
                 </div>
                 <div class="card-content">
-                    <div class="appointment-list" id="appointment-list">
-                        <!-- Injected by JavaScript -->
-                    </div>
+                    <table class="appointment-table table-content">
+                        <thead>
+                            <tr>
+                                <th>Appointment Time</th>
+                                <th>Patient Name</th>
+                                <th>Reason</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointment-list">
+                            <!-- Injected by JavaScript -->
+                        </tbody>
+                    </table>
                     <button class="view-all-btn">View All →</button>
                 </div>
             </div>
