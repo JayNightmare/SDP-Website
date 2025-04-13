@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadClinicianInfo();
     loadPatients();
     setupSearchAndFilter();
+    loadDashboardStats();
 });
 
 // Load clinician information
@@ -456,4 +457,36 @@ document.querySelector('.new-appointment-btn').addEventListener('click', () => {
             console.error('Error scheduling appointment:', error);
         }
     });
+});
+
+// Update stats overview dynamically
+async function loadDashboardStats() {
+    try {
+        const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch dashboard stats');
+
+        const stats = await response.json();
+
+        console.log('Dashboard Stats:', stats);
+        console.log('Patients:', stats.patients);
+
+        // Update stat cards with real data
+        document.getElementById('today-patients').textContent = stats.patients?.length || 0;
+        document.getElementById('pending-reports').textContent = stats.results?.length || 0;
+        document.getElementById('appointments').textContent = stats.appointments?.length || 0;
+        document.getElementById('total-messages').textContent = stats.messages?.length || 0;
+    } catch (error) {
+        console.error('Error loading dashboard stats:', error);
+    }
+}
+
+// Call the function on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    loadDashboardStats();
 });
