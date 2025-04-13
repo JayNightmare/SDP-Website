@@ -51,15 +51,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 .catch(error => console.error('Error fetching page:', error));
         }
 
-        // Practitioner handlers
-        if (event.target.id === 'practitioner-code') {
-            fetch(`../../js/account/html/extraPractitioner.html`)
+        // Registration handlers
+        if (event.target.id === 'clinician-register') {
+            fetch(`../../js/account/html/practitioner-register.html`)
                 .then(response => response.text())
                 .then(data => { shellElement.innerHTML = data; })
                 .catch(error => console.error('Error fetching page:', error));
         }
-
-        // Patient registration handlers
+        
         if (event.target.id === 'patient-register') {
             fetch(`../../js/account/html/patient-register.html`)
                 .then(response => response.text())
@@ -73,6 +72,98 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.text())
                 .then(data => { shellElement.innerHTML = data; })
                 .catch(error => console.error('Error fetching page:', error));
+        }
+
+        if (event.target.id === 'clinician-register-submit') {
+            const registerButton = event.target;
+            const loadingContainer = document.querySelector('.loading-container');
+            const fullname = document.getElementById('fullname').value;
+            const id = document.getElementById('id').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const dob = document.getElementById('dob').value;
+            const phone = document.getElementById('phone').value;
+
+            // Validate all fields are filled
+            if (!fullname || !id || !password || !confirmPassword || !dob || !phone) {
+                showErrorMessage('Please fill in all fields');
+                return;
+            }
+
+            // Validate password match
+            if (password !== confirmPassword) {
+                showErrorMessage('Passwords do not match');
+                return;
+            }
+
+            // Validate password length
+            if (password.length < 8) {
+                showErrorMessage('Password must be at least 8 characters long');
+                return;
+            }
+
+            // Validate date format
+            const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+            if (!dateRegex.test(dob)) {
+                showErrorMessage('Date of birth must be in YYYY-MM-DD format');
+                return;
+            }
+
+            // Validate phone number
+            const phoneRegex = /^\+?[\d\s-]{10,}$/;
+            if (!phoneRegex.test(phone)) {
+                showErrorMessage('Please enter a valid phone number');
+                return;
+            }
+
+            const userData = {
+                fullname,
+                id,
+                password,
+                dob,
+                phone,
+                type: 'clinician'
+            };
+
+            loadingContainer.style.display = 'block';
+            registerButton.disabled = true;
+            registerButton.style.opacity = '0.7';
+
+            fetch('https://sdp-api-n04w.onrender.com/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        return response.json().then(data => {
+                            throw new Error(data.message || 'Registration failed');
+                        });
+                    }
+                    throw new Error('Registration failed');
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Your registration is being reviewed. You will be notified when your account is approved.');
+                fetch(`../../js/account/html/practitioner.html`)
+                    .then(response => response.text())
+                    .then(data => { shellElement.innerHTML = data; })
+                    .catch(error => console.error('Error fetching login page:', error));
+            })
+            .catch(error => {
+                console.error('Registration error:', error);
+                showErrorMessage(error.message || 'Registration failed. Please try again.');
+            })
+            .finally(() => {
+                loadingContainer.style.display = 'none';
+                registerButton.disabled = false;
+                registerButton.style.opacity = '1';
+            });
         }
 
         if (event.target.id === 'patient-register-submit') {
@@ -207,6 +298,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.status === "success") {
                     localStorage.setItem("userType", "patient");
                     localStorage.setItem("userToken", data.userToken);
+                    localStorage.setItem("userId", nhsID);
                     
                     // Optional: Set token expiry
                     const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 hours
@@ -228,10 +320,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 loginButton.textContent = originalText;
                 loginButton.disabled = false;
             });
-        } else if (event.target && (event.target.id === 'practitioner-login')) {
+        } else if (event.target && (event.target.id === 'clinician-login')) {
+            event.preventDefault();
+            
             const id = document.getElementById("id").value;
             const password = document.getElementById("password").value;
 
+            // Add basic validation
+            if (!id || !password) {
+                showErrorMessage("Please enter both HPC ID and password");
+                return;
+            }
+            
             // Show loading state
             const loginButton = event.target;
             const originalText = loginButton.textContent;
@@ -246,6 +346,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify({ id, password })
             })
             .then(response => {
+                if (response.status === 303) {
+                    // Show 2FA modal
+                    show2FAModal({id, password});
+                    return Promise.reject("2FA required");
+                }
                 if (!response.ok) {
                     throw new Error('Login failed');
                 }
@@ -255,6 +360,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.status === 'success') {
                     localStorage.setItem('userType', 'clinician');
                     localStorage.setItem('userToken', data.userToken);
+                    localStorage.setItem('userId', id);
                     
                     // Set token expiry
                     const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 hours
@@ -266,8 +372,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => {
-                console.error('Login error:', error);
-                alert('Login failed. Please try again later.');
+                if (error !== "2FA required") {
+                    console.error('Login error:', error);
+                    showErrorMessage("Invalid credentials. Please check your HPC ID and password.");
+                }
             })
             .finally(() => {
                 // Restore button state
@@ -288,10 +396,16 @@ document.addEventListener('DOMContentLoaded', function() {
             errorDiv.classList.add("error-message");
             errorDiv.style.color = "red";
             errorDiv.style.marginTop = "10px";
-            
-            // Insert after login button or another appropriate location
-            const loginButton = document.getElementById("patient-login");
-            loginButton.parentNode.insertBefore(errorDiv, loginButton.nextSibling);
+
+            const errorContainer = document.getElementById('error-message');
+            if (errorContainer) {
+                errorContainer.appendChild(errorDiv);
+            } else {
+                const newErrorContainer = document.createElement('div');
+                newErrorContainer.classList.add('error-container');
+                shellElement.appendChild(newErrorContainer);
+                newErrorContainer.appendChild(errorDiv);
+            }
             
             return errorDiv;
         }
@@ -363,14 +477,17 @@ function show2FAModal(userData) {
 }
 
 function verify2FACode(userData, code) {
+    const endpoint = userData.nhsID ? 
+        "https://sdp-api-n04w.onrender.com/auth/mfa/patient" :
+        "https://sdp-api-n04w.onrender.com/auth/mfa/clinician";
 
-    fetch("https://sdp-api-n04w.onrender.com/auth/mfa", {
+    fetch(endpoint, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({ 
-            id: userData.nhsID,
+            id: userData.nhsID || userData.id,
             password: userData.password,
             code: code
          })
@@ -383,14 +500,27 @@ function verify2FACode(userData, code) {
     })
     .then(data => {
         alert("2FA verification successful! Redirecting to dashboard...");
-        localStorage.setItem("userType", "patient");
-        localStorage.setItem("userToken", data.userToken);
-        
-        // Optional: Set token expiry
-        const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 hours
-        localStorage.setItem("tokenExpiry", expiryTime);
-        
-        location.href = "../../html/dashboard/patient-dashboard.html";
+        if (userData.nhsID) {
+            localStorage.setItem("userType", "patient");
+            localStorage.setItem("userToken", data.userToken);
+            localStorage.setItem("userId", userData.nhsID);
+            
+            // Optional: Set token expiry
+            const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 hours
+            localStorage.setItem("tokenExpiry", expiryTime);
+            
+            location.href = "../../html/dashboard/patient-dashboard.html";
+        } else {
+            localStorage.setItem("userType", "clinician");
+            localStorage.setItem("userToken", data.userToken);
+            localStorage.setItem("userId", userData.id);
+            
+            // Optional: Set token expiry
+            const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 hours
+            localStorage.setItem("tokenExpiry", expiryTime);
+            
+            location.href = "../../html/dashboard/clinician-dashboard.html";
+        }
     })
     .catch(error => {
         console.error("2FA verification failed:", error);

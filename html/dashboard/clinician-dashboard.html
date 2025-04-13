@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title id="title">Practitioner Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link data-vue-tag="ssr" rel="icon" type="image/png" sizes="96x96" href="../../images/favicon/favicon.ico">
+    <link rel="stylesheet" href="../../styles/global/navbar.css">
+    <link rel="stylesheet" href="../../styles/global/footer.css">
+    <link rel="stylesheet" href="../../styles/global/body.css">
+    <link rel="stylesheet" href="../../styles/dashboard/style.css">
+    <link rel="stylesheet" href="../../styles/dashboard/clinician-dashboard.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+<body>
+    <div class="menu-toggle">
+        <button title="menu" onclick="toggleNav()" class="toggle-btn">
+            <i class="fa fa-bars"></i>
+        </button>
+    </div>
+    <aside id="sidebar">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="space-out">
+                    <div class="flexNav">
+                        <a class="nav-logo" href="../dashboard/clinician-dashboard.html" title="Home">
+                            <div class="header-logo"></div>
+                        </a>
+                        <ul class="nav navbar-nav">
+                            <li class="active"><a href="../dashboard/clinician-dashboard.html"><i class="fa fa-home"></i> Home</a></li>
+                            <li><a href="about.html"><i class="fa fa-info-circle"></i> About</a></li>
+                            <li><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <a class="logout" href="logout.html"><i class="fa fa-sign-out"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="dashboard-main">
+        <div class="dashboard-header">
+            <h1>Welcome back, <span id="clinician-name">Dr.</span></h1>
+            <p class="last-login">Last login: <span id="last-login-time">Loading...</span></p>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Overview Stats -->
+            <div class="dashboard-card stats-overview">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">Today's patients</div>
+                        <div class="stat-value" id="today-patients">8</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Pending Reports</div>
+                        <div class="stat-value" id="pending-reports">69</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Today's appointments</div>
+                        <div class="stat-value" id="today-appointments">69</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Messages</div>
+                        <div class="stat-value" id="messages">15</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Patients Board -->
+            <div class="dashboard-card patients-board">
+                <div class="card-header">
+                    <div class="header-left">
+                        <h2>Patient Board</h2>
+                    </div>
+                    <div class="header-right">
+                        <div class="search-bar">
+                            <input type="text" id="patient-search" placeholder="Search patients...">
+                            <button class="filter-btn"><i class="fa fa-filter"></i> Filter</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <table class="patients-table">
+                        <thead>
+                            <tr>
+                                <th>Patient Name</th>
+                                <th>ID</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patients-list">
+                            <!-- Will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Upcoming Appointments -->
+            <div class="dashboard-card appointments">
+                <div class="card-header">
+                    <h2>Upcoming Appointments</h2>
+                    <button class="new-appointment-btn">+ New Appointment</button>
+                </div>
+                <div class="card-content">
+                    <div class="appointment-list" id="appointment-list">
+                        <div class="appointment-item">
+                            <div class="appointment-time">Today at 07:00 AM</div>
+                            <div class="appointment-details">
+                                <div class="patient-name">Ken Carson</div>
+                                <div class="appointment-type">General Check-up</div>
+                            </div>
+                        </div>
+                        <div class="appointment-item">
+                            <div class="appointment-time">Tuesday at 6:00 PM</div>
+                            <div class="appointment-details">
+                                <div class="patient-name">Eugene ben</div>
+                                <div class="appointment-type">General Check-up</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="view-all-btn">View All →</button>
+                </div>
+            </div>
+
+            <!-- Recent Messages -->
+            <div class="dashboard-card messages">
+                <div class="card-header">
+                    <h2>Recent Messages</h2>
+                </div>
+                <div class="card-content">
+                    <div class="message-list" id="message-list">
+                        <div class="message-item">
+                            <div class="message-sender">Sarah James(Registered Patient)</div>
+                            <div class="message-preview">Message received at 9:30 AM</div>
+                        </div>
+                        <div class="message-item">
+                            <div class="message-sender">Sarah James(Registered Patient)</div>
+                            <div class="message-preview">Message received at 9:30 AM</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/dashboard/guardScript.js" type="text/javascript"></script>
+    <script src="../../js/dashboard/navScript.js" type="text/javascript"></script>
+    <script src="../../js/services/user/userInfo.js" type="text/javascript"></script>
+    <script src="../../js/account/logout.js" type="text/javascript"></script>
+    <script src="../../js/dashboard/clinicianDashboard.js" type="text/javascript"></script>
+</body>
+</html>

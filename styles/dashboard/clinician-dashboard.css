@@ -1,0 +1,187 @@
+/* Clinician Dashboard Specific Styles */
+
+/* Stats Overview */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 20px;
+}
+
+.stat-item {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stat-label {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Patients Board */
+.patients-board .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.search-bar {
+    display: flex;
+    gap: 10px;
+}
+
+#patient-search {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 250px;
+}
+
+.filter-btn {
+    padding: 8px 16px;
+    background: #3e7c2e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.patients-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.patients-table th,
+.patients-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.patients-table th {
+    background: #f5f5f5;
+    font-weight: 600;
+}
+
+/* Appointments */
+.appointments .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.new-appointment-btn {
+    padding: 8px 16px;
+    background: #3e7c2e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.appointment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+}
+
+.appointment-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.appointment-time {
+    font-size: 14px;
+    color: #666;
+}
+
+.appointment-details {
+    flex-grow: 1;
+}
+
+.patient-name {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.appointment-type {
+    font-size: 14px;
+    color: #666;
+}
+
+.view-all-btn {
+    display: block;
+    width: fit-content;
+    margin: 20px auto 0;
+    padding: 8px 16px;
+    background: none;
+    border: none;
+    color: #3e7c2e;
+    cursor: pointer;
+}
+
+/* Messages */
+.message-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+}
+
+.message-item {
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.message-sender {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.message-preview {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .patients-board .card-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .search-bar {
+        width: 100%;
+    }
+    
+    #patient-search {
+        width: 100%;
+    }
+}
