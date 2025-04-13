@@ -126,7 +126,7 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: 50px;
 }
 
-.new-appointment-btn {
+.new-btn-add {
     padding: 8px 16px;
     background: #3e7c2e;
     color: white;
@@ -136,7 +136,7 @@ h1, h2, h3, h4, h5, h6 {
     transition: background-color 0.2s;
 }
 
-.new-appointment-btn:hover {
+.new-btn-add:hover {
     background: #4a9237;
 }
 
@@ -216,6 +216,70 @@ h1, h2, h3, h4, h5, h6 {
 .message-preview {
     font-size: 14px;
     color: #fff;
+}
+
+.modal-content {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.add-modal {
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #2a2a2a;
+    color: #fff;
+
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+    input, textarea, select {
+        padding: 10px;
+        border: 1px solid #2a2a2a;
+        border-radius: 4px;
+        background: #1e1e1e;
+        color: #fff;
+        width: 100%;
+        color-scheme: dark;
+    }
+
+    input::placeholder, textarea::placeholder {
+        color: #888 ;
+    }
+
+    .form-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-buttons button {
+        background: #3e7c2e;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 16px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+}
+
+
+option:disabled {
+    color: white !important;
+    opacity: 1;
 }
 
 /* Responsive Design */
