@@ -1,0 +1,29 @@
+name: Notify Discord on Commit
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify-discord:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Send commit messages to Discord
+      env:
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      run: |
+        echo "Preparing commit payload..."
+        PAYLOAD=$(jq -n \
+          --arg repo "${{ github.repository }}" \
+          --arg branch "${{ github.ref_name }}" \
+          --arg commit "${{ github.event.head_commit.message }}" \
+          --arg link "${{ github.event.head_commit.url }}" \
+          '{embeds: [{title: "New Commit to \($repo)", description: "**Branch**: \($branch)\n**Commit**: \($commit)\n[View Commit](\($link))", color: 5814783}]}')
+        
+        echo "Sending payload to Discord webhook..."
+        curl -H "Content-Type: application/json" -d "$PAYLOAD" "$DISCORD_WEBHOOK_URL"
