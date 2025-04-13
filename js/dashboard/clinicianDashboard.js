@@ -200,7 +200,59 @@ async function deletePatient(patientId) {
 
 // Contact patient
 function contactPatient(patientId) {
-    // Implementation for contacting patient (e.g., showing phone number or opening messaging interface)
+    // Fetch patient details from the clinician's patient details endpoint
+    fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients/details`, {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to fetch patient details');
+        return response.json();
+    })
+    .then(data => {
+        const patient = data.patients.find(p => p.id === patientId);
+        if (!patient) throw new Error('Patient not found');
+
+        // Create a messaging interface modal
+        const modal = document.createElement('div');
+        modal.classList.add('add-modal');
+        
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h2>Contact Patient</h2>
+                <br>
+                <p><strong>Name:</strong> ${patient.fullname}</p>
+                <p><strong>Phone:</strong> ${patient.phone}</p>
+                <textarea id="message-text" placeholder="Type your message here..." rows="5"></textarea>
+                <div class="form-buttons">
+                    <button id="send-message-btn" class="submit-btn">Send Message</button>
+                    <button onclick="this.parentElement.parentElement.parentElement.remove()" class="cancel-btn">Cancel</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Handle sending the message
+        document.getElementById('send-message-btn').addEventListener('click', () => {
+            const message = document.getElementById('message-text').value;
+            if (!message.trim()) {
+                alert('Message cannot be empty');
+                return;
+            }
+            
+            // Simulate sending the message (e.g., via an API or SMS gateway)
+            console.log(`Sending message to ${patient.phone}: ${message}`);
+            alert('Message sent successfully!');
+            modal.remove();
+        });
+    })
+    .catch(error => {
+        console.error('Error contacting patient:', error);
+        alert('Failed to load patient details. Please try again.');
+    });
 }
 
 // Show patient modal with details
