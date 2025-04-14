@@ -89,6 +89,39 @@ export function fetchPreResults(checkVal) {
 // }
 */
 // //
+function fetchUserId() {
+    const token = localStorage.getItem("userToken");
+    if (!token) {
+        console.error("No auth token found in local storage");
+        return null;
+    }
+
+    return fetch("https://sdp-api-n04w.onrender.com/patient", {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch user ID");
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data && data.id) {
+                console.log("Fetched user ID:", data.id);
+                return data.id;
+            } else {
+                throw new Error("User ID not found in response");
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching user ID:", error);
+            return null;
+        });
+}
 
 export function fetchResults() {
     console.log("User Answers:", answers);
@@ -98,6 +131,7 @@ export function fetchResults() {
     if (!token) {
         console.error("No auth token found in local storage");
         console.log("No user data to send");
+        return;
     }
 
     const age = parseInt(answers["2-Age"]);
@@ -147,53 +181,60 @@ export function fetchResults() {
 
                     const resultId = data.results?.resultId || 1; // Default to 1 if resultId is undefined
 
-                    // Send the final result to the /results API
-                    fetch(`https://sdp-api-n04w.onrender.com/patient/${data.id}/results`, {
-                        method: "POST",
-                        headers: {
-                            "Authorization": `Bearer ${token}`,
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            resultId: resultId,
-                            creat: creat,
-                            calcType: answers["4-SC-Unit"],
-                            result: resultsValue,
-                        }),
-                    }).then(response => {
-                        if (!response.ok) {
-                            console.error("Failed to send final result");
+                    // Fetch user ID and send the final result to the /results API
+                    fetchUserId().then(userId => {
+                        if (!userId) {
+                            console.error("User ID is missing");
                             return;
                         }
-                        return response.json();
-                    }).then(resultResponse => {
-                        if (resultResponse) {
-                            console.log("Final result sent successfully:", resultResponse);
-                        }
 
-                        // Send answers with the same resultId
-                        fetch(`https://sdp-api-n04w.onrender.com/patient/${resultResponse.id}/answers`, {
+                        fetch(`https://sdp-api-n04w.onrender.com/patient/${userId}/results`, {
                             method: "POST",
                             headers: {
-                                "Content-Type": "application/json",
-                                "Authorization": `Bearer ${token}`
+                                "Authorization": `Bearer ${token}`,
+                                "Content-Type": "application/json"
                             },
                             body: JSON.stringify({
-                                resultId: resultResponse.resultId,
-                                answers: answers
+                                resultId: resultId,
+                                creat: creat,
+                                calcType: answers["4-SC-Unit"],
+                                result: resultsValue,
                             }),
                         }).then(response => {
                             if (!response.ok) {
-                                console.error("Failed to send answers");
+                                console.error("Failed to send final result");
                                 return;
                             }
                             return response.json();
-                        }).then(answerResponse => {
-                            if (answerResponse) {
-                                console.log("Answers sent successfully:", answerResponse);
+                        }).then(resultResponse => {
+                            if (resultResponse) {
+                                console.log("Final result sent successfully:", resultResponse);
                             }
-                        }).catch(error => console.error("Error sending answers:", error));
-                    }).catch(error => console.error("Error sending final result:", error));
+
+                            // Send answers with the same resultId
+                            fetch(`https://sdp-api-n04w.onrender.com/patient/${userId}/answers`, {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "Authorization": `Bearer ${token}`
+                                },
+                                body: JSON.stringify({
+                                    resultId: resultId,
+                                    answers: answers
+                                }),
+                            }).then(response => {
+                                if (!response.ok) {
+                                    console.error("Failed to send answers", response);
+                                    return;
+                                }
+                                return response.json();
+                            }).then(answerResponse => {
+                                if (answerResponse) {
+                                    console.log("Answers sent successfully:", answerResponse);
+                                }
+                            }).catch(error => console.error("Error sending answers:", error));
+                        }).catch(error => console.error("Error sending final result:", error));
+                    }).catch(error => console.error("Error fetching user ID:", error));
                 })
                 .catch(error => {
                     console.error("Error fetching eGFR from API:", error);
