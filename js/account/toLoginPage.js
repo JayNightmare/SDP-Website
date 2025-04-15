@@ -495,7 +495,6 @@ function verify2FACode(userData, code) {
         if (userData.nhsID) {
             localStorage.setItem("userType", "patient");
             localStorage.setItem("userToken", data.userToken);
-            localStorage.setItem("userId", userData.nhsID);
             
             // Optional: Set token expiry
             const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 hours
@@ -505,7 +504,6 @@ function verify2FACode(userData, code) {
         } else {
             localStorage.setItem("userType", "clinician");
             localStorage.setItem("userToken", data.userToken);
-            localStorage.setItem("userId", userData.id);
             
             // Optional: Set token expiry
             const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 hours

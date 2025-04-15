@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.removeItem('userType');
             localStorage.removeItem('tokenExpiry');
             localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userId');
             
             // Redirect to login page
             window.location.href = '../../html/account/index.html';
