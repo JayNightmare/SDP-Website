@@ -163,6 +163,33 @@ li a:hover, .logout:hover {
     background: #1a4d33;
 }
 
+/* Inactive Popup */
+#popup-inactive-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 900;
+    text-align: center;
+}
+
+#overlay-inactive-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 899;
+}
+
+/* Session Over Popup */
+
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .dashboard-main {

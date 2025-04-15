@@ -22,30 +22,20 @@ function showSessionExpiredPopup() {
     if (existingOverlay) document.body.removeChild(existingOverlay);
 
     const popup = document.createElement('div');
-    popup.style.position = 'fixed';
-    popup.style.top = '50%';
-    popup.style.left = '50%';
-    popup.style.transform = 'translate(-50%, -50%)';
-    popup.style.backgroundColor = '#fff';
-    popup.style.padding = '20px';
-    popup.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
-    popup.style.zIndex = '1000';
+    popup.id = 'popup-inactive-modal';
     popup.innerHTML = `
         <h2>Session Expired</h2>
+        <br>
         <p>Your login session has expired. Please log back in for security reasons.</p>
+        <br>
         <button id="session-expired-ok" style="padding: 10px 20px; background-color: #3e7c2e; color: #fff; border: none; border-radius: 4px; cursor: pointer;">OK</button>
     `;
 
     document.body.appendChild(popup);
 
     const overlay = document.createElement('div');
-    overlay.style.position = 'fixed';
-    overlay.style.top = '0';
-    overlay.style.left = '0';
-    overlay.style.width = '100%';
-    overlay.style.height = '100%';
-    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    overlay.style.zIndex = '999';
+    overlay.id = 'overlay-inactive-modal';
+
     document.body.appendChild(overlay);
 
     document.getElementById('session-expired-ok').addEventListener('click', () => {
@@ -71,30 +61,19 @@ let popupTimeout;
 // Function to show a popup when the user is inactive
 function showInactivityPopup() {
     const popup = document.createElement('div');
-    popup.style.position = 'fixed';
-    popup.style.top = '50%';
-    popup.style.left = '50%';
-    popup.style.transform = 'translate(-50%, -50%)';
-    popup.style.backgroundColor = '#fff';
-    popup.style.padding = '20px';
-    popup.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
-    popup.style.zIndex = '900';
+    popup.id = 'popup-inactive-modal';
     popup.innerHTML = `
         <h2>Are you still there?</h2>
+        <br>
         <p>You have been inactive for a while. Please confirm you are still here.</p>
+        <br>
         <button id="inactivity-popup-ok" style="padding: 10px 20px; background-color: #3e7c2e; color: #fff; border: none; border-radius: 4px; cursor: pointer;">I'm here</button>
     `;
 
     document.body.appendChild(popup);
 
     const overlay = document.createElement('div');
-    overlay.style.position = 'fixed';
-    overlay.style.top = '0';
-    overlay.style.left = '0';
-    overlay.style.width = '100%';
-    overlay.style.height = '100%';
-    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    overlay.style.zIndex = '899';
+    overlay.id = 'overlay-inactive-modal';
     document.body.appendChild(overlay);
 
     document.getElementById('inactivity-popup-ok').addEventListener('click', () => {
@@ -113,6 +92,7 @@ function showInactivityPopup() {
 function forceLogout() {
     localStorage.removeItem('userToken');
     localStorage.removeItem('tokenExpiry');
+    localStorage.removeItem('userType');
     window.location.href = '../../html/account/index.html';
 }
 
