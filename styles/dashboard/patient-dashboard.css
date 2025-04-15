@@ -1,4 +1,65 @@
 /* Dashboard Main Content */
+.appointment-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #f8f9fa; /* Light background */
+    border: 1px solid #e9ecef; /* Light border */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth hover effect */
+}
+
+.appointment-row:hover {
+    transform: translateY(-2px); /* Slight lift on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+.appointment-date,
+.appointment-time,
+.appointment-description {
+    font-size: 1em;
+    color: #333; /* Dark text color */
+    flex: 1; /* Equal spacing for each column */
+    text-align: center; /* Center-align text */
+}
+
+.appointment-date {
+    font-weight: bold; /* Highlight the date */
+    color: #3e7c2e; /* Green color for emphasis */
+}
+
+.appointment-time {
+    font-weight: 600; /* Slightly bold for time */
+    color: #666; /* Neutral color */
+}
+
+.appointment-description {
+    font-style: italic; /* Italicize description */
+    color: #999; /* Subtle text color */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .appointment-row {
+        flex-direction: column; /* Stack items vertically */
+        align-items: flex-start; /* Align items to the left */
+    }
+
+    .appointment-date,
+    .appointment-time,
+    .appointment-description {
+        text-align: left; /* Align text to the left */
+        margin-bottom: 5px; /* Add spacing between rows */
+    }
+
+    .appointment-description {
+        margin-bottom: 0; /* Remove extra margin for the last item */
+    }
+}
+
 .dashboard-main {
     margin-left: 250px;
     padding: 30px;
@@ -162,4 +223,96 @@
 .tip i {
     color: #3e7c2e;
     margin-top: 3px;
+}
+
+.more-button {
+    display: block;
+    margin: 10px auto;
+    padding: 5px 10px;
+    font-size: 1.2em;
+    color: #fff;
+    background-color: #3e7c2e; /* Green background */
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.more-button:hover {
+    background-color: #2d5a22; /* Darker green on hover */
+    transform: scale(1.1); /* Slight zoom effect */
+}
+
+.more-button:active {
+    transform: scale(0.95); /* Slight shrink effect on click */
+}
+
+/* Modal overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+/* Modal container */
+.appointments-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80%;
+    overflow-y: auto;
+}
+
+/* Modal content */
+.appointment-modal-content {
+    position: relative;
+}
+
+.appointment-modal-content h2 {
+    margin-top: 0;
+    text-align: center;
+    color: #333;
+}
+
+/* Close button */
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #333;
+}
+
+/* Appointments list */
+.appointments-list {
+    margin-top: 20px;
+}
+
+.appointment-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
 }

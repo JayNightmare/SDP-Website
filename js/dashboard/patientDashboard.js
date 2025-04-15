@@ -70,9 +70,113 @@ document.addEventListener('DOMContentLoaded', function() {
             const historyContainer = document.getElementById('egfr-history');
             historyContainer.innerHTML = '<div class="no-results">No previous results available. Use the eGFR Calculator to get started.</div>';
         }
+
+        // Check if patient has any appointments scheduled in the future
+        
+        let appointments = data.appointments
+        console.log(appointments)
+        // Date bullshit (thanks for putting time in a separate variable dumbass)
+        if (appointments.length > 0) {
+            const futureAppointments = appointments.filter(appointment => {
+                let hours = appointment.time.slice(0,2)
+                let minutes = appointment.time.slice(3,5)
+                let date = new Date(appointment.date).setHours(hours, minutes)
+                console.log(`appointment date: ${date} current date: ${new Date()}`)
+                return date > new Date()
+            });
+            console.log(futureAppointments)
+            futureAppointments.sort((a, b) => {
+                let dateA = new Date(a.date).setHours(a.time.slice(0,2), a.time.slice(3,5))
+                let dateB = new Date(b.date).setHours(b.time.slice(0,2), b.time.slice(3,5))
+                
+                return dateA - dateB
+            });
+            console.log(futureAppointments)
+
+            const appointmentsContainer = document.querySelector('.appointments');
+            appointmentsContainer.innerHTML = ''; // Clear existing content
+
+            // Limit to the first 3 appointments
+            futureAppointments.slice(0, 3).forEach(appointment => {
+                const appointmentRow = document.createElement('div');
+                appointmentRow.className = 'appointment-row';
+                appointmentRow.innerHTML = `
+                    <div class="appointment-date">${new Date(appointment.date).toLocaleDateString()}</div>
+                    <div class="appointment-time">${appointment.time}</div>
+                    <div class="appointment-description">${appointment.notes || 'No description available'}</div>
+                `;
+                appointmentsContainer.appendChild(appointmentRow);
+            });
+
+            if (futureAppointments.length === 0) {
+                appointmentsContainer.innerHTML = '<p>No upcoming appointments</p>';
+            }
+
+            if (futureAppointments.length > 3) {
+                // Add a button with 3 dots below the list of appointments
+                const moreButton = document.createElement('button');
+                moreButton.className = 'more-button';
+                moreButton.innerHTML = '&#x2026;'; // HTML entity for 3 dots (ellipsis)
+                moreButton.title = 'View more appointments'; // Tooltip for the button
+
+                // Add event listener for the button (optional)
+                moreButton.addEventListener('click', () => {
+                    showAllAppointmentsModal(futureAppointments);
+                });
+
+                appointmentsContainer.appendChild(moreButton);
+            }
+
+        } else {
+            const appointmentsContainer = document.querySelector('.dashboard-card .card-content');
+            appointmentsContainer.innerHTML = '<p>No appointments</p>';
+        }
     })
     .catch(error => {
         console.error('Error:', error);
         alert('Failed to load patient data. Please refresh the page.');
     });
 });
+
+function showAllAppointmentsModal(appointments) {
+    // Create the modal container
+    const modal = document.createElement('div');
+    modal.className = 'appointments-modal';
+
+    // Add modal content
+    modal.innerHTML = `
+        <div class="appointment-modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>All Appointments</h2>
+            <div class="appointments-list">
+                ${appointments.map(appointment => `
+                    <div class="appointment-row">
+                        <div class="appointment-date">${new Date(appointment.date).toLocaleDateString()}</div>
+                        <div class="appointment-time">${appointment.time}</div>
+                        <div class="appointment-description">${appointment.notes || 'No description available'}</div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
+    // Append the modal to the body
+    document.body.appendChild(modal);
+
+    // Add a semi-transparent background overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    document.body.appendChild(overlay);
+
+    // Add event listener to close the modal
+    modal.querySelector('.close-modal').addEventListener('click', () => {
+        document.body.removeChild(overlay);
+        document.body.removeChild(modal);
+    });
+
+    // Close modal when clicking on the overlay
+    overlay.addEventListener('click', () => {
+        document.body.removeChild(overlay);
+        document.body.removeChild(modal);
+    });
+}
