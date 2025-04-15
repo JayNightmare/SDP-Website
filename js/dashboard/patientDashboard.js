@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
         } else {
-            const appointmentsContainer = document.querySelector('.dashboard-card .card-content');
+            const appointmentsContainer = document.querySelector('.appointments');
             appointmentsContainer.innerHTML = '<p>No appointments</p>';
         }
     })
