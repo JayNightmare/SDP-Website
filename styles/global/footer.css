@@ -177,3 +177,7 @@ footer {
         font-weight: 600
     }
 }
+
+.translate-element {
+    margin: 10px;
+}

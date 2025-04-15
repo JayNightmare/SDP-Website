@@ -336,3 +336,8 @@
     border: 1px solid #e9ecef;
     border-radius: 5px;
 }
+
+/* Missing Values */
+.missing-fields {
+    display: none;
+}
