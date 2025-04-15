@@ -173,7 +173,7 @@ li a:hover, .logout:hover {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 900;
+    z-index: 1900;
     text-align: center;
 }
 
@@ -184,7 +184,7 @@ li a:hover, .logout:hover {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 899;
+    z-index: 1899;
 }
 
 /* Session Over Popup */
