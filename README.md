@@ -6,7 +6,7 @@ Server Repo: https://github.com/JayNightmare/SDP-server
 
 ---
 
-Repo Owned By:
+### Repo Owned By:
 
 | Profile Picture | Username |
 |------------------|----------|
