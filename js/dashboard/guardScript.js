@@ -1,4 +1,3 @@
-// TODO: Implement guard script to prevent users who are not logged in to access the page
 // Function to check if the user is logged in
 function isLoggedIn() {
     const userToken = localStorage.getItem('userToken');
@@ -47,13 +46,22 @@ function showSessionExpiredPopup() {
 
 // Modified guard script to show popup if session expired
 function guardPage() {
-    if (!isLoggedIn()) {
+    let userType = localStorage.getItem('userType');
+
+    console.log('User Type:', userType);
+    
+    // Get the current URL
+    const currentUrl = window.location.href;
+
+    // check if the URL contains 'clinician-dashboard', if so, check if the userType is 'clinician'
+    if (currentUrl.includes('cclinician-dashboard') && userType !== 'clinician') {
+        window.location.href = '../../html/account/index.html';
+    }
+
+    if (isLoggedIn() === false) {
         showSessionExpiredPopup();
     }
 }
-
-// Run the guard script when the page loads
-window.onload = guardPage;
 
 let inactivityTimeout;
 let popupTimeout;
@@ -110,5 +118,8 @@ function resetInactivityTimer() {
     document.addEventListener(event, resetInactivityTimer);
 });
 
-// Initialize the inactivity timer when the page loads
-window.onload = resetInactivityTimer;
+// Run the guard script when the page loads
+window.onload = () => {
+    guardPage();
+    resetInactivityTimer();
+};

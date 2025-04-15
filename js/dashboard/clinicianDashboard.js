@@ -1,7 +1,7 @@
 // Get clinician ID from localStorage
-const clinicianId = localStorage.getItem('userId');
-if (!clinicianId) {
-    window.location.href = '../../js/account/html/practitioner.html';
+const clinicianType = localStorage.getItem('userType');
+if (!clinicianType || clinicianType !== 'clinician') {
+    window.location.href = '../../html/account/index.html';
 }
 
 // Initialize dashboard
