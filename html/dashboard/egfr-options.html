@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../../styles/global/footer.css">
     <link rel="stylesheet" href="../../styles/global/body.css">
     <link rel="stylesheet" href="../../styles/dashboard/style.css">
+    <link rel="stylesheet" href="../../styles/dashboard/egfr-options.css">
     <link rel="stylesheet" href="../../styles/dashboard/patient-dashboard.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -60,7 +61,7 @@
                 <div class="card-content">
                     <p>Upload a CSV file containing patient data for bulk eGFR calculations.</p>
                     <div class="upload-section">
-                        <input type="file" id="csv-upload" accept=".csv" class="file-input" />
+                        <input type="file" id="csv-upload" accept=".csv" class="file-input" style="display:none"/>
                         <label for="csv-upload" class="file-label">
                             <i class="fa fa-upload"></i>
                             Choose CSV File
@@ -73,6 +74,16 @@
                             <!-- Will be populated dynamically -->
                         </form>
                     </div>
+                </div>
+            </div>
+
+            <div class="option-card results-card" style="display:none">
+                <div class="card-header">
+                    <i class="fa fa-file-excel-o"></i>
+                    <h2>Results</h2>
+                </div>
+                <div class="card-content">
+                    <table id="results-table"></table>
                 </div>
             </div>
 

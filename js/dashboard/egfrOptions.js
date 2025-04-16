@@ -121,55 +121,81 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Send results to server
-        const userToken = localStorage.getItem('userToken');
+        const userRole = localStorage.getItem('userType'); // Assuming user role is stored in localStorage
+        if (userRole === 'clinician') {
+            // Display results in a table on the page
+            const resultsTable = document.getElementById('results-table');
+            const resultsCard = document.querySelector(".results-card");
+            resultsTable.innerHTML = `
+                <thead>
+                    <tr>
+                        ${headers.map(header => `<th>${header.charAt(0).toUpperCase() + header.slice(1)}</th>`).join('')}
+                        <th>eGFR</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${results.map(result => `
+                        <tr>
+                            ${headers.map(header => `<td>${result[header]}</td>`).join('')}
+                            <td>${calculateEGFR(result)}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+            resultsTable.style.display = 'table';
+            resultsCard.style.display = 'block';
 
-        fetch(`https://sdp-api-n04w.onrender.com/patient`, {
-            headers: {
-                'Authorization': `Bearer ${userToken}`,
-                'Content-Type': 'application/json'
-            }
-        }).then(response => {
-            if (!response.ok) throw new Error('Failed to fetch patient data');
-            return response.json();
-        }).then(data => {
-            results.forEach(result => {
-                // Extract creatinine value and unit
-                let creatinineValue = result.creatinine;
-                let creatinineUnit = 'mg/dL'; // Default unit
-                const match = creatinineValue.match(/^([\d.]+)\s*(µmol\/l|umol\/l|mg\/dl)?$/i);
-                if (match) {
-                    creatinineValue = match[1];
-                    creatinineUnit = match[2] || 'mg/dL';
+        } else {
+            // Send results to server
+            const userToken = localStorage.getItem('userToken');
+
+            fetch(`https://sdp-api-n04w.onrender.com/patient`, {
+                headers: {
+                    'Authorization': `Bearer ${userToken}`,
+                    'Content-Type': 'application/json'
                 }
-
-                fetch(`https://sdp-api-n04w.onrender.com/patient/${data.id}/results`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${userToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        creat: creatinineValue,
-                        calcType: `CSV Upload (${creatinineUnit})`,
-                        result: calculateEGFR(result)
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        alert('CSV data processed successfully!');
-                        window.location.href = 'patient-dashboard.html';
-                    } else {
-                        throw new Error(data.message);
+            }).then(response => {
+                if (!response.ok) throw new Error('Failed to fetch patient data');
+                return response.json();
+            }).then(data => {
+                results.forEach(result => {
+                    // Extract creatinine value and unit
+                    let creatinineValue = result.creatinine;
+                    let creatinineUnit = 'mg/dL'; // Default unit
+                    const match = creatinineValue.match(/^([\d.]+)\s*(µmol\/l|umol\/l|mg\/dl)?$/i);
+                    if (match) {
+                        creatinineValue = match[1];
+                        creatinineUnit = match[2] || 'mg/dL';
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Failed to process CSV data. Please try again.');
+
+                    fetch(`https://sdp-api-n04w.onrender.com/patient/${data.id}/results`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${userToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            creat: creatinineValue,
+                            calcType: `CSV Upload (${creatinineUnit})`,
+                            result: calculateEGFR(result)
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            alert('CSV data processed successfully!');
+                            window.location.href = 'patient-dashboard.html';
+                        } else {
+                            throw new Error(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Failed to process CSV data. Please try again.');
+                    });
                 });
             });
-        });
+        }
     }
 
     function calculateEGFR(data) {
