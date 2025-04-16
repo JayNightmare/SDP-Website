@@ -101,13 +101,23 @@ function forceLogout() {
     localStorage.removeItem('userToken');
     localStorage.removeItem('tokenExpiry');
     localStorage.removeItem('userType');
-    window.location.href = '../../html/account/index.html';
+
+    const existingPopup = document.querySelector('#inactivity-popup');
+    const existingOverlay = document.querySelector('#inactivity-overlay');
+    if (existingPopup && existingOverlay) {
+        document.body.removeChild(existingPopup);
+        document.body.removeChild(existingOverlay);
+    }
+
+    showSessionExpiredPopup();
+    // window.location.href = '../../html/account/index.html';
 }
 
 // Function to reset the inactivity timer
 function resetInactivityTimer() {
     clearTimeout(inactivityTimeout);
     clearTimeout(popupTimeout);
+
     inactivityTimeout = setTimeout(() => {
         showInactivityPopup();
     }, 300000); // 5 minutes

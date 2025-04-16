@@ -1,10 +1,4 @@
 /* // */
-/* ! Body Wrapper ! */
-.wrapper {
-    /* display: flex; */
-}
-/* // */
-/* // */
 /* ! Nav Bar ! */
 aside {
     width: 250px;
@@ -175,6 +169,10 @@ li a:hover, .logout:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 1900;
     text-align: center;
+
+    h2 {
+        color: black !important;
+    }
 }
 
 #overlay-inactive-modal {

@@ -52,7 +52,8 @@ async function getClinicianId() {
     }
 }
 
-let clinicianId = getClinicianId();
+let clinicianId;
+getClinicianId().then(id => clinicianId = id);
 
 // Load patients list
 async function loadPatients() {
@@ -90,12 +91,8 @@ async function loadPatients() {
 function displayPatients(patients) {
     const tbody = document.getElementById('patients-list');
     tbody.innerHTML = '';
-
-    console.log('Patients:', patients);
     
     patients.forEach(patient => {
-        console.log('Patient:', patient);
-
         // Get the eGFR from the result with the highest resultId in the results array
         let egfr = null;
         if (patient.results && Array.isArray(patient.results) && patient.results.length > 0) {
@@ -105,7 +102,6 @@ function displayPatients(patients) {
             console.warn('No results found for patient:', patient.id);
             egfr = "No Results";
         }
-        console.log('eGFR:', egfr);
 
         let status = '';
         let statusClass = '';
@@ -168,25 +164,35 @@ async function displayAppointments() {
 
         const clinicianData = await response.json();
         const appointments = clinicianData.appointments || [];
-        const patients = clinicianData.patients || [];
-        console.log('Appointments:', appointments);
-
         const tbody = document.getElementById('appointment-list');
         tbody.innerHTML = '';
 
-        appointments.forEach(appointment => {
-            const patient = patients.find(p => p.id === appointment.patientID);
-            const patientName = patient ? patient.fullname : 'Unknown Patient';
-            console.log('Patient Name:', patientName);
+        for (const appointment of appointments) {
+            try {
+                // Fetch patient details using the patient ID from the appointment
+                const patientResponse = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients/details`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                    }
+                });
 
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${new Date(appointment.date).toLocaleDateString()} at ${appointment.time}</td>
-                <td>${patientName}</td>
-                <td>${appointment.notes || 'No notes'}</td>
-            `;
-            tbody.appendChild(tr);
-        });
+                if (!patientResponse.ok) throw new Error('Failed to fetch patient details');
+
+                const patientData = await patientResponse.json();
+                const patient = patientData.patients.find(p => p.id === appointment.patientID);
+                const patientName = patient ? patient.fullname : 'Unknown Patient';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${new Date(appointment.date).toLocaleDateString()} at ${appointment.time}</td>
+                    <td>${patientName}</td>
+                    <td>${appointment.notes || 'No notes'}</td>
+                `;
+                tbody.appendChild(tr);
+            } catch (error) {
+                console.error(`Error fetching patient details for appointment ${appointment.id}:`, error);
+            }
+        }
     } catch (error) {
         console.error('Error displaying appointments:', error);
     }
@@ -195,34 +201,25 @@ async function displayAppointments() {
 // Setup search and filter functionality
 function setupSearchAndFilter() {
     const searchInput = document.getElementById('patient-search');
-    let debounceTimer;
-    
     searchInput.addEventListener('input', (e) => {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-            const searchTerm = e.target.value.toLowerCase();
-            filterPatients(searchTerm);
-        }, 300);
+        const searchTerm = e.target.value.toLowerCase();
+        filterPatients(searchTerm);
     });
 }
 
-// Filter patients based on search term
-async function filterPatients(searchTerm) {
-    try {
-        const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients?search=${searchTerm}`, {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-            }
-        });
-        
-        if (!response.ok) throw new Error('Failed to fetch filtered patients');
-        
-        const patients = await response.json();
-        displayPatients(patients);
-        
-    } catch (error) {
-        console.error('Error filtering patients:', error);
-    }
+function filterPatients(searchTerm) {
+    const tbody = document.getElementById('patients-list');
+    const rows = tbody.getElementsByTagName('tr');
+    
+    Array.from(rows).forEach(row => {
+        const patientName = row.cells[0].textContent.toLowerCase();
+        const patientId = row.cells[1].textContent.toLowerCase();
+        if (patientName.includes(searchTerm) || patientId.includes(searchTerm)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
 }
 
 // View patient details
@@ -314,7 +311,6 @@ function contactPatient(patientId) {
             }
             
             // Simulate sending the message (e.g., via an API or SMS gateway)
-            console.log(`Sending message to ${patient.phone}: ${message}`);
             alert('Message sent successfully!');
             modal.remove();
         });
@@ -403,7 +399,6 @@ document.querySelector('.new-patient-btn').addEventListener('click', () => {
     
     document.getElementById('submit-patient-btn').addEventListener('click', async () => {
         const patientId = document.getElementById('patient-id').value;
-        console.log('Adding patient with ID:', patientId);
         const errorMessage = document.getElementById('error-message-container');
         
         try {
@@ -559,9 +554,6 @@ async function loadDashboardStats() {
         if (!response.ok) throw new Error('Failed to fetch dashboard stats');
 
         const stats = await response.json();
-
-        console.log('Dashboard Stats:', stats);
-        console.log('Patients:', stats.patients);
 
         // Update stat cards with real data
         document.getElementById('today-patients').textContent = stats.patients?.length || 0;
