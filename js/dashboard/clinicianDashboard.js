@@ -193,22 +193,26 @@ async function displayAppointments() {
                 console.log('Appointment:', appointment);
 
                 const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${new Date(appointment.date).toLocaleDateString()} at ${appointment.time}</td>
-                    <td>${patientName}</td>
-                    <td>${appointment.notes || 'No notes'}</td>
-                    <td class="actions">
-                        <button onclick="viewAppointment('${appointment.appointmentID}')" class="action-btn view">
-                            <i class="fa fa-eye"></i>
-                        </button>
-                        <button onclick="editAppointment('${appointment.appointmentID}')" class="action-btn edit">
-                            <i class="fa fa-edit"></i>
-                        </button>
-                        <button onclick="deleteAppointment('${appointment.appointmentID}', '${appointment.patientID}')" class="action-btn delete">
-                            <i class="fa fa-trash"></i>
-                        </button>
-                    </td>
-                `;
+                if (appointment.date && appointment.time && patientName) {
+                    tr.innerHTML = `
+                        <td>${new Date(appointment.date).toLocaleDateString()} at ${appointment.time}</td>
+                        <td>${patientName}</td>
+                        <td>${appointment.notes || 'No notes'}</td>
+                        <td class="actions">
+                            <button onclick="viewAppointment('${appointment.appointmentID}')" class="action-btn view">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                            <button onclick="editAppointment('${appointment.appointmentID}')" class="action-btn edit">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button onclick="deleteAppointment('${appointment.appointmentID}', '${appointment.patientID}')" class="action-btn delete">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                } else {
+                    console.warn('Incomplete appointment data:', appointment);
+                }
                 tbody.appendChild(tr);
             } catch (error) {
                 console.error(`Error fetching patient details for appointment ${appointment.appointmentID}:`, error);
@@ -222,7 +226,7 @@ async function displayAppointments() {
 // View appointment details
 async function viewAppointment(appointmentId) {
     try {
-        const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/appointments`, {
+        const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -230,12 +234,51 @@ async function viewAppointment(appointmentId) {
             }
         });
 
-        console.log('Fetching appointment details for ID:', appointmentId);
+        if (!response.ok) throw new Error('Failed to fetch appointment details');
+
+        const data = await response.json();
+        const appointment = data.appointments.find(a => a.appointmentID === appointmentId);
+        if (!appointment) throw new Error('Appointment not found');
+
+        // Fetch patient details for the appointment
+        const patientResponse = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients/details`, {
+            headers: {
+                'Authorization': `Bearer ${userToken}`
+            }
+        });
+
+        if (!patientResponse.ok) throw new Error('Failed to fetch patient details');
+
+        const patientData = await patientResponse.json();
+        const patient = patientData.patients.find(p => p.patientID === patientData.patientID);
+        const patientName = patient ? patient.fullname : 'Unknown Patient';
+
+        console.log(patientData);
+        console.log(patient);
+        console.log(patientName);
+
+        // Show appointment modal
+        showAppointmentModal(appointment, patientName);
+    } catch (error) {
+        console.error('Error viewing appointment:', error);
+    }
+}
+
+// Edit appointment
+async function editAppointment(appointmentId) {
+    try {
+        const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userToken}`
+            }
+        });
 
         if (!response.ok) throw new Error('Failed to fetch appointment details');
 
         const data = await response.json();
-        const appointment = data.appointments.find(a => a.id === appointmentId);
+        const appointment = data.appointments.find(a => a.appointmentID === appointmentId);
         if (!appointment) throw new Error('Appointment not found');
 
         // Fetch patient details for the appointment
@@ -251,10 +294,79 @@ async function viewAppointment(appointmentId) {
         const patient = patientData.patients.find(p => p.id === appointment.patientID);
         const patientName = patient ? patient.fullname : 'Unknown Patient';
 
-        // Show appointment modal
-        showAppointmentModal(appointment, patientName);
+        // Create a modal for editing the appointment
+        const modal = document.createElement('div');
+        modal.classList.add('add-modal');
+
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h2>Edit Appointment</h2>
+                <p style="margin-top: 10px"><strong>Patient:</strong> ${patientName}</p>
+                <form id="edit-appointment-form">
+                    <div class="form-group">
+                        <label for="edit-appointment-date">Date:</label>
+                        <input type="date" id="edit-appointment-date" value="${appointment.date}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-appointment-time">Time:</label>
+                        <input type="time" id="edit-appointment-time" value="${appointment.time}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-appointment-notes">Notes:</label>
+                        <textarea id="edit-appointment-notes">${appointment.notes || ''}</textarea>
+                    </div>
+                    <p id="edit-appointment-error-message" class="error-message" style="color: red; display: none;">Failed to update appointment. Please try again.</p>
+                    <br>
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Save Changes</button>
+                        <button type="button" onclick="this.parentElement.parentElement.parentElement.parentElement.remove()" class="cancel-btn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        document.getElementById('edit-appointment-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const date = document.getElementById('edit-appointment-date').value;
+            const time = document.getElementById('edit-appointment-time').value;
+            const notes = document.getElementById('edit-appointment-notes').value;
+            const errorMessage = document.getElementById('edit-appointment-error-message');
+
+            try {
+                const updateResponse = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/appointments`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userToken}`
+                    },
+                    body: JSON.stringify({
+                        appointmentID: appointmentId,
+                        patientID: appointment.patientID,
+                        updatedDetails: { date, time, notes }
+                    })
+                });
+
+                if (!updateResponse.ok) {
+                    errorMessage.style.display = 'block';
+                    errorMessage.textContent = 'Failed to update appointment. Please try again.';
+                    return;
+                }
+
+                modal.remove();
+
+                // Refresh the appointments list
+                displayAppointments();
+            } catch (error) {
+                console.error('Error updating appointment:', error);
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'An error occurred. Please try again.';
+            }
+        });
     } catch (error) {
-        console.error('Error viewing appointment:', error);
+        console.error('Error editing appointment:', error);
     }
 }
 
