@@ -57,7 +57,7 @@ async function getClinicianId() {
 let clinicianId;
 getClinicianId().then(id => clinicianId = id);
 
-// Load patients list
+// ! Load patients list
 async function loadPatients() {
     try {
         // Fetch detailed patient data for all patients assigned to the clinician
@@ -89,7 +89,7 @@ async function loadPatients() {
     }
 }
 
-// Display patients in the table
+// ! Display patients in the table
 function displayPatients(patients) {
     const tbody = document.getElementById('patients-list');
     tbody.innerHTML = '';
@@ -152,7 +152,11 @@ function displayPatients(patients) {
     });
 }
 
-// Display appointments in the table
+// //
+
+// ! Appointments
+
+// * Display appointments in the table
 async function displayAppointments() {
     try {
         const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician`, {
@@ -175,6 +179,7 @@ async function displayAppointments() {
                 // Fetch patient details using the patient ID from the appointment
                 const patientResponse = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients/details`, {
                     headers: {
+                        'Content-Type': 'application/json',
                         'Authorization': `Bearer ${userToken}`
                     }
                 });
@@ -185,26 +190,28 @@ async function displayAppointments() {
                 const patient = patientData.patients.find(p => p.id === appointment.patientID);
                 const patientName = patient ? patient.fullname : 'Unknown Patient';
 
+                console.log('Appointment:', appointment);
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${new Date(appointment.date).toLocaleDateString()} at ${appointment.time}</td>
                     <td>${patientName}</td>
                     <td>${appointment.notes || 'No notes'}</td>
                     <td class="actions">
-                        <button onclick="viewAppointment('${appointment.id}')" class="action-btn view">
+                        <button onclick="viewAppointment('${appointment.appointmentID}')" class="action-btn view">
                             <i class="fa fa-eye"></i>
                         </button>
-                        <button onclick="editAppointment('${appointment.id}')" class="action-btn edit">
+                        <button onclick="editAppointment('${appointment.appointmentID}')" class="action-btn edit">
                             <i class="fa fa-edit"></i>
                         </button>
-                        <button onclick="deleteAppointment('${appointment.id}')" class="action-btn delete">
+                        <button onclick="deleteAppointment('${appointment.appointmentID}', '${appointment.patientID}')" class="action-btn delete">
                             <i class="fa fa-trash"></i>
                         </button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             } catch (error) {
-                console.error(`Error fetching patient details for appointment ${appointment.id}:`, error);
+                console.error(`Error fetching patient details for appointment ${appointment.appointmentID}:`, error);
             }
         }
     } catch (error) {
@@ -222,6 +229,8 @@ async function viewAppointment(appointmentId) {
                 'Authorization': `Bearer ${userToken}`
             }
         });
+
+        console.log('Fetching appointment details for ID:', appointmentId);
 
         if (!response.ok) throw new Error('Failed to fetch appointment details');
 
@@ -246,6 +255,38 @@ async function viewAppointment(appointmentId) {
         showAppointmentModal(appointment, patientName);
     } catch (error) {
         console.error('Error viewing appointment:', error);
+    }
+}
+
+// Delete appointment
+async function deleteAppointment(appointment, patientID) {
+    if (!confirm('Are you sure you want to delete this appointment?')) return;
+
+    console.log('Deleting appointment with ID:', appointment);
+
+    try {
+        // Delete the appointment from the clinician's appointments
+        const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/appointments`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userToken}`
+            },
+            body: JSON.stringify({
+                appointmentID: appointment,
+                patientID: patientID
+            })
+        });
+
+        if (!response.ok) throw new Error('Failed to delete appointment from clinician');
+
+        // Optionally, you can show a success message
+        alert('Appointment deleted successfully');
+
+        // Refresh the appointments list
+        displayAppointments();
+    } catch (error) {
+        console.error('Error deleting appointment:', error);
     }
 }
 
@@ -282,6 +323,10 @@ function setupSearchAndFilter() {
         filterPatients(searchTerm);
     });
 }
+
+// //
+
+// ! Patients
 
 function filterPatients(searchTerm) {
     const tbody = document.getElementById('patients-list');
@@ -321,12 +366,42 @@ async function viewPatient(patientId) {
 
 // Delete patient
 async function deletePatient(patientID) {
-    if (!confirm('Are you sure you want to remove this patient?')) return;
+    if (!confirm('Are you sure you want to remove this patient? This will also remove all appointments for this patient.')) return;
 
     console.log('Deleting patient with ID:', patientID);
     console.log('Clinician ID:', clinicianId);
     
     try {
+        // First get all appointments
+        const appointmentsResponse = await fetch(`https://sdp-api-n04w.onrender.com/clinician`, {
+            headers: {
+                'Authorization': `Bearer ${userToken}`
+            }
+        });
+        
+        if (!appointmentsResponse.ok) throw new Error('Failed to fetch appointments');
+        
+        const clinicianData = await appointmentsResponse.json();
+        const appointments = clinicianData.appointments || [];
+        console.log('Appointments:', appointments);
+        
+        // Delete all appointments for this patient
+        const patientAppointments = appointments.filter(apt => apt.patientID === patientID);
+        for (const appointment of patientAppointments) {
+            await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/appointments`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userToken}`
+                },
+                body: JSON.stringify({ 
+                    appointmentId: appointment.appointmentID,
+                    patientId: appointment.patientID
+                })
+            });
+        }
+
+        // Then delete the patient
         const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients`, {
             method: 'DELETE',
             headers: {
@@ -338,8 +413,9 @@ async function deletePatient(patientID) {
         
         if (!response.ok) throw new Error('Failed to delete patient', response.statusText);
         
-        // Reload patients list
+        // Reload both patients list and appointments
         loadPatients();
+        displayAppointments();
     } catch (error) {
         console.error('Error deleting patient:', error);
     }
@@ -405,6 +481,10 @@ function contactPatient(patientId) {
 function showPatientModal(patient) {
     const modal = document.createElement('div');
     modal.classList.add('add-modal');
+
+    const answers = patient.answers || [];
+    const timestamp = answers.length > 0 ? answers[0].timestamp : null;
+    const dateString = new Date(timestamp).toLocaleDateString();
     
     modal.innerHTML = `
         <div class="modal-content">
@@ -424,17 +504,17 @@ function showPatientModal(patient) {
                 <table>
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Creatine</th>
+                            <th style="padding-right: 15px">Date</th>
+                            <th style="padding-right: 15px">Creatine</th>
                             <th>Result</th>
                         </tr>
                     </thead>
                     <tbody>
                         ${patient.results.map(test => `
                             <tr>
-                                <td>${new Date(test.date || patient.answers?.timestamp).toLocaleDateString()}</td>
-                                <td>${test.creatine}</td>
-                                <td>${test.eGFR}</td>
+                                <td style="padding-right: 15px">${dateString}</td>
+                                <td style="padding-right: 15px">${test.creatine || 'N/A'} ${test.calculationType || ''}</td>
+                                <td>${test.eGFR} mL/min/1.73m²</td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -450,6 +530,10 @@ function showPatientModal(patient) {
     
     document.body.appendChild(modal);
 }
+
+// //
+
+// ! Add New Features
 
 // Add new patient
 document.querySelector('.new-patient-btn').addEventListener('click', () => {
@@ -621,6 +705,8 @@ document.querySelector('.new-appointment-btn').addEventListener('click', () => {
     });
 });
 
+// //
+
 // Update stats overview dynamically
 async function loadDashboardStats() {
     try {
@@ -637,9 +723,7 @@ async function loadDashboardStats() {
 
         // Update stat cards with real data
         document.getElementById('today-patients').textContent = stats.patients?.length || 0;
-        document.getElementById('pending-reports').textContent = stats.results?.length || 0;
         document.getElementById('appointments').textContent = stats.appointments?.length || 0;
-        document.getElementById('messages').textContent = stats.messages?.length || 0;
     } catch (error) {
         console.error('Error loading dashboard stats:', error);
     }

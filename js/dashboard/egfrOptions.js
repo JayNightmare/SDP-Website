@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     ${results.map(result => `
                         <tr>
                             ${headers.map(header => `<td>${result[header]}</td>`).join('')}
-                            <td>${calculateEGFR(result)}</td>
+                            <td>${calculateEGFR(result)} mL/min/1.73m²</td>
                         </tr>
                     `).join('')}
                 </tbody>
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         },
                         body: JSON.stringify({
                             creat: creatinineValue,
-                            calcType: `CSV Upload (${creatinineUnit})`,
+                            calcType: creatinineUnit,
                             result: calculateEGFR(result)
                         })
                     })
