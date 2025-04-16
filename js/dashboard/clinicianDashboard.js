@@ -138,11 +138,11 @@ function displayPatients(patients) {
                 <button onclick="viewPatient('${patient.id}')" class="action-btn view">
                     <i class="fa fa-eye"></i>
                 </button>
-                <button onclick="deletePatient('${patient.id}')" class="action-btn delete">
-                    <i class="fa fa-trash"></i>
-                </button>
                 <button onclick="contactPatient('${patient.id}')" class="action-btn contact">
                     <i class="fa fa-phone"></i>
+                </button>
+                <button onclick="deletePatient('${patient.id}')" class="action-btn delete">
+                    <i class="fa fa-trash"></i>
                 </button>
             </td>
         `;
@@ -187,6 +187,17 @@ async function displayAppointments() {
                     <td>${new Date(appointment.date).toLocaleDateString()} at ${appointment.time}</td>
                     <td>${patientName}</td>
                     <td>${appointment.notes || 'No notes'}</td>
+                    <td class="actions">
+                        <button onclick="viewAppointment('${appointment.id}')" class="action-btn view">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                        <button onclick="editAppointment('${appointment.id}')" class="action-btn edit">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button onclick="deleteAppointment('${appointment.id}')" class="action-btn delete">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             } catch (error) {
@@ -196,6 +207,67 @@ async function displayAppointments() {
     } catch (error) {
         console.error('Error displaying appointments:', error);
     }
+}
+
+// View appointment details
+async function viewAppointment(appointmentId) {
+    try {
+        const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/appointments`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+            }
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch appointment details');
+
+        const data = await response.json();
+        const appointment = data.appointments.find(a => a.id === appointmentId);
+        if (!appointment) throw new Error('Appointment not found');
+
+        // Fetch patient details for the appointment
+        const patientResponse = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients/details`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+            }
+        });
+
+        if (!patientResponse.ok) throw new Error('Failed to fetch patient details');
+
+        const patientData = await patientResponse.json();
+        const patient = patientData.patients.find(p => p.id === appointment.patientID);
+        const patientName = patient ? patient.fullname : 'Unknown Patient';
+
+        // Show appointment modal
+        showAppointmentModal(appointment, patientName);
+    } catch (error) {
+        console.error('Error viewing appointment:', error);
+    }
+}
+
+// Show appointment modal with details
+function showAppointmentModal(appointment, patientName) {
+    const modal = document.createElement('div');
+    modal.classList.add('add-modal');
+
+    modal.innerHTML = `
+        <div class="modal-content">
+            <h2>Appointment Details</h2>
+            <br>
+            <div class="appointment-info">
+                <p><strong>Date:</strong> ${new Date(appointment.date).toLocaleDateString()}</p>
+                <p><strong>Time:</strong> ${appointment.time}</p>
+                <p><strong>Patient:</strong> ${patientName}</p>
+                <p><strong>Notes:</strong> ${appointment.notes || 'No notes available'}</p>
+            </div>
+            <br>
+            <div class="form-buttons">
+                <button onclick="this.parentElement.parentElement.parentElement.remove()" class="cancel-btn">Close</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
 }
 
 // Setup search and filter functionality
@@ -244,7 +316,7 @@ async function viewPatient(patientId) {
 }
 
 // Delete patient
-async function deletePatient(patientId) {
+async function deletePatient(patientID) {
     if (!confirm('Are you sure you want to remove this patient?')) return;
     
     try {
@@ -253,7 +325,7 @@ async function deletePatient(patientId) {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`
             },
-            body: JSON.stringify({ id: patientId })
+            body: JSON.stringify({ id: patientID })
         });
         
         if (!response.ok) throw new Error('Failed to delete patient');
