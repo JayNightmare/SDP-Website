@@ -4,6 +4,15 @@
 
 Server Repo: https://github.com/JayNightmare/SDP-server
 
+---
+
+### Repo Owned By:
+
+| Profile Picture | Username |
+|------------------|----------|
+| ![JayNightmare](https://avatars.githubusercontent.com/JayNightmare?s=100) | [JayNightmare](https://github.com/JayNightmare) |
+| ![b-sass](https://avatars.githubusercontent.com/b-sass?s=100) | [b-sass](https://github.com/b-sass) |
+
 </div>
 
 ### How to start:

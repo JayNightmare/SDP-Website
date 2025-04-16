@@ -1,8 +1,8 @@
 // Function to format a date into a readable format
 function formatDate(timestamp) {
     const date = new Date(timestamp);
-    // const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-    return date/* .toLocaleDateString(undefined, options); */
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return date.toLocaleDateString(undefined, options);
 }
 
 // Function to create a history item element
@@ -11,7 +11,7 @@ function createHistoryItem(resultData, answersData) {
     console.log('Creating history item:', resultData, answersData);
     item.className = 'history-item';
     item.innerHTML = `
-        <div class="date">${formatDate(resultData.timestamp)}</div>
+        <div class="date">${formatDate(answersData.timestamp)}</div>
         <div class="result">eGFR: ${resultData.eGFR} mL/min/1.73m²</div>
     `;
     
@@ -29,25 +29,37 @@ function showHistoryDetail(resultData, answersData) {
     answersContainer.innerHTML = '';
 
     // Validate resultData
-    if (!resultData || typeof resultData.result === 'undefined') {
+    if (!resultData) {
         console.error('Invalid resultData:', resultData);
         document.getElementById('modal-result').textContent = 'Invalid result data';
         return;
     }
 
     // Set the result
-    document.getElementById('modal-result').textContent = `eGFR: ${resultData.result}`;
+    document.getElementById('modal-result').textContent = `eGFR: ${resultData.eGFR} mL/min/1.73m²`;
+    document.getElementById('modal-date').textContent = formatDate(answersData.timestamp);
 
     // Validate and add answers
     if (answersData && typeof answersData === 'object') {
+        let questionNumber = 1;
         Object.entries(answersData).forEach(([question, answer]) => {
+            if (question === 'resultId' || question === '_id' || question === 'timestamp') {
+                return; // Skip displaying result_id and _id
+            }
+
+            const splitQuestion = question.split('-');
+            const questionLabel = splitQuestion.length > 1 
+                ? `Question ${questionNumber}: ${splitQuestion[1].trim()}` 
+                : `Question ${questionNumber}: ${splitQuestion[0].trim()}`;
+
             const answerItem = document.createElement('div');
             answerItem.className = 'answer-item';
             answerItem.innerHTML = `
-                <div class="question">${question}</div>
+                <div class="question">${questionLabel}</div>
                 <div class="answer">${answer}</div>
             `;
             answersContainer.appendChild(answerItem);
+            questionNumber++;
         });
     } else {
         answersContainer.innerHTML = '<div class="no-answers">No answers available</div>';

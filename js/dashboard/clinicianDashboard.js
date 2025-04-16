@@ -1,7 +1,7 @@
 // Get clinician ID from localStorage
-const clinicianId = localStorage.getItem('userId');
-if (!clinicianId) {
-    window.location.href = '../../js/account/html/practitioner.html';
+const clinicianType = localStorage.getItem('userType');
+if (!clinicianType || clinicianType !== 'clinician') {
+    window.location.href = '../../html/account/index.html';
 }
 
 // Initialize dashboard
@@ -33,6 +33,26 @@ async function loadClinicianInfo() {
         console.error('Error loading clinician info:', error);
     }
 }
+
+// Get Clinician ID from the endpoint using the token
+async function getClinicianId() {
+    try {
+        const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+            }
+        });
+        if (!response.ok) throw new Error('Failed to fetch clinician ID');
+        const data = await response.json();
+        return data.id;
+    }
+    catch (error) {
+        console.error('Error fetching clinician ID:', error);
+        return null;
+    }
+}
+
+let clinicianId = getClinicianId();
 
 // Load patients list
 async function loadPatients() {
@@ -231,18 +251,18 @@ async function deletePatient(patientId) {
     if (!confirm('Are you sure you want to remove this patient?')) return;
     
     try {
-        const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients/${patientId}`, {
+        const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-            }
+            },
+            body: JSON.stringify({ id: patientId })
         });
         
         if (!response.ok) throw new Error('Failed to delete patient');
         
         // Reload patients list
         loadPatients();
-        
     } catch (error) {
         console.error('Error deleting patient:', error);
     }

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>eGFR Calculator Options</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link data-vue-tag="ssr" rel="icon" type="image/png" sizes="96x96" href="../../images/favicon/favicon.ico">
@@ -40,6 +41,7 @@
                     </div>
                     <div>
                         <a class="logout" href="logout.html"><i class="fa fa-sign-out"></i> Logout</a>
+                        <div id="google_translate_element" class="translate-element"></div>
                     </div>
                 </div>
             </div>
@@ -68,7 +70,7 @@
                         </label>
                         <div id="file-name" class="file-name"></div>
                     </div>
-                    <div id="missing-fields" class="missing-fields" style="display: none;">
+                    <div id="missing-fields" class="missing-fields">
                         <h3>Missing Required Fields</h3>
                         <form id="missing-fields-form">
                             <!-- Will be populated dynamically -->
@@ -108,5 +110,11 @@
     <script src="../../js/services/user/userInfo.js"></script>
     <script src="../../js/account/logout.js"></script>
     <script src="../../js/dashboard/egfrOptions.js"></script>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>

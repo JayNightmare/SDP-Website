@@ -220,7 +220,13 @@ export function fetchResults() {
                                 },
                                 body: JSON.stringify({
                                     resultId: resultId,
-                                    answers: answers
+                                    "2-Age": answers["2-Age"],
+                                    "3-Gender": answers["3-Gender"],
+                                    "4-SC-Unit": answers["4-SC-Unit"],
+                                    "4-SerumCreatinine": answers["4-SerumCreatinine"],
+                                    "5-Race": answers["5-Race"] || null,
+                                    "6-Race": answers["6-Race"] || null,
+                                    "7-Height": answers["5-Height"] || null,
                                 }),
                             }).then(response => {
                                 if (!response.ok) {

@@ -1,4 +1,7 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title id="title">Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link data-vue-tag="ssr" rel="icon" type="image/png" sizes="96x96" href="../../images/favicon/favicon.ico">
@@ -11,7 +14,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
 </head>
-<body style="background-color: #EFE3C2;">
+<body>
     <!-- // -->
     <!-- ? Navbar ? -->
     <header>
@@ -178,7 +181,7 @@
                 <div class="col-xs-6 col-md-3">
                     <h6>Categories</h6>
                     <ul class="footer-links">
-                        <li><a href="#">eGFR Calculator</a></li>
+                        <li><a href="../../../html/services/calc/index.html">eGFR Calculator</a></li>
                         <li><a href="#">Much MORE!</a></li>
                     </ul>
                 </div>
@@ -187,10 +190,10 @@
                     <h6>Quick Links</h6>
                     <ul class="footer-links">
                         <li><a href="#">About Us</a></li>
-                        <li><a href="#">Contact Us</a></li>
-                        <li><a href="#">Contribute?</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Sitemap</a></li>
+                        <li><a href="../../html/home/contact.html">Contact Us</a></li>
+                        <li><a href="https://github.com/JayNightmare/SDP-Website">Contribute?</a></li>
+                        <li><a href="https://nexusgit.info/pages/info/PP/pp">Privacy Policy</a></li>
+                        
                     </ul>
                 </div>
             </div>
@@ -199,8 +202,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-8 col-sm-6 col-xs-12">
-                    <p class="copyright-text">Copyright &copy; 2024 All Rights Reserved by
-                        <a href="#">CKD Helper</a>.
+                    <p class="copyright-text">Copyright &copy; 2025 All Rights Reserved by
+                        <a href="https://github.com/JayNightmare/SDP-Website/blob/main/README.md#repo-owned-by" target="_blank" rel="noopener noreferrer">CKD Helper</a>.
                     </p>
                 </div>
     
@@ -212,7 +215,18 @@
                     </ul>
                 </div>
             </div>
+            <div id="google_translate_element" class="translate-element"></div>
         </div>
     </footer>
     <!-- // -->
+
+    <!-- // -->
+    <!-- ? Scripts ? -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
+</html>

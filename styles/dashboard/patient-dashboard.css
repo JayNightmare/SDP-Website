@@ -202,6 +202,26 @@
     text-decoration: none;
 }
 
+#mfa button {
+    background-color: #3e7c2e; /* Green background */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#mfa button:hover {
+    background-color: #2d5a22; /* Darker green on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+#mfa button:active {
+    transform: scale(0.95); /* Slight shrink effect on click */
+}
+
 .action-button:last-child {
     margin-bottom: 0;
 }
@@ -315,4 +335,9 @@
     background-color: #f8f9fa;
     border: 1px solid #e9ecef;
     border-radius: 5px;
+}
+
+/* Missing Values */
+.missing-fields {
+    display: none;
 }
