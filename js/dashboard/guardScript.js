@@ -93,7 +93,7 @@ function showInactivityPopup() {
     // Set a timeout to force logout if no interaction with the popup
     popupTimeout = setTimeout(() => {
         forceLogout();
-    }, 30000); // 30 seconds
+    }, 120000); // 2 minutes
 }
 
 // Function to force logout the user
@@ -110,7 +110,7 @@ function resetInactivityTimer() {
     clearTimeout(popupTimeout);
     inactivityTimeout = setTimeout(() => {
         showInactivityPopup();
-    }, 60000); // 60 seconds
+    }, 300000); // 5 minutes
 }
 
 // Event listeners to detect user activity
