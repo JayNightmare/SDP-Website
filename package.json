@@ -1,6 +1,6 @@
 {
   "name": "sdp-website",
-  "version": "0.5.2",
+  "version": "0.9.2",
   "description": "SDP Website about kidneys",
   "main": "index.html",
   "scripts": {
@@ -12,10 +12,25 @@
   },
   "keywords": [
     "SDP",
-    "University"
+    "University",
+    "Kingston University",
+    "Kidney",
+    "Website",
+    "Javascript",
+    "HTML",
+    "CSS",
+    "Web",
+    "Web Development",
+    "Web Design",
+    "Web Application",
+    "Web App",
+    "Web Development Project",
+    "Web Design Project",
+    "Web Application Project",
+    "Web App Project"
   ],
   "author": "Jay & Bartek",
-  "license": "MIT",
+  "license": "CC0-1.0",
   "type": "module",
   "bugs": {
     "url": "https://github.com/JayNightmare/SDP-Website/issues"
