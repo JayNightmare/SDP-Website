@@ -1,5 +1,7 @@
 // Get clinician ID from localStorage
 const clinicianType = localStorage.getItem('userType');
+const userToken = localStorage.getItem('userToken');
+
 if (!clinicianType || clinicianType !== 'clinician') {
     window.location.href = '../../html/account/index.html';
 }
@@ -17,7 +19,7 @@ async function loadClinicianInfo() {
     try {
         const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                'Authorization': `Bearer ${userToken}`
             }
         });
         
@@ -39,7 +41,7 @@ async function getClinicianId() {
     try {
         const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                'Authorization': `Bearer ${userToken}`
             }
         });
         if (!response.ok) throw new Error('Failed to fetch clinician ID');
@@ -62,7 +64,7 @@ async function loadPatients() {
         const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients/details`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                'Authorization': `Bearer ${userToken}`
             }
         });
 
@@ -156,7 +158,8 @@ async function displayAppointments() {
         const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userToken}`
             }
         });
 
@@ -172,7 +175,7 @@ async function displayAppointments() {
                 // Fetch patient details using the patient ID from the appointment
                 const patientResponse = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients/details`, {
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                        'Authorization': `Bearer ${userToken}`
                     }
                 });
 
@@ -215,7 +218,8 @@ async function viewAppointment(appointmentId) {
         const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/appointments`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userToken}`
             }
         });
 
@@ -228,7 +232,7 @@ async function viewAppointment(appointmentId) {
         // Fetch patient details for the appointment
         const patientResponse = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients/details`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                'Authorization': `Bearer ${userToken}`
             }
         });
 
@@ -299,7 +303,7 @@ async function viewPatient(patientId) {
     try {
         const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients/details`, {
             headers: {
-            'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+            'Authorization': `Bearer ${userToken}`
             }
         });
         
@@ -318,17 +322,21 @@ async function viewPatient(patientId) {
 // Delete patient
 async function deletePatient(patientID) {
     if (!confirm('Are you sure you want to remove this patient?')) return;
+
+    console.log('Deleting patient with ID:', patientID);
+    console.log('Clinician ID:', clinicianId);
     
     try {
         const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients`, {
             method: 'DELETE',
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userToken}`
             },
-            body: JSON.stringify({ id: patientID })
+            body: JSON.stringify({ patientID })
         });
         
-        if (!response.ok) throw new Error('Failed to delete patient');
+        if (!response.ok) throw new Error('Failed to delete patient', response.statusText);
         
         // Reload patients list
         loadPatients();
@@ -342,7 +350,7 @@ function contactPatient(patientId) {
     // Fetch patient details from the clinician's patient details endpoint
     fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients/details`, {
         headers: {
-            'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+            'Authorization': `Bearer ${userToken}`,
             'Content-Type': 'application/json'
         }
     })
@@ -478,7 +486,7 @@ document.querySelector('.new-patient-btn').addEventListener('click', () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                    'Authorization': `Bearer ${userToken}`
                 },
                 body: JSON.stringify({ id: patientId })
             });
@@ -550,7 +558,7 @@ document.querySelector('.new-appointment-btn').addEventListener('click', () => {
         try {
             const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients/details`, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                    'Authorization': `Bearer ${userToken}`
                 }
             });
 
@@ -587,7 +595,7 @@ document.querySelector('.new-appointment-btn').addEventListener('click', () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                    'Authorization': `Bearer ${userToken}`
                 },
                 body: JSON.stringify({ patientID: patientId, appointmentDetails: {date, time, notes} })
             });
@@ -618,7 +626,7 @@ async function loadDashboardStats() {
     try {
         const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+                'Authorization': `Bearer ${userToken}`,
                 'Content-Type': 'application/json'
             }
         });

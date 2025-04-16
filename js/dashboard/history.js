@@ -43,7 +43,7 @@ function showHistoryDetail(resultData, answersData) {
     if (answersData && typeof answersData === 'object') {
         let questionNumber = 1;
         Object.entries(answersData).forEach(([question, answer]) => {
-            if (question === 'resultId' || question === '_id' || question === 'timestamp') {
+            if (question === 'resultId' || question === '_id' || question === 'timestamp' || answer === null) {
                 return; // Skip displaying result_id and _id
             }
 
