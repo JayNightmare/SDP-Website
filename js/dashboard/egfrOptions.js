@@ -3,15 +3,90 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileName = document.getElementById('file-name');
     const missingFields = document.getElementById('missing-fields');
     const missingFieldsForm = document.getElementById('missing-fields-form');
+    const patientDropdown = document.getElementById('patient-dropdown');
+    const patientSelection = document.getElementById('patient-selection');
+
+    // Get Clinician ID from the endpoint using the token
+    async function getClinicianId() {
+        try {
+            const response = await fetch(`https://sdp-api-n04w.onrender.com/clinician`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+                }
+            });
+            if (!response.ok) throw new Error('Failed to fetch clinician ID');
+            const data = await response.json();
+            return data.id;
+        }
+        catch (error) {
+            console.error('Error fetching clinician ID:', error);
+            return null;
+        }
+    }
+
+    let clinicianId = getClinicianId();
 
     // Required fields for eGFR calculation
     const requiredFields = ['age', 'sex', 'race', 'creatinine'];
 
-    csvUpload.addEventListener('change', function(e) {
+    // Function to fetch patients for clinician
+    async function fetchPatients() {
+        const userToken = localStorage.getItem('userToken');
+        try {
+            // //
+            // ! Get Patient ID's from clinician endpoint
+            const getPatientIds = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients`, {
+                headers: {
+                    'Authorization': `Bearer ${userToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!getPatientIds.ok) throw new Error('Failed to fetch patients');
+            const patients = await getPatientIds.json();
+            console.log('Patients:', patients);
+
+            // //
+
+            // ! Get Patient details from clinician endpoint
+            const getPatientDetails = await fetch(`https://sdp-api-n04w.onrender.com/clinician/${clinicianId}/patients/details`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${userToken}`
+                }
+            });
+            if (!getPatientDetails.ok) throw new Error('Failed to fetch patient details');
+            const patientDetails = await getPatientDetails.json();
+            console.log('Patient Details:', patientDetails);
+            // //
+            
+            // Clear existing options except the default one
+            patientDropdown.innerHTML = '<option value="">Choose a patient...</option>';
+            
+            // Add patient options
+            patientDetails.patients.forEach(patient => {
+                const option = document.createElement('option');
+                option.value = patient.id;
+                option.textContent = `${patient.fullname} (${patient.id})`;
+                patientDropdown.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error fetching patients:', error);
+            alert('Failed to load patient list. Please try again.');
+        }
+    }
+
+    csvUpload.addEventListener('change', async function(e) {
         const file = e.target.files[0];
         if (!file) return;
 
         fileName.textContent = file.name;
+        
+        // If user is clinician, fetch patients first
+        const userRole = localStorage.getItem('userType');
+        if (userRole === 'clinician') {
+            patientSelection.style.display = 'block';
+            await fetchPatients();
+        }
         
         const reader = new FileReader();
         reader.onload = function(e) {
@@ -121,11 +196,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        const userRole = localStorage.getItem('userType'); // Assuming user role is stored in localStorage
+        const userRole = localStorage.getItem('userType');
         if (userRole === 'clinician') {
-            // Display results in a table on the page
+            const selectedPatientId = document.getElementById('patient-dropdown').value;
+            if (!selectedPatientId) {
+                alert('Please select a patient before processing the CSV.');
+                return;
+            }
+
+            // Store results globally for submit button
+            window.processedResults = results;
+
+            // Display results in a table
             const resultsTable = document.getElementById('results-table');
             const resultsCard = document.querySelector(".results-card");
+            const submitButton = document.getElementById('submit-results');
+            
             resultsTable.innerHTML = `
                 <thead>
                     <tr>
@@ -144,7 +230,66 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             resultsTable.style.display = 'table';
             resultsCard.style.display = 'block';
+            submitButton.style.display = 'block';
 
+            // Add submit button handler
+            submitButton.onclick = async function() {
+                const userToken = localStorage.getItem('userToken');
+                try {
+                    let resultId = 1;
+                    const promises = window.processedResults.map(result => {
+                        let creatinineValue = result.creatinine;
+                        let creatinineUnit = 'mg/dL';
+                        const match = creatinineValue.match(/^([\d.]+)\s*(µmol\/l|umol\/l|mg\/dl)?$/i);
+                        if (match) {
+                            creatinineValue = match[1];
+                            creatinineUnit = match[2] || 'mg/dL';
+                        }
+
+                        return fetch(`https://sdp-api-n04w.onrender.com/patient/${selectedPatientId}/results`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${userToken}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                resultId: resultId,
+                                creat: creatinineValue,
+                                calcType: creatinineUnit,
+                                result: calculateEGFR(result)
+                            })
+                        });
+                    });
+
+                    // Create answers array from the results
+                    const answers = window.processedResults.map(result => {
+                        return fetch(`https://sdp-api-n04w.onrender.com/patient/${selectedPatientId}/answers`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${userToken}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                resultId: resultId,
+                                "2-Age": result.age,
+                                "3-Gender": result.sex,
+                                "4-SC-Unit": "mg/dL",
+                                "4-SerumCreatinine": result.creatinine,
+                                "5-Race": result.race,
+                                "6-Race": null,
+                                "7-Height": null
+                            })
+                        });
+                    });
+
+                    await Promise.all([...promises, ...answers]);
+                    alert('Results submitted successfully!');
+                    // window.location.href = 'clinician-dashboard.html';
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Failed to submit results. Please try again.');
+                }
+            };
         } else {
             // Send results to server
             const userToken = localStorage.getItem('userToken');

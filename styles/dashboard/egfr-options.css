@@ -75,6 +75,27 @@
 }
 
 /* Missing Fields Form */
+.patient-selection {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.patient-selection h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.patient-selection select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+}
+
 .missing-fields {
     margin-top: 20px;
     padding: 20px;
