@@ -79,7 +79,7 @@ function createQR(user) {
     }
 
     // async fetch to get the QR code
-    fetch("${ENDPOINT}/auth/mfa", {
+    fetch(`${ENDPOINT}/auth/mfa`, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${userToken}`,
@@ -118,7 +118,7 @@ function createQR(user) {
 function verifyMfaCode(code) {
     const userToken = localStorage.getItem("userToken");
 
-    fetch("${ENDPOINT}/auth/mfa", {
+    fetch(`${ENDPOINT}/auth/mfa`, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${userToken}`,

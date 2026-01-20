@@ -99,7 +99,7 @@ async function loadHistory() {
         }
 
         // Fetch patient data from API
-        const response = await fetch("${ENDPOINT}/patient", {
+        const response = await fetch(`${ENDPOINT}/patient`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

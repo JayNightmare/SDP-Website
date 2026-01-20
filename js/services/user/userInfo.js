@@ -9,9 +9,9 @@ async function getUserData(type, userToken) {
 
     let url;
     if (type === "clinician") {
-        url = "${ENDPOINT}/clinician";
+        url = `${ENDPOINT}/clinician`;
     } else if (type === "patient") {
-        url = "${ENDPOINT}/patient";
+        url = `${ENDPOINT}/patient`;
     } else {
         console.error("Invalid user type:", type);
         throw new Error("Invalid user type");
