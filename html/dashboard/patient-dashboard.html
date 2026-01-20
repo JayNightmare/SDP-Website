@@ -1,177 +1,255 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title id="title">Patient Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link data-vue-tag="ssr" rel="icon" type="image/png" sizes="96x96" href="../../images/favicon/favicon.ico">
-    <link rel="stylesheet" href="../../styles/global/navbar.css">
-    <link rel="stylesheet" href="../../styles/global/footer.css">
-    <link rel="stylesheet" href="../../styles/global/body.css">
-    <link rel="stylesheet" href="../../styles/dashboard/style.css">
-    <link rel="stylesheet" href="../../styles/dashboard/patient-dashboard.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-</head>
+    <head>
+        <meta charset="UTF-8" />
+        <title id="title">Patient Dashboard</title>
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+        <link
+            data-vue-tag="ssr"
+            rel="icon"
+            type="image/png"
+            sizes="96x96"
+            href="../../images/favicon/favicon.ico"
+        />
+        <link rel="stylesheet" href="../../styles/global/navbar.css" />
+        <link rel="stylesheet" href="../../styles/global/footer.css" />
+        <link rel="stylesheet" href="../../styles/global/body.css" />
+        <link rel="stylesheet" href="../../styles/dashboard/style.css" />
+        <link
+            rel="stylesheet"
+            href="../../styles/dashboard/patient-dashboard.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://www.w3schools.com/w3css/4/w3.css"
+        />
+    </head>
 
-<body>
-    <div class="menu-toggle">
-        <button title="menu" onclick="toggleNav()" class="toggle-btn">
-            <i class="fa fa-bars"></i>
-        </button>
-    </div>
-    <aside id="sidebar">
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
-                <div class="space-out">
-                    <div class="flexNav">
-                        <a class="nav-logo" href="../dashboard/patient-dashboard.html" title="Home">
-                            <div class="header-logo"></div>
-                        </a>
-                        <ul class="nav navbar-nav">
-                            <li class="active"><a href="../dashboard/patient-dashboard.html"><i class="fa fa-home"></i> Home</a></li>
-                            <li><a href="../dashboard/egfr-options.html"><i class="fa fa-calculator"></i> eGFR Calculator</a></li>
-                            <li><a href="about.html"><i class="fa fa-info-circle"></i> About</a></li>
-                            <li><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <a class="logout" href="logout.html"><i class="fa fa-sign-out"></i> Logout</a>
-                        <!-- Google Translate widget -->
-                        <div id="google_translate_element" class="translate-element"></div>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </aside>
-
-    <main class="dashboard-main">
-        <div class="dashboard-header">
-            <h1>Welcome, <span id="patient-name">Patient</span></h1>
-            <p class="last-login">Last login: <span id="last-login-time">Loading...</span></p>
+    <body>
+        <div class="menu-toggle">
+            <button title="menu" onclick="toggleNav()" class="toggle-btn">
+                <i class="fa fa-bars"></i>
+            </button>
         </div>
-
-        <div class="dashboard-grid">
-            <!-- Patient Info Card -->
-            <div class="dashboard-card patient-info">
-                <div class="card-header">
-                    <i class="fa fa-user-circle"></i>
-                    <h2>Patient Information</h2>
+        <aside id="sidebar">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="space-out">
+                        <div class="flexNav">
+                            <a
+                                class="nav-logo"
+                                href="../dashboard/patient-dashboard.html"
+                                title="Home"
+                            >
+                                <div class="header-logo"></div>
+                            </a>
+                            <ul class="nav navbar-nav">
+                                <li class="active">
+                                    <a
+                                        href="../dashboard/patient-dashboard.html"
+                                        ><i class="fa fa-home"></i> Home</a
+                                    >
+                                </li>
+                                <li>
+                                    <a href="../dashboard/egfr-options.html"
+                                        ><i class="fa fa-calculator"></i> eGFR
+                                        Calculator</a
+                                    >
+                                </li>
+                                <li>
+                                    <a href="about.html"
+                                        ><i class="fa fa-info-circle"></i>
+                                        About</a
+                                    >
+                                </li>
+                                <li>
+                                    <a href="contact.html"
+                                        ><i class="fa fa-envelope"></i>
+                                        Contact</a
+                                    >
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <a class="logout" href="logout.html"
+                                ><i class="fa fa-sign-out"></i> Logout</a
+                            >
+                            <!-- Google Translate widget -->
+                            <div
+                                id="google_translate_element"
+                                class="translate-element"
+                            ></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-content">
-                    <div class="info-row">
-                        <span class="label">Name:</span>
-                        <span class="value" id="full-name">Loading...</span>
+            </nav>
+        </aside>
+
+        <main class="dashboard-main">
+            <div class="dashboard-header">
+                <h1>Welcome, <span id="patient-name">Patient</span></h1>
+                <p class="last-login">
+                    Last login: <span id="last-login-time">Loading...</span>
+                </p>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Patient Info Card -->
+                <div class="dashboard-card patient-info">
+                    <div class="card-header">
+                        <i class="fa fa-user-circle"></i>
+                        <h2>Patient Information</h2>
                     </div>
-                    <div class="info-row">
-                        <span class="label">Date of Birth:</span>
-                        <span class="value" id="dob">Loading...</span>
-                    </div>
-                    <!-- <div class="info-row">
+                    <div class="card-content">
+                        <div class="info-row">
+                            <span class="label">Name:</span>
+                            <span class="value" id="full-name">Loading...</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Date of Birth:</span>
+                            <span class="value" id="dob">Loading...</span>
+                        </div>
+                        <!-- <div class="info-row">
                         <span class="label">Email:</span>
                         <span class="value" id="email">Loading...</span>
                     </div> -->
-                    <div class="info-row">
-                        <span class="label">Phone:</span>
-                        <span class="value" id="phone">Loading...</span>
+                        <div class="info-row">
+                            <span class="label">Phone:</span>
+                            <span class="value" id="phone">Loading...</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">NHS Number:</span>
+                            <span class="value" id="id">Loading...</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">MFA status:</span>
+                            <span class="value" id="mfa">Loading...</span>
+                        </div>
                     </div>
-                    <div class="info-row">
-                        <span class="label">NHS Number:</span>
-                        <span class="value" id="id">Loading...</span>
+                </div>
+
+                <!-- Recent eGFR Results Card -->
+                <div class="dashboard-card egfr-results">
+                    <div class="card-header">
+                        <i class="fa fa-line-chart"></i>
+                        <h2>Recent eGFR Results</h2>
                     </div>
-                    <div class="info-row">
-                        <span class="label">MFA status:</span>
-                        <span class="value" id="mfa">Loading...</span>
+                    <div class="card-content">
+                        <div class="result-row latest">
+                            <div class="result-header">Latest Result</div>
+                            <div class="result-value" id="latest-egfr">--</div>
+                            <div class="result-date" id="latest-egfr-date">
+                                --
+                            </div>
+                        </div>
+                        <div class="result-history" id="egfr-history">
+                            <!-- History will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Card -->
+                <div class="dashboard-card quick-actions">
+                    <div class="card-header">
+                        <i class="fa fa-bolt"></i>
+                        <h2>Quick Actions</h2>
+                    </div>
+                    <div class="card-content">
+                        <a href="egfr-options.html" class="action-button">
+                            <i class="fa fa-calculator"></i>
+                            Calculate eGFR
+                        </a>
+                        <a href="history.html" class="action-button">
+                            <i class="fa fa-history"></i>
+                            View History
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Health Tips Card -->
+                <div class="dashboard-card health-tips">
+                    <div class="card-header">
+                        <i class="fa fa-lightbulb-o"></i>
+                        <h2>Health Tips</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="tip">
+                            <i class="fa fa-check-circle"></i>
+                            Stay hydrated by drinking plenty of water throughout
+                            the day.
+                        </div>
+                        <div class="tip">
+                            <i class="fa fa-check-circle"></i>
+                            Monitor your blood pressure regularly.
+                        </div>
+                        <div class="tip">
+                            <i class="fa fa-check-circle"></i>
+                            Maintain a balanced, kidney-friendly diet.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appointments -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <i class="fa fa-calendar"></i>
+                        <h2>Appointments</h2>
+                    </div>
+                    <div class="card-content appointments">
+                        <p>No appointments</p>
                     </div>
                 </div>
             </div>
+        </main>
 
-            <!-- Recent eGFR Results Card -->
-            <div class="dashboard-card egfr-results">
-                <div class="card-header">
-                    <i class="fa fa-line-chart"></i>
-                    <h2>Recent eGFR Results</h2>
-                </div>
-                <div class="card-content">
-                    <div class="result-row latest">
-                        <div class="result-header">Latest Result</div>
-                        <div class="result-value" id="latest-egfr">--</div>
-                        <div class="result-date" id="latest-egfr-date">--</div>
-                    </div>
-                    <div class="result-history" id="egfr-history">
-                        <!-- History will be populated by JavaScript -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Actions Card -->
-            <div class="dashboard-card quick-actions">
-                <div class="card-header">
-                    <i class="fa fa-bolt"></i>
-                    <h2>Quick Actions</h2>
-                </div>
-                <div class="card-content">
-                    <a href="egfr-options.html" class="action-button">
-                        <i class="fa fa-calculator"></i>
-                        Calculate eGFR
-                    </a>
-                    <a href="history.html" class="action-button">
-                        <i class="fa fa-history"></i>
-                        View History
-                    </a>
-                </div>
-            </div>
-
-            <!-- Health Tips Card -->
-            <div class="dashboard-card health-tips">
-                <div class="card-header">
-                    <i class="fa fa-lightbulb-o"></i>
-                    <h2>Health Tips</h2>
-                </div>
-                <div class="card-content">
-                    <div class="tip">
-                        <i class="fa fa-check-circle"></i>
-                        Stay hydrated by drinking plenty of water throughout the day.
-                    </div>
-                    <div class="tip">
-                        <i class="fa fa-check-circle"></i>
-                        Monitor your blood pressure regularly.
-                    </div>
-                    <div class="tip">
-                        <i class="fa fa-check-circle"></i>
-                        Maintain a balanced, kidney-friendly diet.
-                    </div>
-                </div>
-            </div>
-
-            <!-- Appointments -->
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <i class="fa fa-calendar"></i>
-                    <h2>Appointments</h2>
-                </div>
-                <div class="card-content appointments">
-                    <p>No appointments</p>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <script src="../../js/dashboard/guardScript.js" type="text/javascript"></script>
-    <script src="../../js/dashboard/navScript.js" type="text/javascript"></script>
-    <script src="../../js/services/user/userInfo.js" type="text/javascript"></script>
-    <script src="../../js/account/logout.js" type="text/javascript"></script>
-    <script src="../../js/dashboard/patientDashboard.js" type="text/javascript"></script>
-    <script src="../../js/dashboard/mfa.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
-        }
-    </script>
-    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-</body>
+        <script
+            src="../../js/dashboard/guardScript.js"
+            type="text/javascript"
+        ></script>
+        <script
+            src="../../js/dashboard/navScript.js"
+            type="text/javascript"
+        ></script>
+        <script
+            type="module"
+            src="../../js/services/user/userInfo.js"
+            type="text/javascript"
+        ></script>
+        <script
+            src="../../js/account/logout.js"
+            type="text/javascript"
+        ></script>
+        <script
+            type="module"
+            src="../../js/dashboard/patientDashboard.js"
+            type="text/javascript"
+        ></script>
+        <script src="../../js/dashboard/mfa.js" type="text/javascript"></script>
+        <script type="text/javascript">
+            function googleTranslateElementInit() {
+                new google.translate.TranslateElement(
+                    { pageLanguage: "en" },
+                    "google_translate_element",
+                );
+            }
+        </script>
+        <script
+            type="text/javascript"
+            src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+        ></script>
+    </body>
 </html>

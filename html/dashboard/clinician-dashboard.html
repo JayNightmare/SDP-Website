@@ -1,173 +1,269 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title id="title">Practitioner Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link data-vue-tag="ssr" rel="icon" type="image/png" sizes="96x96" href="../../images/favicon/favicon.ico">
-    <link rel="stylesheet" href="../../styles/global/navbar.css">
-    <link rel="stylesheet" href="../../styles/global/footer.css">
-    <link rel="stylesheet" href="../../styles/global/body.css">
-    <link rel="stylesheet" href="../../styles/dashboard/style.css">
-    <link rel="stylesheet" href="../../styles/dashboard/clinician-dashboard.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-</head>
+    <head>
+        <meta charset="UTF-8" />
+        <title id="title">Practitioner Dashboard</title>
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+        <link
+            data-vue-tag="ssr"
+            rel="icon"
+            type="image/png"
+            sizes="96x96"
+            href="../../images/favicon/favicon.ico"
+        />
+        <link rel="stylesheet" href="../../styles/global/navbar.css" />
+        <link rel="stylesheet" href="../../styles/global/footer.css" />
+        <link rel="stylesheet" href="../../styles/global/body.css" />
+        <link rel="stylesheet" href="../../styles/dashboard/style.css" />
+        <link
+            rel="stylesheet"
+            href="../../styles/dashboard/clinician-dashboard.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://www.w3schools.com/w3css/4/w3.css"
+        />
+    </head>
 
-<body>
-    <div class="menu-toggle">
-        <button title="menu" onclick="toggleNav()" class="toggle-btn">
-            <i class="fa fa-bars"></i>
-        </button>
-    </div>
-    <aside id="sidebar">
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
-                <div class="space-out">
-                    <div class="flexNav">
-                        <a class="nav-logo" href="../dashboard/clinician-dashboard.html" title="Home">
-                            <div class="header-logo"></div>
-                        </a>
-                        <ul class="nav navbar-nav">
-                            <li class="active"><a href="../dashboard/clinician-dashboard.html"><i class="fa fa-home"></i> Home</a></li>
-                            <li><a href="../dashboard/egfr-options.html"><i class="fa fa-calculator"></i> eGFR Calculator</a></li>
-                            <li><a href="about.html"><i class="fa fa-info-circle"></i> About</a></li>
-                            <li><a href="contact.html"><i class="fa fa-envelope"></i> Contact</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <a class="logout" href="logout.html"><i class="fa fa-sign-out"></i> Logout</a>
-                        <!-- Google Translate widget -->
-                        <div id="google_translate_element" class="translate-element"></div>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </aside>
-
-    <main class="dashboard-main">
-        <div class="dashboard-header">
-            <h1>Welcome back, <span id="clinician-name">Dr.</span></h1>
-            <p class="last-login">Last login: <span id="last-login-time">Loading...</span></p>
+    <body>
+        <div class="menu-toggle">
+            <button title="menu" onclick="toggleNav()" class="toggle-btn">
+                <i class="fa fa-bars"></i>
+            </button>
         </div>
-
-        <div class="dashboard-grid">
-            <!-- Overview Stats -->
-            <div class="dashboard-card stats-overview">
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-label">Patients</div>
-                        <div class="stat-value" id="today-patients">0</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Appointments</div>
-                        <div class="stat-value" id="appointments">0</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Messages</div>
-                        <div class="stat-value" id="messages">2</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Patients Board -->
-            <div class="dashboard-card patients-board">
-                <div class="card-header">
-                    <div class="header-left">
-                        <h2>Patient Board</h2>
-                    </div>
-                    
-                    <div class="header-right">
-                        <div class="search-bar">
-                            <input type="text" id="patient-search" placeholder="Search patients...">
-                            <button class="filter-btn"><i class="fa fa-filter"></i> Filter</button>
+        <aside id="sidebar">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="space-out">
+                        <div class="flexNav">
+                            <a
+                                class="nav-logo"
+                                href="../dashboard/clinician-dashboard.html"
+                                title="Home"
+                            >
+                                <div class="header-logo"></div>
+                            </a>
+                            <ul class="nav navbar-nav">
+                                <li class="active">
+                                    <a
+                                        href="../dashboard/clinician-dashboard.html"
+                                        ><i class="fa fa-home"></i> Home</a
+                                    >
+                                </li>
+                                <li>
+                                    <a href="../dashboard/egfr-options.html"
+                                        ><i class="fa fa-calculator"></i> eGFR
+                                        Calculator</a
+                                    >
+                                </li>
+                                <li>
+                                    <a href="about.html"
+                                        ><i class="fa fa-info-circle"></i>
+                                        About</a
+                                    >
+                                </li>
+                                <li>
+                                    <a href="contact.html"
+                                        ><i class="fa fa-envelope"></i>
+                                        Contact</a
+                                    >
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <a class="logout" href="logout.html"
+                                ><i class="fa fa-sign-out"></i> Logout</a
+                            >
+                            <!-- Google Translate widget -->
+                            <div
+                                id="google_translate_element"
+                                class="translate-element"
+                            ></div>
                         </div>
                     </div>
                 </div>
-                <div class="card-content">
-                    <div class="hide-content">
-                        <p>Unable to display patients. Please view on a larger screen.</p>
-                    </div>
-                    <table class="patients-table table-content">
-                        <thead>
-                            <tr>
-                                <th>Patient Name</th>
-                                <th>NHS ID</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="patients-list">
-                            <!-- Injected by JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="card-footer">
-                    <button class="new-patient-btn new-btn-add">+ New Patient</button>
-                </div>
+            </nav>
+        </aside>
+
+        <main class="dashboard-main">
+            <div class="dashboard-header">
+                <h1>Welcome back, <span id="clinician-name">Dr.</span></h1>
+                <p class="last-login">
+                    Last login: <span id="last-login-time">Loading...</span>
+                </p>
             </div>
 
-            <!-- Upcoming Appointments -->
-            <div class="dashboard-card appointments">
-                <div class="card-header">
-                    <h2>Upcoming Appointments</h2>
-                    <button class="new-appointment-btn new-btn-add">+ New Appointment</button>
-                </div>
-                <div class="card-content">
-                    <table class="appointment-table table-content">
-                        <thead>
-                            <tr>
-                                <th>Appointment Time</th>
-                                <th>Patient Name</th>
-                                <th>Reason</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="appointment-list">
-                            <!-- Injected by JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <br>
-            <br>
-
-            <!-- Recent Messages -->
-            <div class="dashboard-card messages">
-                <div class="card-header">
-                    <h2>Recent Messages</h2>
-                </div>
-                <div class="card-content">
-                    <div class="message-list" id="message-list">
-                        <div class="message-item">
-                            <div class="message-sender">Sarah James(Registered Patient)</div>
-                            <div class="message-preview">Message received at 9:30 AM</div>
+            <div class="dashboard-grid">
+                <!-- Overview Stats -->
+                <div class="dashboard-card stats-overview">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Patients</div>
+                            <div class="stat-value" id="today-patients">0</div>
                         </div>
-                        <div class="message-item">
-                            <div class="message-sender">Sarah James(Registered Patient)</div>
-                            <div class="message-preview">Message received at 9:30 AM</div>
+                        <div class="stat-item">
+                            <div class="stat-label">Appointments</div>
+                            <div class="stat-value" id="appointments">0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Messages</div>
+                            <div class="stat-value" id="messages">2</div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </main>
 
-    <script src="../../js/dashboard/guardScript.js" type="text/javascript"></script>
-    <script src="../../js/dashboard/navScript.js" type="text/javascript"></script>
-    <script src="../../js/services/user/userInfo.js" type="text/javascript"></script>
-    <script src="../../js/account/logout.js" type="text/javascript"></script>
-    <script src="../../js/dashboard/clinicianDashboard.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
-        }
-    </script>
-    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-</body>
+                <!-- Patients Board -->
+                <div class="dashboard-card patients-board">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <h2>Patient Board</h2>
+                        </div>
+
+                        <div class="header-right">
+                            <div class="search-bar">
+                                <input
+                                    type="text"
+                                    id="patient-search"
+                                    placeholder="Search patients..."
+                                />
+                                <button class="filter-btn">
+                                    <i class="fa fa-filter"></i> Filter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="hide-content">
+                            <p>
+                                Unable to display patients. Please view on a
+                                larger screen.
+                            </p>
+                        </div>
+                        <table class="patients-table table-content">
+                            <thead>
+                                <tr>
+                                    <th>Patient Name</th>
+                                    <th>NHS ID</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patients-list">
+                                <!-- Injected by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <button class="new-patient-btn new-btn-add">
+                            + New Patient
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Upcoming Appointments -->
+                <div class="dashboard-card appointments">
+                    <div class="card-header">
+                        <h2>Upcoming Appointments</h2>
+                        <button class="new-appointment-btn new-btn-add">
+                            + New Appointment
+                        </button>
+                    </div>
+                    <div class="card-content">
+                        <table class="appointment-table table-content">
+                            <thead>
+                                <tr>
+                                    <th>Appointment Time</th>
+                                    <th>Patient Name</th>
+                                    <th>Reason</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appointment-list">
+                                <!-- Injected by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <br />
+                <br />
+
+                <!-- Recent Messages -->
+                <div class="dashboard-card messages">
+                    <div class="card-header">
+                        <h2>Recent Messages</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="message-list" id="message-list">
+                            <div class="message-item">
+                                <div class="message-sender">
+                                    Sarah James(Registered Patient)
+                                </div>
+                                <div class="message-preview">
+                                    Message received at 9:30 AM
+                                </div>
+                            </div>
+                            <div class="message-item">
+                                <div class="message-sender">
+                                    Sarah James(Registered Patient)
+                                </div>
+                                <div class="message-preview">
+                                    Message received at 9:30 AM
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script
+            src="../../js/dashboard/guardScript.js"
+            type="text/javascript"
+        ></script>
+        <script
+            src="../../js/dashboard/navScript.js"
+            type="text/javascript"
+        ></script>
+        <script
+            type="module"
+            src="../../js/services/user/userInfo.js"
+            type="text/javascript"
+        ></script>
+        <script
+            src="../../js/account/logout.js"
+            type="text/javascript"
+        ></script>
+        <script
+            type="module"
+            src="../../js/dashboard/clinicianDashboard.js"
+            type="text/javascript"
+        ></script>
+        <script type="text/javascript">
+            function googleTranslateElementInit() {
+                new google.translate.TranslateElement(
+                    { pageLanguage: "en" },
+                    "google_translate_element",
+                );
+            }
+        </script>
+        <script
+            type="text/javascript"
+            src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+        ></script>
+    </body>
 </html>

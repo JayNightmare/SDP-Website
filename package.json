@@ -37,6 +37,6 @@
   },
   "homepage": "https://github.com/JayNightmare/SDP-Website#readme",
   "dependencies": {
-    
+    "dotenv": "^17.2.3"
   }
 }
